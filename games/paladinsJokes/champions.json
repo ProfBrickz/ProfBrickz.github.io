@@ -27,7 +27,7 @@
 			},
 			{
 				"voiceLine": "Ye ever had your timbers shivered? Ye want to?",
-				"fileName": "SP_Intro_2.ogg"
+				"fileName": "SP_Joke_2.ogg"
 			}
 		],
 		"Merrymaker": [
@@ -343,6 +343,150 @@
 			},
 			{
 				"voiceLine": "I wear this helm to hide a lifetime of torment and sorrow. And to keep out the sand, that crap gets everywhere.",
+				"fileName": "SP_Joke_3.ogg"
+			}
+		]
+	},
+	"Corvus": {
+		"Default": [
+			{
+				"voiceLine": "Stop dying, you fools!",
+				"fileName": "SP_Ability1_1.ogg"
+			},
+			{
+				"voiceLine": "Ugh, you sacrifice one person for the lives of thousands and suddenly you're the bad guy?! Ugh, people these days!",
+				"fileName": "SP_Joke_2.ogg"
+			},
+			{
+				"voiceLine": "'Summon an Abyssal Lord' they said, 'It would be fun!' they said...",
+				"fileName": "SP_Joke_3.ogg"
+			},
+			{
+				"voiceLine": "Look it's a nice coat, yes, but what I wear doesn't define me!",
+				"fileName": "SP_Joke_4.ogg"
+			},
+			{
+				"voiceLine": "I have the power of the Abyss and the Magistrate on my side! *screams*",
+				"fileName": "SP_Joke_7.ogg"
+			}
+		],
+		"Count": [
+			{
+				"voiceLine": "Talking to you would be a waste of my breath, if I did... that.",
+				"fileName": "SP_Taunt_2.ogg"
+			},
+			{
+				"voiceLine": "I am one of the most powerful beings in this realm, and they just keep asking me to take my shirt off! Seriously!",
+				"fileName": "SP_Joke_2.ogg"
+			},
+			{
+				"voiceLine": "Vampires may differ across different civilizations, but I would say they're often in the same vein.",
+				"fileName": "SP_Joke_3.ogg"
+			},
+			{
+				"voiceLine": "I may be undead, but rest assured that I am the life of the party.",
+				"fileName": "SP_Joke_4.ogg"
+			}
+		]
+	},
+	"Grohk": {
+		"Default": [
+			{
+				"voiceLine": "Fear my battle cry of fury: wooooooooh.",
+				"fileName": "SP_Intro_1.ogg"
+			},
+			{
+				"voiceLine": "I go zoom zoom!",
+				"fileName": "SP_Mount_2.ogg"
+			},
+			{
+				"voiceLine": "Do you want medium well or fried? Okay, fried!",
+				"fileName": "SP_Taunt_2.ogg"
+			},
+			{
+				"voiceLine": "Why do I have big nostrils? I have big fingers!",
+				"fileName": "SP_Joke_2.ogg"
+			}
+		]
+	},
+	"Lillith": {
+		"Default": [
+			{
+				"voiceLine": "Don't worry, you'll only feel a small pinch.",
+				"fileName": "SP_MatchStart_2.ogg"
+			},
+			{
+				"voiceLine": "Ugh, your mind is feeble, your body is failing, your cause is ill conceived. Allow me in... I will show you how to overcome all of your... *laugh* shortcomings. *laugh*",
+				"fileName": "SP_Intro_1.ogg"
+			},
+			{
+				"voiceLine": "Hm, so, you need my help? Fine. All I require is some of your... well, we can talk about the details of our contract later. *laugh*",
+				"fileName": "SP_Intro_2.ogg"
+			},
+			{
+				"voiceLine": "Your blood will pair beautifully with my evening meal.",
+				"fileName": "SP_Taunt_2.ogg"
+			},
+			{
+				"voiceLine": "You know me, I'm such a pain in the neck. *chuckle*",
+				"fileName": "SP_Joke_1.ogg"
+			},
+			{
+				"voiceLine": "How dare you ask such a thing? You know that I can't see the blood in my teeth, I can't use mirrors you bloodsack!",
+				"fileName": "SP_Joke_2.ogg"
+			}
+		]
+	},
+	"Seris": {
+		"Default": [
+			{
+				"voiceLine": "That's it, yes, it's coming to me now. You are an imbecile.",
+				"fileName": "SP_Taunt_2.ogg"
+			},
+			{
+				"voiceLine": "You'd like to see a trick? Watch as I make your life disappear.",
+				"fileName": "SP_Taunt_3.ogg"
+			},
+			{
+				"voiceLine": "Let me look into your future. Oh. Well... good luck with that.",
+				"fileName": "SP_Joke_1.ogg"
+			},
+			{
+				"voiceLine": "I hate it when I walk into another dimension and forget why I'm here!",
+				"fileName": "SP_Joke_2.ogg"
+			}
+		]
+	},
+	"Vora": {
+		"Galactic Conqueror": [
+			{
+				"voiceLine": "Aaaahahahahahaha, yes! Die, trash!",
+				"fileName": "TR_Kill_Assist_2.ogg"
+			}
+		]
+	},
+	"Tyra": {
+		"Default": [
+			{
+				"voiceLine": "Only the gods can judge you, I simply arrange the meeting.",
+				"fileName": "SP_Taunt_3.ogg"
+			},
+			{
+				"voiceLine": "I once got a rifle for my lover. Best trade I ever made.",
+				"fileName": "SP_Joke_3.ogg"
+			}
+		],
+		"Red Winter": [
+			{
+				"voiceLine": "I'm wanted in over fifty countries. For crimes, yes. But mostly, for looking so darn good!",
+				"fileName": "SP_Joke_1.ogg"
+			},
+			{
+				"voiceLine": "The worst part of the job? Waiting in line so I can renew my license to kill.",
+				"fileName": "SP_Joke_2.ogg"
+			},
+			{
+				"voiceLine": "Our target have seen too much: classified briefings, secret weapons, and, most importantly, the commander's diary!",
 				"fileName": "SP_Joke_3.ogg"
 			}
 		]

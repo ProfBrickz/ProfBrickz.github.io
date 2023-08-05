@@ -65,6 +65,10 @@
 			margin-right: 2%;
 		}
 
+		#repeat {
+			margin-right: 2%
+		}
+
 		#text {
 			position: absolute;
 			inset: 0;
@@ -90,6 +94,7 @@
 		<div id="buttonDiv">
 			<button id="randomize" onclick="changeVoiceLine()">Randomize</button>
 			<button id="repeat" onclick="playVoiceLine()">Repeat</button>
+			<button id="loop" onclick="toggleLoop()">Loop</button>
 		</div>
 		<p id="text"></p>
 	</div>
@@ -111,6 +116,10 @@
 			for (let champion in champions) {
 				for (let skin in champions[champion]) {
 					for (let voiceLine of champions[champion][skin]) {
+						// for testing
+						// if (
+						// 	champion === 'Khan'
+						// )
 						voiceLines.push({
 							...voiceLine,
 							path: `champions/${champion}/${skin}`,
@@ -120,31 +129,59 @@
 					}
 				}
 			}
+			console.log(voiceLines.length)
 		}
 		getChampions()
 
 		let champions = {}
 		let voiceLines = []
 		let randomVoiceLine = null
+		let voiceLineAudio
+		let playing = false
+		let loop = false
 
 		let championImage = document.getElementById('championImage')
 		let text = document.getElementById('text')
 
+		// for testing
+		// let index = 0
 		function changeVoiceLine() {
-			randomVoiceLine = voiceLines[Math.floor(Math.random() * voiceLines.length)]
+			// for testing
+			// randomVoiceLine = voiceLines[index]
+			// index++
+			// if (index >= voiceLines.length) index = 0
+
+			// randomVoiceLine = voiceLines[Math.floor(Math.random() * voiceLines.length)]
+
 			playVoiceLine()
 		}
+
 		function playVoiceLine() {
-			if (randomVoiceLine) {
+			if (randomVoiceLine && !playing) {
+				// if (voiceLineAudio) voiceLineAudio.pause()
+
 				championImage.src = `${randomVoiceLine.path}/image.png`
-				text.innerText = `${randomVoiceLine.skin !== 'Default' ? randomVoiceLine.skin : randomVoiceLine.champion}: "${randomVoiceLine.voiceLine}"`
+				text.innerText = `${randomVoiceLine.skin !== 'Default' ? `${randomVoiceLine.champion} (${randomVoiceLine.skin})` : randomVoiceLine.champion}: "${randomVoiceLine.voiceLine}"`
 				text.style.backgroundColor = 'hsl(0, 0%, 0%)'
 				text.style.borderStyle = 'solid'
 
-				const voiceLine = new Audio(`${randomVoiceLine.path}/voiceLines/${randomVoiceLine.fileName}`)
+				voiceLineAudio = new Audio(`${randomVoiceLine.path}/voiceLines/${randomVoiceLine.fileName}`)
 
-				voiceLine.play()
+				voiceLineAudio.play()
+				playing = true
+
+				voiceLineAudio.addEventListener('loadedmetadata', (event) => {
+					setTimeout(() => {
+						playing = false
+						if (loop) changeVoiceLine()
+					}, voiceLineAudio.duration * 1000)
+				})
 			}
+		}
+
+		function toggleLoop() {
+			if (loop) loop = false
+			else loop = true
 		}
 	</script>
 </body>
