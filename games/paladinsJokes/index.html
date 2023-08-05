@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Paladins Jokes</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: black;
+			height: 100vh;
+		}
+
+		#mainDiv {
+			position: absolute;
+			inset: 0;
+			margin: auto;
+
+			max-width: 90vw;
+			max-height: 90vh;
+			object-fit: contain;
+		}
+
+		#championImage {
+			position: absolute;
+			inset: 0;
+			margin: auto;
+			z-index: 0;
+
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+		}
+
+		#buttonDiv {
+			position: absolute;
+			inset: 0;
+			margin: auto;
+			margin-top: 39%;
+
+			display: flex;
+			justify-content: center;
+		}
+
+		button {
+			height: fit-content;
+			width: fit-content;
+
+			border: none;
+			background: none;
+			z-index: 2;
+
+			font-size: 3rem;
+			padding: 0.3rem;
+			background-color: hsl(182, 100%, 50%);
+			border-width: 0.35rem;
+			border-style: solid;
+			border-color: hsl(0, 0%, 0%);
+			cursor: pointer;
+		}
+
+		#randomize {
+			margin-right: 2%;
+		}
+
+		#text {
+			position: absolute;
+			inset: 0;
+			margin: auto;
+			margin-top: 44%;
+
+			z-index: 1;
+			font-size: 2rem;
+			height: fit-content;
+			width: fit-content;
+			padding: 0.7rem;
+
+			color: hsl(255, 100%, 100%);
+			border-width: 0.25rem;
+			border-color: hsl(255, 100%, 100%);
+		}
+	</style>
+</head>
+
+<body>
+	<div id="mainDiv">
+		<img id="championImage" src="defaultImage.png">
+		<div id="buttonDiv">
+			<button id="randomize" onclick="changeVoiceLine()">Randomize</button>
+			<button id="repeat" onclick="playVoiceLine()">Repeat</button>
+		</div>
+		<p id="text"></p>
+	</div>
+
+	<script type="text/javascript">
+		async function getChampions() {
+			let response = await fetch('./champions.json', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+			if (!response.ok) {
+				throw new Error("HTTP error " + response.status)
+			}
+			let data = await response.json()
+			champions = data
+
+			for (let champion in champions) {
+				for (let skin in champions[champion]) {
+					for (let voiceLine of champions[champion][skin]) {
+						voiceLines.push({
+							...voiceLine,
+							path: `champions/${champion}/${skin}`,
+							champion: champion,
+							skin: skin
+						})
+					}
+				}
+			}
+		}
+		getChampions()
+
+		let champions = {}
+		let voiceLines = []
+		let randomVoiceLine = null
+
+		let championImage = document.getElementById('championImage')
+		let text = document.getElementById('text')
+
+		function changeVoiceLine() {
+			randomVoiceLine = voiceLines[Math.floor(Math.random() * voiceLines.length)]
+			playVoiceLine()
+		}
+		function playVoiceLine() {
+			if (randomVoiceLine) {
+				championImage.src = `${randomVoiceLine.path}/image.png`
+				text.innerText = `${randomVoiceLine.skin !== 'Default' ? randomVoiceLine.skin : randomVoiceLine.champion}: "${randomVoiceLine.voiceLine}"`
+				text.style.backgroundColor = 'hsl(0, 0%, 0%)'
+				text.style.borderStyle = 'solid'
+
+				const voiceLine = new Audio(`${randomVoiceLine.path}/voiceLines/${randomVoiceLine.fileName}`)
+
+				voiceLine.play()
+			}
+		}
+	</script>
+</body>
+
+</html>
