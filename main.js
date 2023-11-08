@@ -107,7 +107,6 @@ let maxScroll = window.scrollMaxY || (document.documentElement.scrollHeight - do
 function animate(time) {
 	requestAnimationFrame(animate)
 
-	console.log(t, maxScroll);
 	if (-1 * t >= maxScroll * 0.8) {
 		pog.rotation.x += 0.05 * 0.1
 		pog.rotation.y += 0.075 * 0.1
