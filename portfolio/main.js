@@ -1,5 +1,4 @@
 import * as THREE from "./three.module.min.js"
-import { OrbitControls } from "./OrbitControls.js";
 
 function loadTexture(texture) {
 	return new THREE.TextureLoader().load(texture)
@@ -71,7 +70,6 @@ pog.rotation.x = 45 * Math.PI / 180
 
 scene.add(pog)
 
-// const controls = new OrbitControls(camera, renderer.domElement)
 function newStar() {
 	const gemometry = new THREE.SphereGeometry(0.5, 24, 24);
 	const material = new THREE.MeshStandardMaterial({ color: 0xffffff })
@@ -121,8 +119,6 @@ function animate(time) {
 	} else {
 		pog.position.set(0, 0, 0)
 	}
-
-	// controls.update()
 
 	renderer.render(scene, camera)
 }
