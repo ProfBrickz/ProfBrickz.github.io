@@ -1,3 +1,7 @@
+* {
+	box-sizing: border-box;
+}
+
 body {
 	margin: 0px;
 	padding: 0px;
@@ -12,5 +16,95 @@ body {
 
 main {
 	position: absolute;
-	height: 1000%;
+	z-index: 99;
+	position: absolute;
+	width: 100%;
+	margin: 0px auto;
+	padding: 100px 0px;
+
+	/* text */
+	color: #FFF;
+	text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+	font-family: monospace;
+	line-height: 2;
+
+	/* grid */
+	display: grid;
+	grid-template-columns: repeat(20, 1fr);
+}
+
+header, section {
+	background-color: hsla(0, 0%, 5%, 0.5);
+	font-size: 1.5rem;
+	padding: 2rem;
+	margin-bottom: 300px;
+	border-radius: 3rem;
+}
+
+section h2,
+section h3 {
+	text-align: center;
+}
+
+p, h1, h2, h3 {
+	margin: 0px;
+}
+
+h1, h2, h3 {
+	line-height: 1.5;
+	color: hsl(34, 100%, 50%);
+}
+
+h1 {
+	font-size: 3rem;
+}
+
+h2 {
+	font-size: 2.5rem;
+}
+
+h3 {
+	font-size: 2rem;
+}
+
+.list-margin li {
+	margin-bottom: 1.5rem;
+}
+
+header {
+	grid-column: 2 / span 6;
+}
+
+#skills {
+	grid-column: 10 / span 1;
+	margin-bottom: 200px;
+}
+
+#software-dev {
+	grid-column: 3 / span 4;
+}
+
+#software-dev ul {
+	column-gap: 80px;
+}
+
+#IT {
+	grid-column: 13 / span 5;
+}
+
+#accomplishments {
+	grid-column: 2 / span 6;
+}
+
+#education {
+	grid-column: 14 / span 6;
+}
+
+#projects {
+	grid-column: 4 / span 7;
+	margin-bottom: 0;
+}
+
+#projects h2 {
+	margin-bottom: 1rem;
 }
