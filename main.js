@@ -1,4 +1,5 @@
-import * as THREE from "./three.module.js"
+import * as THREE from "three";
+// import * as THREE from "./three.module.min.js";
 
 // set rows
 let main = document.getElementsByTagName('main')[0]
@@ -16,7 +17,7 @@ const camera = new THREE.PerspectiveCamera(
 )
 
 const renderer = new THREE.WebGLRenderer({
-	canvas: document.querySelector('#bg')
+	canvas: document.getElementById('bg')
 })
 
 renderer.setPixelRatio(window.devicePixelRatio)
@@ -78,8 +79,8 @@ function addPicture(size, scale, position, src) {
 }
 
 // pictures
-// addPicture([2200, 1700], 0.01, [0, -10, -20], './Images/ITF Certifacate.png')
-// addPicture([2200, 1700], 0.01, [0, -50, -20], './Images/OSHA Certifacate.png')
+addPicture([2200, 1700], 0.008, [0, -220, -20], './Images/Certifications and Awards/ITF Certifacate.png')
+addPicture([2200, 1700], 0.008, [-15, -210, -23], './Images/Certifications and Awards/OSHA Certifacate.png')
 
 
 function moveCamera() {
