@@ -1,5 +1,4 @@
 import * as THREE from "three";
-// import * as THREE from "./three.module.min.js";
 
 // set rows
 let main = document.getElementsByTagName('main')[0]
@@ -32,7 +31,7 @@ scene.background = spaceTexture
 const pointLight = new THREE.PointLight(0xFFFFFF, 600, 40)
 scene.add(pointLight)
 
-const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.2)
+const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.4)
 scene.add(ambientLight)
 
 
