@@ -63,7 +63,8 @@ class Picture {
 		const geometry = new THREE.PlaneGeometry(this.size[0], this.size[1], 1, 1)
 		const texture = new THREE.TextureLoader().load(this.src)
 		const mesh = new THREE.MeshStandardMaterial({
-			map: texture
+			map: texture,
+			transparent: true
 		})
 		this.picture = new THREE.Mesh(geometry, mesh)
 
@@ -79,14 +80,28 @@ function addPicture(size, scale, position, src) {
 }
 
 // pictures
-addPicture([2200, 1700], 0.008, [0, -220, -20], './Images/Certifications and Awards/ITF Certifacate.png')
-addPicture([2200, 1700], 0.008, [-15, -210, -23], './Images/Certifications and Awards/OSHA Certifacate.png')
+// Software Development
+addPicture([500, 500], 0.007, [-10, -20, -20], './Images/javascript.png')
+addPicture([500, 500], 0.007, [-3, -23, -20], './Images/python.png')
+addPicture([2135, 2083], 0.0015, [-9, -50, -20], './Images/GitHub.png')
+
+// Information Technology
+addPicture([588, 588], 0.005, [2, -68, -20], './Images/windows.png')
+addPicture([512, 512], 0.005, [-4, -71, -20], './Images/linux.png')
+
+// Accomplishments
+
+// Formal Education / Certifications
+addPicture([2200, 1700], 0.008, [-2, -165, -20], './Images/Certifications and Awards/ITF Certifacate.png')
+addPicture([2200, 1700], 0.008, [-17, -155, -23], './Images/Certifications and Awards/OSHA Certifacate.png')
+
+// Projects
 
 
 function moveCamera() {
 	const scrollAmount = document.body.getBoundingClientRect().top
 
-	const cameraPosition = scrollAmount * 0.04
+	const cameraPosition = scrollAmount * 0.03
 
 
 	// pointLight.position.z = -20
