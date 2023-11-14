@@ -1,5 +1,9 @@
 import * as THREE from "three";
 
+function degToRad(deg) {
+	return deg * Math.PI / 180
+}
+
 // set rows
 let main = document.getElementsByTagName('main')[0]
 for (let i = 0; i < main.children.length; i++) {
@@ -51,51 +55,119 @@ class Picture {
 		size,
 		scale,
 		position,
+		rotation,
 		src
 	) {
 		this.id = id
 		this.size = size
 		this.position = position
+		this.rotation = rotation
 		this.src = src
 		this.scale = scale
 
-		const geometry = new THREE.PlaneGeometry(this.size[0], this.size[1], 1, 1)
+		const geometry = new THREE.PlaneGeometry(this.size.x, this.size.y, 1, 1)
 		const texture = new THREE.TextureLoader().load(this.src)
 		const mesh = new THREE.MeshStandardMaterial({
 			map: texture,
-			transparent: true
+			transparent: true,
+			side: THREE.DoubleSide
 		})
 		this.picture = new THREE.Mesh(geometry, mesh)
 
-		this.picture.position.set(...position)
+		this.picture.position.set(position.x, position.y, position.z)
+		this.picture.rotation.set(rotation.x, rotation.y, rotation.z)
 		this.picture.scale.set(this.scale, this.scale, this.scale)
 
 		scene.add(this.picture)
 	}
 }
 
-function addPicture(size, scale, position, src) {
-	pictures.push(new Picture(pictures.length, size, scale, position, src))
+function addPicture({ size, scale, position, rotation, src }) {
+	if (!rotation) rotation = new THREE.Vector3()
+	if (!rotation.x) rotation.x = 0
+	if (!rotation.y) rotation.y = 0
+	if (!rotation.z) rotation.z = 0
+
+	rotation.x = degToRad(rotation.x)
+	rotation.y = degToRad(rotation.y)
+	rotation.z = degToRad(rotation.z)
+
+	pictures.push(new Picture(pictures.length, size, scale, position, rotation, src))
 }
 
 // pictures
 // Software Development
-addPicture([500, 500], 0.007, [-10, -20, -20], './Images/javascript.png')
-addPicture([500, 500], 0.007, [-3, -23, -20], './Images/python.png')
-addPicture([2135, 2083], 0.0015, [-9, -50, -20], './Images/GitHub.png')
+addPicture({
+	size: { x: 500, y: 500 },
+	scale: 0.007,
+	position: { x: -8, y: -20, z: -20 },
+	rotation: { y: 25 },
+	src: './Images/Icons/javascript.png'
+})
+addPicture({
+	size: { x: 500, y: 500 },
+	scale: 0.007,
+	position: { x: 0, y: -22, z: -20 },
+	rotation: { y: -30, z: -10 },
+	src: './Images/Icons/python.png'
+})
+addPicture({
+	size: { x: 2135, y: 2083 },
+	scale: 0.0015,
+	position: { x: -9, y: -45, z: -20 },
+	rotation: { y: 40 },
+	src: './Images/Icons/GitHub.png'
+})
 
 // Information Technology
-addPicture([588, 588], 0.005, [2, -68, -20], './Images/windows.png')
-addPicture([512, 512], 0.005, [-4, -71, -20], './Images/linux.png')
+addPicture({
+	size: { x: 588, y: 588 },
+	scale: 0.005,
+	position: { x: 2, y: -61, z: -20 },
+	rotation: { y: 20, z: 10 },
+	src: './Images/Icons/windows.png'
+})
+addPicture({
+	size: { x: 512, y: 512 },
+	scale: 0.005,
+	position: { x: -4, y: -64, z: -20 },
+	rotation: { z: -20, y: 10 },
+	src: './Images/Icons/linux.png'
+})
 
 // Accomplishments
 
 // Formal Education / Certifications
-addPicture([2200, 1700], 0.008, [-2, -165, -20], './Images/Certifications and Awards/ITF Certifacate.png')
-addPicture([2200, 1700], 0.008, [-17, -155, -23], './Images/Certifications and Awards/OSHA Certifacate.png')
+addPicture({
+	size: { x: 2200, y: 1700 },
+	scale: 0.007,
+	position: { x: -18, y: -142, z: -23 },
+	rotation: { y: 35, z: 10 },
+	src: './Images/Certifications and Awards/OSHA Certifacate.png'
+})
+addPicture({
+	size: { x: 2200, y: 1700 },
+	scale: 0.007,
+	position: { x: -2, y: -153, z: -20 },
+	rotation: { y: 20, z: -3 },
+	src: './Images/Certifications and Awards/ITF Certifacate.png'
+})
 
 // Projects
-
+addPicture({
+	size: { x: 2200, y: 1700 },
+	scale: 0.006,
+	position: { x: 8, y: -193, z: -20 },
+	rotation: { y: -20, z: 4 },
+	src: './Images/Projects/Faz-Terminal.png'
+})
+addPicture({
+	size: { x: 2200, y: 1700 },
+	scale: 0.005,
+	position: { x: 16, y: -194, z: -15 },
+	rotation: { y: -10, z: 4 },
+	src: './Images/Projects/Faz-cade.png'
+})
 
 function moveCamera() {
 	const scrollAmount = document.body.getBoundingClientRect().top
