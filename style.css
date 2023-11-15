@@ -67,6 +67,10 @@ h3 {
 	font-size: 2rem;
 }
 
+video {
+	display: none;
+}
+
 .list-margin li {
 	margin-bottom: 1.5rem;
 }

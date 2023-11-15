@@ -49,6 +49,14 @@ scene.add(lightHelper)
 
 let pictures = []
 
+// let test = document.getElementById('video')
+// test.play()
+
+// setInterval(() => {
+// 	test.onended = ''
+// 	test.pause()
+// }, 5000);
+
 class Picture {
 	constructor(
 		id,
@@ -56,33 +64,73 @@ class Picture {
 		scale,
 		position,
 		rotation,
-		src
+		src,
+		loop = false
 	) {
 		this.id = id
 		this.size = size
+		this.scale = scale
 		this.position = position
 		this.rotation = rotation
 		this.src = src
-		this.scale = scale
+		this.video
+		this.loop = loop
 
 		const geometry = new THREE.PlaneGeometry(this.size.x, this.size.y, 1, 1)
-		const texture = new THREE.TextureLoader().load(this.src)
+		let texture
+
+		if (this.src.endsWith('.mp4')) {
+			if (!this.video) {
+				this.video = document.createElement('video')
+				document.body.appendChild(this.video)
+			} else this.video = document.getElementById(this.id)
+			this.video.src = this.src
+			this.video.id = this.id
+			this.video.loop = this.loop
+			this.video.play()
+
+			texture = new THREE.VideoTexture(this.video)
+		} else
+			texture = new THREE.TextureLoader().load(this.src)
 		const mesh = new THREE.MeshStandardMaterial({
 			map: texture,
 			transparent: true,
 			side: THREE.DoubleSide
 		})
 		this.picture = new THREE.Mesh(geometry, mesh)
-
 		this.picture.position.set(position.x, position.y, position.z)
 		this.picture.rotation.set(rotation.x, rotation.y, rotation.z)
 		this.picture.scale.set(this.scale, this.scale, this.scale)
 
 		scene.add(this.picture)
 	}
+
+	setSrc = (src) => {
+		if (this.src == src) return
+
+		this.src = src
+
+		if (this.src.endsWith('.mp4')) {
+			if (!this.video) {
+				this.video = document.createElement('video')
+				this.video.id = this.id
+				this.video.muted = true
+				document.body.appendChild(this.video)
+			}
+			this.video = document.getElementById(this.id)
+			this.video.src = this.src
+			this.video.loop = this.loop
+			this.video.play()
+
+			this.texture = new THREE.VideoTexture(this.video)
+		} else
+			this.texture = new THREE.TextureLoader().load(this.src)
+
+		this.picture.material.map = this.texture
+	}
 }
 
-function addPicture({ size, scale, position, rotation, src }) {
+function addPicture({ size, scale, position, rotation, src, loop }) {
 	if (!rotation) rotation = new THREE.Vector3()
 	if (!rotation.x) rotation.x = 0
 	if (!rotation.y) rotation.y = 0
@@ -92,10 +140,18 @@ function addPicture({ size, scale, position, rotation, src }) {
 	rotation.y = degToRad(rotation.y)
 	rotation.z = degToRad(rotation.z)
 
-	pictures.push(new Picture(pictures.length, size, scale, position, rotation, src))
+	pictures.push(new Picture(pictures.length, size, scale, position, rotation, src, loop))
 }
 
 // pictures
+addPicture({
+	size: { x: 500, y: 500 },
+	scale: 0.007,
+	position: { x: -8, y: -20, z: -20 },
+	rotation: { y: 25 },
+	src: './Images/Icons/javascript.png'
+})
+
 // Software Development
 addPicture({
 	size: { x: 500, y: 500 },
@@ -156,33 +212,48 @@ addPicture({
 // Projects
 addPicture({
 	size: { x: 2200, y: 1700 },
-	scale: 0.006,
-	position: { x: 8, y: -193, z: -20 },
-	rotation: { y: -20, z: 4 },
-	src: './Images/Projects/Faz-Terminal.png'
+	scale: 0.01,
+	position: { x: 14, y: -193, z: -20 },
+	rotation: { y: -10, z: 4 },
+	src: './Images/Projects/Fax-Terminal Blank.png'
 })
 addPicture({
 	size: { x: 2200, y: 1700 },
 	scale: 0.005,
-	position: { x: 16, y: -194, z: -15 },
-	rotation: { y: -10, z: 4 },
+	position: { x: 16, y: -200, z: -15 },
+	rotation: { y: -20, z: 4 },
 	src: './Images/Projects/Faz-cade.png'
 })
+
+let maxScroll = window.scrollMaxY || (document.documentElement.scrollHeight - document.documentElement.clientHeight)
 
 function moveCamera() {
 	const scrollAmount = document.body.getBoundingClientRect().top
 
+	let fazTerminal = pictures[pictures.length - 2];
+
+	if (
+		scrollAmount < -6000 &&
+		fazTerminal.src == './Images/Projects/Fax-Terminal Blank.png'
+	) {
+		fazTerminal.setSrc('./Images/Projects/Faz-Terminal Load.mp4')
+		fazTerminal.video
+		fazTerminal.video.onended = () => {
+			fazTerminal.setSrc('./Images/Projects/Faz-Terminal Loop.mp4')
+			fazTerminal.video.loop = true
+		}
+	} else if (
+		scrollAmount > -6000 &&
+		fazTerminal.src != './Images/Projects/Fax-Terminal Blank.png'
+	) fazTerminal.setSrc('./Images/Projects/Fax-Terminal Blank.png')
+
 	const cameraPosition = scrollAmount * 0.03
 
-
-	// pointLight.position.z = -20
 	pointLight.position.y = cameraPosition + 10
 	camera.position.y = cameraPosition
 }
 moveCamera()
 document.body.onscroll = moveCamera
-
-let maxScroll = window.scrollMaxY || (document.documentElement.scrollHeight - document.documentElement.clientHeight)
 
 function animate(time) {
 	requestAnimationFrame(animate)
