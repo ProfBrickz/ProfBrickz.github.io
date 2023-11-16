@@ -84,6 +84,7 @@ class Picture {
 			texture = new THREE.VideoTexture(this.video)
 		} else
 			texture = new THREE.TextureLoader().load(this.src)
+
 		const mesh = new THREE.MeshStandardMaterial({
 			map: texture,
 			transparent: true,
