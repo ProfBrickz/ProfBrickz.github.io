@@ -5,7 +5,7 @@ function degToRad(deg) {
 }
 
 // set rows
-let main = document.getElementsByTagName('main')[0]
+let main = document.getElementById('main')
 for (let i = 0; i < main.children.length; i++) {
 	main.children[i].style.gridRow = i + 1
 }
@@ -22,9 +22,6 @@ const camera = new THREE.PerspectiveCamera(
 const renderer = new THREE.WebGLRenderer({
 	canvas: document.getElementById('bg')
 })
-
-renderer.setPixelRatio(window.devicePixelRatio)
-renderer.setSize(window.innerWidth, window.innerHeight)
 
 // background
 const spaceTexture = new THREE.TextureLoader().load('./Images/space.jpg')
@@ -43,7 +40,7 @@ scene.add(ambientLight)
 const lightHelper = new THREE.PointLightHelper(pointLight)
 const gridHelper = new THREE.GridHelper(200, 50)
 const axesHelper = new THREE.AxesHelper(50, 50, 50)
-scene.add(lightHelper)
+// scene.add(lightHelper)
 // scene.add(gridHelper)
 // scene.add(axesHelper)
 
@@ -311,6 +308,16 @@ function moveCamera() {
 }
 moveCamera()
 document.body.onscroll = moveCamera
+
+function resizeWindow() {
+	renderer.setPixelRatio(window.devicePixelRatio)
+	renderer.setSize(window.innerWidth, window.innerHeight)
+
+	camera.aspect = window.innerWidth / window.innerHeight
+	camera.updateProjectionMatrix()
+}
+resizeWindow()
+window.onresize = resizeWindow
 
 function animate(time) {
 	requestAnimationFrame(animate)
