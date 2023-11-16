@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 function degToRad(deg) {
-	return deg * Math.PI / 180
+	return deg * (Math.PI / 180)
 }
 
 // set rows
@@ -48,14 +48,6 @@ scene.add(lightHelper)
 // scene.add(axesHelper)
 
 let pictures = []
-
-// let test = document.getElementById('video')
-// test.play()
-
-// setInterval(() => {
-// 	test.onended = ''
-// 	test.pause()
-// }, 5000);
 
 class Picture {
 	constructor(
@@ -145,11 +137,11 @@ function addPicture({ size, scale, position, rotation, src, loop }) {
 
 // pictures
 addPicture({
-	size: { x: 500, y: 500 },
-	scale: 0.007,
-	position: { x: -8, y: -20, z: -20 },
-	rotation: { y: 25 },
-	src: './Images/Icons/javascript.png'
+	size: { x: 4032, y: 3024 },
+	scale: 0.005,
+	position: { x: 11, y: 5, z: -20 },
+	rotation: { y: -10 },
+	src: './Images/me.png'
 })
 
 // Software Development
@@ -192,35 +184,98 @@ addPicture({
 })
 
 // Accomplishments
+addPicture({
+	size: { x: 1696, y: 2198 },
+	scale: 0.007,
+	position: { x: -5, y: -103, z: -23 },
+	rotation: { y: 15, z: 10 },
+	src: './Images/Certifications and Awards/National Honor Society.png'
+})
+
 
 // Formal Education / Certifications
 addPicture({
+	size: { x: 2187, y: 1632 },
+	scale: 0.006,
+	position: { x: -18, y: -122, z: -20 },
+	rotation: { y: 40 },
+	src: './Images/Honor Roll/21-22-Q2.png'
+})
+addPicture({
+	size: { x: 2187, y: 1622 },
+	scale: 0.006,
+	position: { x: -8.8, y: -122, z: -20 },
+	rotation: { y: 0 },
+	src: './Images/Honor Roll/21-22-Q3.png'
+})
+addPicture({
+	size: { x: 2187, y: 1611 },
+	scale: 0.006,
+	position: { x: 2, y: -122, z: -20 },
+	rotation: { y: -40 },
+	src: './Images/Honor Roll/21-22-Q4.png'
+})
+
+addPicture({
+	size: { x: 2198, y: 1696 },
+	scale: 0.006,
+	position: { x: -18, y: -133, z: -20 },
+	rotation: { y: 40 },
+	src: './Images/Honor Roll/22-23-Q1.png'
+})
+addPicture({
+	size: { x: 2198, y: 1696 },
+	scale: 0.006,
+	position: { x: -8.8, y: -133, z: -20 },
+	rotation: { y: 0 },
+	src: './Images/Honor Roll/22-23-Q2.png'
+})
+addPicture({
+	size: { x: 2198, y: 1696 },
+	scale: 0.006,
+	position: { x: 2, y: -133, z: -20 },
+	rotation: { y: -40 },
+	src: './Images/Honor Roll/22-23-Q3.png'
+})
+
+
+addPicture({
+	size: { x: 2198, y: 1696 },
+	scale: 0.006,
+	position: { x: -15, y: -147, z: -20 },
+	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
+})
+addPicture({
+	size: { x: 2208, y: 1696 },
+	scale: 0.006,
+	position: { x: 1, y: -152, z: -20 },
+	src: './Images/Certifications and Awards/Civic Knowledge.png'
+})
+addPicture({
 	size: { x: 2200, y: 1700 },
-	scale: 0.007,
-	position: { x: -18, y: -142, z: -23 },
-	rotation: { y: 35, z: 10 },
+	scale: 0.006,
+	position: { x: -18, y: -158, z: -20 },
 	src: './Images/Certifications and Awards/OSHA Certifacate.png'
 })
 addPicture({
 	size: { x: 2200, y: 1700 },
-	scale: 0.007,
-	position: { x: -2, y: -153, z: -20 },
-	rotation: { y: 20, z: -3 },
+	scale: 0.006,
+	position: { x: -2, y: -163, z: -20 },
 	src: './Images/Certifications and Awards/ITF Certifacate.png'
 })
 
 // Projects
 addPicture({
 	size: { x: 2200, y: 1700 },
-	scale: 0.01,
-	position: { x: 14, y: -193, z: -20 },
+	scale: 0.007,
+	position: { x: 10, y: -206, z: -20 },
 	rotation: { y: -10, z: 4 },
 	src: './Images/Projects/Fax-Terminal Blank.png'
 })
 addPicture({
 	size: { x: 2200, y: 1700 },
-	scale: 0.005,
-	position: { x: 16, y: -200, z: -15 },
+	scale: 0.004,
+	position: { x: 15, y: -212, z: -15 },
 	rotation: { y: -20, z: 4 },
 	src: './Images/Projects/Faz-cade.png'
 })
@@ -232,8 +287,9 @@ function moveCamera() {
 
 	let fazTerminal = pictures[pictures.length - 2];
 
+	let fazTerminalScrollAmount = -6400
 	if (
-		scrollAmount < -6000 &&
+		scrollAmount < fazTerminalScrollAmount &&
 		fazTerminal.src == './Images/Projects/Fax-Terminal Blank.png'
 	) {
 		fazTerminal.setSrc('./Images/Projects/Faz-Terminal Load.mp4')
@@ -243,7 +299,7 @@ function moveCamera() {
 			fazTerminal.video.loop = true
 		}
 	} else if (
-		scrollAmount > -6000 &&
+		scrollAmount > fazTerminalScrollAmount &&
 		fazTerminal.src != './Images/Projects/Fax-Terminal Blank.png'
 	) fazTerminal.setSrc('./Images/Projects/Fax-Terminal Blank.png')
 

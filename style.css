@@ -6,6 +6,8 @@ body {
 	margin: 0px;
 	padding: 0px;
 	display: block;
+
+	--margin: 1.5rem;
 }
 
 #bg {
@@ -71,8 +73,9 @@ video {
 	display: none;
 }
 
-.list-margin li {
-	margin-bottom: 1.5rem;
+ul li {
+
+	margin-bottom: var(--margin);
 }
 
 header {
@@ -106,7 +109,7 @@ header {
 
 #projects {
 	grid-column: 4 / span 7;
-	margin-bottom: 0;
+	margin-bottom: 8rem;
 }
 
 #projects h2 {
