@@ -19,11 +19,8 @@ body {
 #main {
 	position: absolute;
 	z-index: 99;
-	position: absolute;
-	width: 100%;
-	margin: 0px auto;
+	margin: 0px;
 	padding: 100px 0px;
-
 }
 
 /* text */
@@ -40,13 +37,14 @@ a {
 
 /* grid */
 .row {
+	width: 100%;
 	display: grid;
 	grid-template-columns: repeat(20, 1fr);
 }
 
 .box {
 	background-color: hsla(0, 0%, 5%, 0.55);
-	font-size: 1.5rem;
+	font-size: clamp(1.2rem, 2vmin, 1.7rem);
 	padding: 2rem;
 	margin-bottom: 300px;
 	border-radius: 3rem;
@@ -69,15 +67,15 @@ h1, h2, h3 {
 }
 
 h1 {
-	font-size: 3rem;
+	font-size: clamp(2.2rem, 5vmin, 3.2rem);
 }
 
 h2 {
-	font-size: 2.5rem;
+	font-size: clamp(2rem, 4vmin, 3rem);
 }
 
 h3 {
-	font-size: 2rem;
+	font-size: clamp(1.5rem, 3vmin, 2.5rem);
 }
 
 video {
@@ -137,8 +135,19 @@ ul li {
 	margin-bottom: 1rem;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1000px) and (min-width: 600px) {
 	#header {
 		width: min-content;
+	}
+}
+
+@media (max-width: 600px) {
+	.row {
+		display: block;
+	}
+
+	.box {
+		width: 100%;
+		min-width: none;
 	}
 }
