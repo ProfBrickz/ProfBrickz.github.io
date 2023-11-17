@@ -2,148 +2,169 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ryan Stevenson's Portfolio</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
-    }
-  }
-  </script>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Ryan Stevenson's Portfolio</title>
+	<link rel="stylesheet" href="style.css">
+	<script type="importmap">
+	{
+		"imports": {
+			"three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+			"three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+		}
+	}
+	</script>
 </head>
 
 <body>
-  <canvas id="bg"></canvas>
+	<canvas id="bg"></canvas>
 
-  <div id="main">
-    <div class="box" id="header">
-      <h1>Ryan Stevenson's</h1>
-      <h1>Portfolio</h1>
-    </div>
+	<div id="main">
+		<div class="row">
+			<div class="box" id="header">
+				<h1>Ryan Stevenson's</h1>
+				<h1>Portfolio</h1>
+			</div>
+		</div>
 
-    <div class="box" id="skills">
-      <h2>Skills</h2>
-    </div>
+		<div class="row">
+			<div class="box" id="skills">
+				<h2>Skills</h2>
+			</div>
+		</div>
 
-    <div class="box" id="software-dev">
-      <h3>Software Development</h3>
-      <ul style="--margin: 0rem">
-        <li>JavaScript</li>
-        <li>Python</li>
-        <li>Express</li>
-        <li>EJS</li>
-        <li>JSON</li>
-        <li>Floating UI</li>
-        <li>Chart.js</li>
-        <li>Oauth2</li>
-        <li>SQLite</li>
-        <li>Socket.IO</li>
-        <li>Bash</li>
-        <li>Batch</li>
-        <li>CSS</li>
-        <li>HTML</li>
-        <li>bcrypt</li>
-        <li>Bootstrap</li>
-        <li>RPG Maker</li>
-        <li>Collaboration with Git / GitHub</li>
-      </ul>
-    </div>
+		<div class="row">
+			<div class="box" id="software-dev">
+				<h3>Software Development</h3>
+				<ul style="--margin: 0rem">
+					<li>JavaScript</li>
+					<li>Python</li>
+					<li>Express</li>
+					<li>EJS</li>
+					<li>JSON</li>
+					<li>Floating UI</li>
+					<li>Chart.js</li>
+					<li>Oauth2</li>
+					<li>SQLite</li>
+					<li>Socket.IO</li>
+					<li>Bash</li>
+					<li>Batch</li>
+					<li>CSS</li>
+					<li>HTML</li>
+					<li>bcrypt</li>
+					<li>Bootstrap</li>
+					<li>RPG Maker</li>
+					<li>
+						<p>Collaboration with</p>
+						<p>Git / GitHub</p>
+					</li>
+				</ul>
+			</div>
+		</div>
 
-    <div class="box" id="IT">
-      <h3>Information Technology</h3>
-      <ul style="--margin: 0rem">
-        <li>Windows</li>
-        <li>Linux</li>
-        <li>Microsoft Office Suite</li>
-        <li>Google Workplace Suite</li>
-        <li>General PC knowledge</li>
-      </ul>
-    </div>
+		<div class="row">
+			<div class="box" id="IT">
+				<h3>Information Technology</h3>
+				<ul style="--margin: 0rem">
+					<li>Windows</li>
+					<li>Linux</li>
+					<li>Microsoft Office Suite</li>
+					<li>Google Workplace Suite</li>
+					<li>General PC knowledge</li>
+				</ul>
+			</div>
+		</div>
 
-    <div class="box" id="accomplishments">
-      <h2>Accomplishments</h2>
-      <ul>
-        <li>
-          Developed GaidosBank, a personal project focused on making and viewing transactions
-        </li>
-        <li>
-          Constructed an interactive gaming arcade that includes mini games from the popular Five Night's at Freddy's
-          series, along with a quote generator that adds a fun and entertaining element to the experience
-        </li>
-        <li>
-          Developed a custom website for controlling the color of LED lights above Legos
-        </li>
-        <li>
-          4.0 GPA
-        </li>
-        <li>
-          National Honor Society Member
-        </li>
-        <li>
-          National Technical Honor Society Member
-        </li>
-      </ul>
-    </div>
+		<div class="row">
+			<div class="box" id="accomplishments">
+				<h2>Accomplishments</h2>
+				<ul>
+					<li>
+						Developed GaidosBank, a personal project focused on making and viewing transactions
+					</li>
+					<li>
+						Constructed an interactive gaming arcade that includes mini games from the popular Five Night's at Freddy's
+						series, along with a quote generator that adds a fun and entertaining element to the experience
+					</li>
+					<li>
+						Developed a custom website for controlling the color of LED lights above Legos
+					</li>
+					<li>
+						4.0 GPA
+					</li>
+					<li>
+						National Honor Society Member
+					</li>
+					<li>
+						National Technical Honor Society Member
+					</li>
+				</ul>
+			</div>
+		</div>
 
-    <div class="box" id="education">
-      <h2>Formal Education / Certification</h2>
-      <ul style="--margin: 3rem;">
-        <li style="margin-bottom: 32rem;">
-          Consistently achieved Distinguished Honor Roll for every quarter throughout high school
-        </li>
-        <li>
-          Achieved the Outstanding Chemistry Student Award during the 10th grade at York County School of Technology
-        </li>
-        <li>
-          Accomplished Assessment of Civic Knowledge in the 2022-2023 school year at York County School of Technology
-        </li>
-        <li>
-          Completed of OSHA in the 2022-2023 school year at York County School of
-          Technology
-        </li>
-        <li>
-          Completed of COMPTIA Information Technology Fundamentals in the 2022-2023 school year at York County School
-          of
-          Technology
-        </li>
-      </ul>
-    </div>
+		<div class="row">
+			<div class="box" id="education">
+				<h2>Formal Education / Certification</h2>
+				<ul style="--margin: 3rem;">
+					<li style="margin-bottom: 32rem;">
+						Consistently achieved Distinguished Honor Roll for every quarter throughout high school
+					</li>
+					<li>
+						Achieved the Outstanding Chemistry Student Award during the 10th grade at York County School of Technology
+					</li>
+					<li>
+						Accomplished Assessment of Civic Knowledge in the 2022-2023 school year at York County School of Technology
+					</li>
+					<li>
+						Completed of OSHA in the 2022-2023 school year at York County School of
+						Technology
+					</li>
+					<li>
+						Completed of COMPTIA Information Technology Fundamentals in the 2022-2023 school year at York County School
+						of
+						Technology
+					</li>
+				</ul>
+			</div>
+		</div>
 
-    <div class="box" id="projects">
-      <h2>Projects</h2>
-      <p>
-        Spend a lot of time working on personal projects. My GitHub account is Ryan24313. Gained proficiency in
-        programming
-        through a combination of formal education and independent study using online resources including
-        documentation,
-        Stack
-        Overflow, YouTube videos and ChatGPT, demonstrating a strong ability to learn independently and adapt to new
-        technologies.
-      </p>
-      <ul>
-        <li>
-          Ryan24313/Formbar.js (forked from csmith1188/Formbar.js) is a website where teachers can make polls so
-          students can answer questions easily.
-        </li>
-        <li>
-          Ryan24313/GaidosBank (forked from csmith1188/GaidosBank) is a virtual banking website where you can make
-          transactions and view
-          transactions.
-        </li>
-        <li>
-          Ryan24313/Talon24229.github.io (forked from Talon24229/Talon24229.github.io) is an arcade where you can play
-          mini games from Five Night's at Freddy's and generates humorous quotes.
-        </li>
-        <li>
-          Designed and built a website that enables remote control of the color of LED lights above Legos.
-        </li>
-      </ul>
-    </div>
-  </div>
+		<div class="row">
+			<div class="box" id="projects">
+				<h2>Projects</h2>
+				<p>
+					Spend a lot of time working on personal projects. My GitHub account is Ryan24313. Gained proficiency in
+					programming
+					through a combination of formal education and independent study using online resources including
+					documentation,
+					Stack
+					Overflow, YouTube videos and ChatGPT, demonstrating a strong ability to learn independently and adapt to new
+					technologies.
+				</p>
+				<ul>
+					<li>
+						<a href="https://github.com/Ryan24313/Formbar.js">Ryan24313/Formbar.js</a>
+						(forked from <a href="https://github.com/csmith1188/Formbar.js">csmith1188/Formbar.js</a>) is a website
+						where teachers can make polls so students can answer questions easily.
+					</li>
+					<li>
+						<a href="http://github.com/Ryan24313/GaidosBank">Ryan24313/GaidosBank</a>
+						(forked from <a href="http://github.com/csmith1188/GaidosBank">csmith1188/GaidosBank</a>) is a virtual
+						banking website where you can make transactions and view transactions.
+					</li>
+					<li>
+						<a href="http://github.com/Ryan24313/Talon24229.github.io">Ryan24313/Talon24229.github.io</a>
+						(forked from
+						<a href="http://github.com/Talon24229/Talon24229.github.io">Talon24229/Talon24229.github.io</a>)
+						is an arcade where you can play
+						mini games from Five Night's at Freddy's and generates humorous quotes.
+					</li>
+					<li>
+						Designed and built a website that enables remote control of the color of LED lights above Legos.
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </body>
 <script type="module" src="./main.js"></script>
 
