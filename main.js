@@ -310,20 +310,28 @@ function scroll() {
 	pointLight.position.y = cameraPosition + 10
 	camera.position.y = cameraPosition
 
-	const fazTerminal = document.getElementById('Faz-Terminal')
-	const fazTerminalRect = fazTerminal.getBoundingClientRect()
+	const fazTerminalRect = document.getElementById('Faz-Terminal-Box').getBoundingClientRect()
+	const fazTerminalImage = document.getElementById('Faz-Terminal-Image')
+	const fazTerminalVideo = document.getElementById('Faz-Terminal-Video')
 	if (
 		fazTerminalRect.bottom < fazTerminalRect.height * 0.3 ||
 		fazTerminalRect.top >= screenHeight - fazTerminalRect.height * 0.3
 	) {
-		fazTerminal.src = './Images/Projects/Faz-Terminal-Blank.png'
-		clearTimeout(fazLoopTimeout)
-	} else if (fazTerminal.src.endsWith('/Images/Projects/Faz-Terminal-Blank.png')) {
-		fazTerminal.src = './Images/Projects/Faz-Terminal-Load.png'
-		fazTerminal.onload = () => {
-			fazLoopTimeout = setTimeout(() => {
-				fazTerminal.src = './Images/Projects/Faz-Terminal-Loop.png'
-			}, 17400)
+		fazTerminalImage.style.display = 'block'
+		fazTerminalVideo.style.display = 'none'
+		fazTerminalVideo.pause()
+		fazTerminalVideo.currentTime = 0
+		fazTerminalVideo.loop = false
+		fazTerminalVideo.src = './Images/Projects/Faz-Terminal-Load.mp4'
+	} else if (fazTerminalImage.style.display != 'none') {
+		fazTerminalImage.style.display = 'none'
+		fazTerminalVideo.style.display = 'block'
+		fazTerminalVideo.play()
+		fazTerminalVideo.onended = () => {
+			fazTerminalVideo.src = './Images/Projects/Faz-Terminal-Loop.mp4'
+			fazTerminalVideo.play()
+			fazTerminalVideo.loop = true
+			fazTerminalVideo.onended = ''
 		}
 	}
 }
