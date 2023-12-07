@@ -88,7 +88,6 @@ class Picture {
 			side: THREE.DoubleSide
 		})
 		this.picture = new THREE.Mesh(geometry, mesh)
-		this.picture.position.set(position.x, position.y, position.z)
 		this.picture.rotation.set(rotation.x, rotation.y, rotation.z)
 		this.picture.scale.set(this.scale, this.scale, this.scale)
 
@@ -121,16 +120,24 @@ class Picture {
 
 	resize = (scale) => {
 		this.picture.scale.set(
-			this.scale * scale * 0.5,
-			this.scale * scale * 0.5,
-			this.scale * scale * 0.5
+			this.scale * scale * 0.6,
+			this.scale * scale * 0.6,
+			this.scale * scale * 0.6
 		)
 
-		this.picture.position.set(
-			this.position.x * scale,
-			this.position.y,
-			this.position.z
-		)
+		if (window.innerWidth <= 600) {
+			this.picture.position.set(
+				this.position.mobile.x * scale * 0.6,
+				this.position.mobile.y * scale,
+				this.position.mobile.z
+			)
+		} else {
+			this.picture.position.set(
+				this.position.desktop.x + Math.abs(this.position.desktop.x) / scale,
+				this.position.desktop.y + this.position.desktop.y * -scale * 0.2,
+				this.position.desktop.z
+			)
+		}
 	}
 }
 
@@ -151,7 +158,10 @@ function addPicture({ size, scale, position, rotation, src, loop }) {
 addPicture({
 	size: { x: 4032, y: 3024 },
 	scale: 0.005,
-	position: { x: 7, y: 5, z: -20 },
+	position: {
+		desktop: { x: 7, y: 5, z: -20 },
+		mobile: { x: 7, y: 5, z: -20 }
+	},
 	rotation: { y: -10 },
 	src: './Images/me.png'
 })
@@ -160,166 +170,165 @@ addPicture({
 addPicture({
 	size: { x: 500, y: 500 },
 	scale: 0.007,
-	position: { x: -6, y: -20, z: -20 },
+	position: {
+		desktop: { x: -1, y: -20, z: -20 },
+		mobile: { x: -1, y: -20, z: -20 }
+	},
 	rotation: { y: 25 },
 	src: './Images/Icons/javascript.png'
 })
 addPicture({
 	size: { x: 500, y: 500 },
 	scale: 0.007,
-	position: { x: -2, y: -22, z: -20 },
+	position: {
+		desktop: { x: 1.5, y: -23, z: -20 },
+		mobile: { x: 1.5, y: -23, z: -20 }
+	},
 	rotation: { y: -30, z: -10 },
 	src: './Images/Icons/python.png'
 })
 addPicture({
 	size: { x: 2135, y: 2083 },
 	scale: 0.0015,
-	position: { x: -6, y: -45, z: -20 },
+	position: {
+		desktop: { x: -6, y: -45, z: -20 },
+		mobile: { x: -6, y: -45, z: -20 }
+	},
 	rotation: { z: -30 },
 	src: './Images/Icons/GitHub.png'
 })
 
 // Information Technology
-addPicture({
-	size: { x: 588, y: 588 },
-	scale: 0.005,
-	position: { x: 3, y: -61, z: -20 },
-	rotation: { y: 20, z: 10 },
-	src: './Images/Icons/windows.png'
-})
-addPicture({
-	size: { x: 512, y: 512 },
-	scale: 0.005,
-	position: { x: 1, y: -64, z: -20 },
-	rotation: { z: -20, y: 10 },
-	src: './Images/Icons/linux.png'
-})
+// addPicture({
+// 	size: { x: 588, y: 588 },
+// 	scale: 0.005,
+// 	position: { x: 3, y: -61, z: -20 },
+// 	rotation: { y: 20, z: 10 },
+// 	src: './Images/Icons/windows.png'
+// })
+// addPicture({
+// 	size: { x: 512, y: 512 },
+// 	scale: 0.005,
+// 	position: { x: 1, y: -64, z: -20 },
+// 	rotation: { z: -20, y: 10 },
+// 	src: './Images/Icons/linux.png'
+// })
 
 // Accomplishments
-addPicture({
-	size: { x: 1696, y: 2198 },
-	scale: 0.007,
-	position: { x: -4, y: -114, z: -23 },
-	rotation: { y: 15, z: 10 },
-	src: './Images/Certifications and Awards/National Honor Society.png'
-})
+// addPicture({
+// 	size: { x: 1696, y: 2198 },
+// 	scale: 0.007,
+// 	position: { x: -4, y: -114, z: -23 },
+// 	rotation: { y: 15, z: 10 },
+// 	src: './Images/Certifications and Awards/National Honor Society.png'
+// })
 
 
 // Formal Education / Certifications
-addPicture({
-	size: { x: 2187, y: 1632 },
-	scale: 0.006,
-	position: { x: -9, y: -138, z: -20 },
-	rotation: { y: 40 },
-	src: './Images/Honor Roll/21-22-Q2.png'
-})
-addPicture({
-	size: { x: 2187, y: 1622 },
-	scale: 0.006,
-	position: { x: -4.4, y: -138, z: -20 },
-	rotation: { y: 0 },
-	src: './Images/Honor Roll/21-22-Q3.png'
-})
-addPicture({
-	size: { x: 2187, y: 1611 },
-	scale: 0.006,
-	position: { x: 1, y: -138, z: -20 },
-	rotation: { y: -40 },
-	src: './Images/Honor Roll/21-22-Q4.png'
-})
+// addPicture({
+// 	size: { x: 2187, y: 1632 },
+// 	scale: 0.006,
+// 	position: { x: -9, y: -138, z: -20 },
+// 	rotation: { y: 40 },
+// 	src: './Images/Honor Roll/21-22-Q2.png'
+// })
+// addPicture({
+// 	size: { x: 2187, y: 1622 },
+// 	scale: 0.006,
+// 	position: { x: -4.4, y: -138, z: -20 },
+// 	rotation: { y: 0 },
+// 	src: './Images/Honor Roll/21-22-Q3.png'
+// })
+// addPicture({
+// 	size: { x: 2187, y: 1611 },
+// 	scale: 0.006,
+// 	position: { x: 1, y: -138, z: -20 },
+// 	rotation: { y: -40 },
+// 	src: './Images/Honor Roll/21-22-Q4.png'
+// })
 
-addPicture({
-	size: { x: 2198, y: 1696 },
-	scale: 0.006,
-	position: { x: -9, y: -149, z: -20 },
-	rotation: { y: 40 },
-	src: './Images/Honor Roll/22-23-Q1.png'
-})
-addPicture({
-	size: { x: 2198, y: 1696 },
-	scale: 0.006,
-	position: { x: -4, y: -149, z: -20 },
-	rotation: { y: 0 },
-	src: './Images/Honor Roll/22-23-Q2.png'
-})
-addPicture({
-	size: { x: 2198, y: 1696 },
-	scale: 0.006,
-	position: { x: 1, y: -149, z: -20 },
-	rotation: { y: -40 },
-	src: './Images/Honor Roll/22-23-Q3.png'
-})
+// addPicture({
+// 	size: { x: 2198, y: 1696 },
+// 	scale: 0.006,
+// 	position: { x: -9, y: -149, z: -20 },
+// 	rotation: { y: 40 },
+// 	src: './Images/Honor Roll/22-23-Q1.png'
+// })
+// addPicture({
+// 	size: { x: 2198, y: 1696 },
+// 	scale: 0.006,
+// 	position: { x: -4, y: -149, z: -20 },
+// 	rotation: { y: 0 },
+// 	src: './Images/Honor Roll/22-23-Q2.png'
+// })
+// addPicture({
+// 	size: { x: 2198, y: 1696 },
+// 	scale: 0.006,
+// 	position: { x: 1, y: -149, z: -20 },
+// 	rotation: { y: -40 },
+// 	src: './Images/Honor Roll/22-23-Q3.png'
+// })
 
 
-addPicture({
-	size: { x: 2198, y: 1696 },
-	scale: 0.006,
-	position: { x: 1, y: -161, z: -20 },
-	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
-})
-addPicture({
-	size: { x: 2208, y: 1696 },
-	scale: 0.006,
-	position: { x: -6, y: -169, z: -20 },
-	src: './Images/Certifications and Awards/Civic Knowledge.png'
-})
-addPicture({
-	size: { x: 2200, y: 1700 },
-	scale: 0.006,
-	position: { x: 2, y: -178, z: -20 },
-	src: './Images/Certifications and Awards/OSHA Certifacate.png'
-})
-addPicture({
-	size: { x: 2200, y: 1700 },
-	scale: 0.006,
-	position: { x: -5, y: -186, z: -20 },
-	src: './Images/Certifications and Awards/ITF Certifacate.png'
-})
+// addPicture({
+// 	size: { x: 2198, y: 1696 },
+// 	scale: 0.006,
+// 	position: { x: 1, y: -161, z: -20 },
+// 	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
+// })
+// addPicture({
+// 	size: { x: 2208, y: 1696 },
+// 	scale: 0.006,
+// 	position: { x: -6, y: -169, z: -20 },
+// 	src: './Images/Certifications and Awards/Civic Knowledge.png'
+// })
+// addPicture({
+// 	size: { x: 2200, y: 1700 },
+// 	scale: 0.006,
+// 	position: { x: 2, y: -178, z: -20 },
+// 	src: './Images/Certifications and Awards/OSHA Certifacate.png'
+// })
+// addPicture({
+// 	size: { x: 2200, y: 1700 },
+// 	scale: 0.006,
+// 	position: { x: -5, y: -186, z: -20 },
+// 	src: './Images/Certifications and Awards/ITF Certifacate.png'
+// })
 
-// Projects
-addPicture({
-	size: { x: 2200, y: 1700 },
-	scale: 0.008,
-	position: { x: 0, y: -242, z: -20 },
-	rotation: { y: -10, z: 4 },
-	src: './Images/Projects/Fax-Terminal Blank.png'
-})
-addPicture({
-	size: { x: 2200, y: 1700 },
-	scale: 0.005,
-	position: { x: 5, y: -251, z: -15 },
-	rotation: { y: -20, z: 4 },
-	src: './Images/Projects/Faz-cade.png'
-})
+function isVisible(element) {
+	const rect = element.getBoundingClientRect()
+	const screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
+	return rect.bottom >= 0 && rect.top - screenHeight < 0
+}
 
-function moveCamera() {
+let fazLoopTimeout = null
+function scroll() {
 	const scrollAmount = document.body.getBoundingClientRect().top
-
-	let fazTerminal = pictures[pictures.length - 2];
-
-	let fazTerminalScrollAmount = -7650
-	if (
-		scrollAmount < fazTerminalScrollAmount &&
-		fazTerminal.src == './Images/Projects/Fax-Terminal Blank.png'
-	) {
-		fazTerminal.setSrc('./Images/Projects/Faz-Terminal Load.mp4')
-		fazTerminal.video
-		fazTerminal.video.onended = () => {
-			fazTerminal.setSrc('./Images/Projects/Faz-Terminal Loop.mp4')
-			fazTerminal.video.loop = true
-		}
-	} else if (
-		scrollAmount > fazTerminalScrollAmount &&
-		fazTerminal.src != './Images/Projects/Fax-Terminal Blank.png'
-	) fazTerminal.setSrc('./Images/Projects/Fax-Terminal Blank.png')
-
 	const cameraPosition = scrollAmount * 0.03
+	const screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
 
 	pointLight.position.y = cameraPosition + 10
 	camera.position.y = cameraPosition
+
+	const fazTerminal = document.getElementById('Faz-Terminal')
+	const fazTerminalRect = fazTerminal.getBoundingClientRect()
+	if (
+		fazTerminalRect.bottom < fazTerminalRect.height * 0.3 ||
+		fazTerminalRect.top >= screenHeight - fazTerminalRect.height * 0.3
+	) {
+		fazTerminal.src = './Images/Projects/Faz-Terminal-Blank.png'
+		clearTimeout(fazLoopTimeout)
+	} else if (fazTerminal.src.endsWith('/Images/Projects/Faz-Terminal-Blank.png')) {
+		fazTerminal.src = './Images/Projects/Faz-Terminal-Load.png'
+		fazTerminal.onload = () => {
+			fazLoopTimeout = setTimeout(() => {
+				fazTerminal.src = './Images/Projects/Faz-Terminal-Loop.png'
+			}, 17400)
+		}
+	}
 }
-moveCamera()
-document.body.onscroll = moveCamera
+document.body.onscroll = scroll
+scroll()
 
 function resizeWindow() {
 	camera.aspect = window.innerWidth / window.innerHeight
