@@ -314,8 +314,8 @@ function scroll() {
 	const fazTerminalImage = document.getElementById('Faz-Terminal-Image')
 	const fazTerminalVideo = document.getElementById('Faz-Terminal-Video')
 	if (
-		fazTerminalRect.bottom < fazTerminalRect.height * 0.3 ||
-		fazTerminalRect.top >= screenHeight - fazTerminalRect.height * 0.3
+		fazTerminalRect.bottom < fazTerminalRect.height * 0.4 ||
+		fazTerminalRect.top >= screenHeight - fazTerminalRect.height * 0.4
 	) {
 		fazTerminalImage.style.display = 'block'
 		fazTerminalVideo.style.display = 'none'
