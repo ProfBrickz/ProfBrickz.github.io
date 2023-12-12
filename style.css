@@ -90,6 +90,7 @@ ul {
 li {
 	page-break-inside: avoid;
 	margin-bottom: var(--margin);
+	break-inside: avoid;
 }
 
 #header {

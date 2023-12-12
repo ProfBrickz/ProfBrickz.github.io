@@ -133,7 +133,7 @@ class Picture {
 			)
 		} else {
 			this.picture.position.set(
-				this.position.desktop.x + Math.abs(this.position.desktop.x) / scale,
+				this.position.desktop.x + this.position.desktop.x / scale,
 				this.position.desktop.y + this.position.desktop.y * -scale * 0.2,
 				this.position.desktop.z
 			)
@@ -156,13 +156,13 @@ function addPicture({ size, scale, position, rotation, src, loop }) {
 
 // pictures
 addPicture({
-	size: { x: 4032, y: 3024 },
-	scale: 0.005,
+	size: { x: 1843, y: 2305 },
+	scale: 0.0055,
 	position: {
-		desktop: { x: 7, y: 5, z: -20 },
-		mobile: { x: 7, y: 5, z: -20 }
+		desktop: { x: 7, y: 8, z: -20 },
+		mobile: { x: 7, y: 8, z: -20 }
 	},
-	rotation: { y: -10 },
+	rotation: { y: -20 },
 	src: './Images/me.png'
 })
 
@@ -171,18 +171,18 @@ addPicture({
 	size: { x: 500, y: 500 },
 	scale: 0.007,
 	position: {
-		desktop: { x: -1, y: -20, z: -20 },
-		mobile: { x: -1, y: -20, z: -20 }
+		desktop: { x: -13, y: -28, z: -20 },
+		mobile: { x: -13, y: -28, z: -20 }
 	},
-	rotation: { y: 25 },
+	rotation: { y: 30 },
 	src: './Images/Icons/javascript.png'
 })
 addPicture({
 	size: { x: 500, y: 500 },
 	scale: 0.007,
 	position: {
-		desktop: { x: 1.5, y: -23, z: -20 },
-		mobile: { x: 1.5, y: -23, z: -20 }
+		desktop: { x: 0, y: -39, z: -20 },
+		mobile: { x: 0, y: -39, z: -20 }
 	},
 	rotation: { y: -30, z: -10 },
 	src: './Images/Icons/python.png'
@@ -191,109 +191,148 @@ addPicture({
 	size: { x: 2135, y: 2083 },
 	scale: 0.0015,
 	position: {
-		desktop: { x: -6, y: -45, z: -20 },
-		mobile: { x: -6, y: -45, z: -20 }
+		desktop: { x: -27, y: -49.5, z: -20 },
+		mobile: { x: -27, y: -49.5, z: -20 }
 	},
 	rotation: { z: -30 },
 	src: './Images/Icons/GitHub.png'
 })
 
 // Information Technology
-// addPicture({
-// 	size: { x: 588, y: 588 },
-// 	scale: 0.005,
-// 	position: { x: 3, y: -61, z: -20 },
-// 	rotation: { y: 20, z: 10 },
-// 	src: './Images/Icons/windows.png'
-// })
-// addPicture({
-// 	size: { x: 512, y: 512 },
-// 	scale: 0.005,
-// 	position: { x: 1, y: -64, z: -20 },
-// 	rotation: { z: -20, y: 10 },
-// 	src: './Images/Icons/linux.png'
-// })
+addPicture({
+	size: { x: 588, y: 588 },
+	scale: 0.005,
+	position: {
+		desktop: { x: 6, y: -60, z: -20 },
+		mobile: { x: 6, y: -60, z: -20 }
+	},
+	rotation: { y: 20, z: 10 },
+	src: './Images/Icons/windows.png'
+})
+addPicture({
+	size: { x: 512, y: 512 },
+	scale: 0.005,
+	position: {
+		desktop: { x: 9, y: -71, z: -20 },
+		mobile: { x: 9, y: -71, z: -20 }
+	},
+	rotation: { z: -40, y: -10 },
+	src: './Images/Icons/linux.png'
+})
 
 // Accomplishments
-// addPicture({
-// 	size: { x: 1696, y: 2198 },
-// 	scale: 0.007,
-// 	position: { x: -4, y: -114, z: -23 },
-// 	rotation: { y: 15, z: 10 },
-// 	src: './Images/Certifications and Awards/National Honor Society.png'
-// })
+addPicture({
+	size: { x: 1696, y: 2198 },
+	scale: 0.006,
+	position: {
+		desktop: { x: -7, y: -85, z: -23 },
+		mobile: { x: -7, y: -85, z: -23 }
+	},
+	rotation: { y: 15, z: 10 },
+	src: './Images/Certifications and Awards/National Honor Society.png'
+})
 
 
 // Formal Education / Certifications
-// addPicture({
-// 	size: { x: 2187, y: 1632 },
-// 	scale: 0.006,
-// 	position: { x: -9, y: -138, z: -20 },
-// 	rotation: { y: 40 },
-// 	src: './Images/Honor Roll/21-22-Q2.png'
-// })
-// addPicture({
-// 	size: { x: 2187, y: 1622 },
-// 	scale: 0.006,
-// 	position: { x: -4.4, y: -138, z: -20 },
-// 	rotation: { y: 0 },
-// 	src: './Images/Honor Roll/21-22-Q3.png'
-// })
-// addPicture({
-// 	size: { x: 2187, y: 1611 },
-// 	scale: 0.006,
-// 	position: { x: 1, y: -138, z: -20 },
-// 	rotation: { y: -40 },
-// 	src: './Images/Honor Roll/21-22-Q4.png'
-// })
+addPicture({
+	size: { x: 2187, y: 1632 },
+	scale: 0.006,
+	position: {
+		desktop: { x: -9, y: -138, z: -20 },
+		mobile: { x: -9, y: -138, z: -20 }
+	},
+	rotation: { y: 40 },
+	src: './Images/Honor Roll/21-22-Q2.png'
+})
+addPicture({
+	size: { x: 2187, y: 1622 },
+	scale: 0.006,
+	position: {
+		desktop: { x: -4.4, y: -138, z: -20 },
+		mobile: { x: -4.4, y: -138, z: -20 }
+	},
+	rotation: { y: 0 },
+	src: './Images/Honor Roll/21-22-Q3.png'
+})
+addPicture({
+	size: { x: 2187, y: 1611 },
+	scale: 0.006,
+	position: {
+		desktop: { x: 1, y: -138, z: -20 },
+		mobile: { x: 1, y: -138, z: -20 }
+	},
+	rotation: { y: -40 },
+	src: './Images/Honor Roll/21-22-Q4.png'
+})
 
-// addPicture({
-// 	size: { x: 2198, y: 1696 },
-// 	scale: 0.006,
-// 	position: { x: -9, y: -149, z: -20 },
-// 	rotation: { y: 40 },
-// 	src: './Images/Honor Roll/22-23-Q1.png'
-// })
-// addPicture({
-// 	size: { x: 2198, y: 1696 },
-// 	scale: 0.006,
-// 	position: { x: -4, y: -149, z: -20 },
-// 	rotation: { y: 0 },
-// 	src: './Images/Honor Roll/22-23-Q2.png'
-// })
-// addPicture({
-// 	size: { x: 2198, y: 1696 },
-// 	scale: 0.006,
-// 	position: { x: 1, y: -149, z: -20 },
-// 	rotation: { y: -40 },
-// 	src: './Images/Honor Roll/22-23-Q3.png'
-// })
+addPicture({
+	size: { x: 2198, y: 1696 },
+	scale: 0.006,
+	position: {
+		desktop: { x: -9, y: -149, z: -20 },
+		mobile: { x: -9, y: -149, z: -20 }
+	},
+	rotation: { y: 40 },
+	src: './Images/Honor Roll/22-23-Q1.png'
+})
+addPicture({
+	size: { x: 2198, y: 1696 },
+	scale: 0.006,
+	position: {
+		desktop: { x: -4, y: -149, z: -20 },
+		mobile: { x: -4, y: -149, z: -20 }
+	},
+	rotation: { y: 0 },
+	src: './Images/Honor Roll/22-23-Q2.png'
+})
+addPicture({
+	size: { x: 2198, y: 1696 },
+	scale: 0.006,
+	position: {
+		desktop: { x: 1, y: -149, z: -20 },
+		mobile: { x: 1, y: -149, z: -20 }
+	},
+	rotation: { y: -40 },
+	src: './Images/Honor Roll/22-23-Q3.png'
+})
 
 
-// addPicture({
-// 	size: { x: 2198, y: 1696 },
-// 	scale: 0.006,
-// 	position: { x: 1, y: -161, z: -20 },
-// 	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
-// })
-// addPicture({
-// 	size: { x: 2208, y: 1696 },
-// 	scale: 0.006,
-// 	position: { x: -6, y: -169, z: -20 },
-// 	src: './Images/Certifications and Awards/Civic Knowledge.png'
-// })
-// addPicture({
-// 	size: { x: 2200, y: 1700 },
-// 	scale: 0.006,
-// 	position: { x: 2, y: -178, z: -20 },
-// 	src: './Images/Certifications and Awards/OSHA Certifacate.png'
-// })
-// addPicture({
-// 	size: { x: 2200, y: 1700 },
-// 	scale: 0.006,
-// 	position: { x: -5, y: -186, z: -20 },
-// 	src: './Images/Certifications and Awards/ITF Certifacate.png'
-// })
+addPicture({
+	size: { x: 2198, y: 1696 },
+	scale: 0.006,
+	position: {
+		desktop: { x: 1, y: -161, z: -20 },
+		mobile: { x: 1, y: -161, z: -20 }
+	},
+	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
+})
+addPicture({
+	size: { x: 2208, y: 1696 },
+	scale: 0.006,
+	position: {
+		desktop: { x: -6, y: -169, z: -20 },
+		mobile: { x: -6, y: -169, z: -20 }
+	},
+	src: './Images/Certifications and Awards/Civic Knowledge.png'
+})
+addPicture({
+	size: { x: 2200, y: 1700 },
+	scale: 0.006,
+	position: {
+		desktop: { x: 2, y: -178, z: -20 },
+		mobile: { x: 2, y: -178, z: -20 }
+	},
+	src: './Images/Certifications and Awards/OSHA Certifacate.png'
+})
+addPicture({
+	size: { x: 2200, y: 1700 },
+	scale: 0.006,
+	position: {
+		desktop: { x: -5, y: -186, z: -20 },
+		mobile: { x: -5, y: -186, z: -20 }
+	},
+	src: './Images/Certifications and Awards/ITF Certifacate.png'
+})
 
 function isVisible(element) {
 	const rect = element.getBoundingClientRect()
@@ -314,8 +353,8 @@ function scroll() {
 	const fazTerminalImage = document.getElementById('Faz-Terminal-Image')
 	const fazTerminalVideo = document.getElementById('Faz-Terminal-Video')
 	if (
-		fazTerminalRect.bottom < fazTerminalRect.height * 0.4 ||
-		fazTerminalRect.top >= screenHeight - fazTerminalRect.height * 0.4
+		fazTerminalRect.bottom < fazTerminalRect.height * 0.3 ||
+		fazTerminalRect.top >= screenHeight - fazTerminalRect.height * 0.3
 	) {
 		fazTerminalImage.style.display = 'block'
 		fazTerminalVideo.style.display = 'none'
