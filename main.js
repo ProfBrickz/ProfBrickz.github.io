@@ -84,12 +84,6 @@ class Picture {
 		if (!offset.mobile.x) offset.mobile.x = 0
 		if (!offset.mobile.y) offset.mobile.y = 0
 
-		// offset.desktop.x = window.innerWidth * offset.desktop.x / 100
-		// offset.desktop.y = window.innerHeight * offset.desktop.y / 100
-		// offset.mobile.x = window.innerWidth * offset.mobile.x / 100
-		// offset.mobile.y = window.innerHeight * offset.mobile.y / 100
-
-
 		if (!rotation.x) rotation.x = 0
 		if (!rotation.y) rotation.y = 0
 		if (!rotation.z) rotation.z = 0
@@ -201,9 +195,14 @@ class Picture {
 
 		let newPosition = new THREE.Vector3()
 
+		console.log(
+			(window.innerWidth - rect.width),
+			this.offset[viewType].x / 100
+		);
+
 		newPosition.set(
-			((domX + this.offset[viewType].x) / window.innerWidth) * 2 - 1,
-			-((domY - this.offset[viewType].y) / window.innerHeight) * 2 + 1,
+			((domX + (window.innerWidth - rect.width) * this.offset[viewType].x / 100) / window.innerWidth) * 2 - 1,
+			-((domY - (window.innerWidth - rect.width) * this.offset[viewType].y / 100) / window.innerHeight) * 2 + 1,
 			-this.depth
 		)
 
@@ -246,10 +245,13 @@ class Picture {
 // pictures
 new Picture({
 	size: { x: 1843, y: 2305 },
-	scale: 0.0055,
+	scale: 0.0045,
 	linkedTo: 'header',
 	alignment: 'right',
-	offset: { x: 100, y: 0 },
+	offset: {
+		desktop: { x: 30, y: -10 },
+		mobile: { x: -25, y: -20 }
+	},
 	rotation: { y: -20 },
 	src: './Images/me.png'
 })
@@ -265,7 +267,7 @@ new Picture({
 	},
 	offset: {
 		desktop: { x: 5, y: 0 },
-		mobile: { x: 0, y: -5 }
+		mobile: { x: 0, y: 5 }
 	},
 	depth: 10,
 	rotation: { y: 30 },
@@ -280,8 +282,8 @@ new Picture({
 		mobile: 'bottom'
 	},
 	offset: {
-		desktop: { x: 5, y: 20 },
-		mobile: { x: 20, y: -5 }
+		desktop: { x: 25, y: 120 },
+		mobile: { x: 150, y: -25 }
 	},
 	depth: 10,
 	rotation: { y: -30, z: -10 },
@@ -489,8 +491,8 @@ function resizeWindow() {
 	renderer.setSize(window.innerWidth, window.innerHeight)
 
 	for (const picture of pictures) {
-		picture.resize(window.innerWidth / window.innerHeight)
 		picture.setPosition()
+		// picture.resize(window.innerWidth / window.innerHeight)
 	}
 }
 resizeWindow()
