@@ -52,13 +52,53 @@ class Picture {
 		size,
 		scale,
 		linkedTo,
-		alignment = 'center',
+		alignment = {},
 		offset = {},
 		depth = 10,
 		rotation = {},
 		src,
 		loop = false
 	}) {
+		if (typeof alignment == 'string') {
+			alignment = {
+				desktop: alignment,
+				mobile: alignment
+			}
+		}
+
+		if (!alignment.desktop) alignment.desktop = 'center'
+		if (!alignment.mobile) alignment.mobile = 'center'
+
+
+		if (typeof offset.x == 'number' && typeof offset.y == 'number') {
+			offset = {
+				desktop: offset,
+				mobile: offset
+			}
+		}
+
+		if (!offset.desktop) offset.desktop = {}
+		if (!offset.desktop.x) offset.desktop.x = 0
+		if (!offset.desktop.y) offset.desktop.y = 0
+		if (!offset.mobile) offset.mobile = {}
+		if (!offset.mobile.x) offset.mobile.x = 0
+		if (!offset.mobile.y) offset.mobile.y = 0
+
+		// offset.desktop.x = window.innerWidth * offset.desktop.x / 100
+		// offset.desktop.y = window.innerHeight * offset.desktop.y / 100
+		// offset.mobile.x = window.innerWidth * offset.mobile.x / 100
+		// offset.mobile.y = window.innerHeight * offset.mobile.y / 100
+
+
+		if (!rotation.x) rotation.x = 0
+		if (!rotation.y) rotation.y = 0
+		if (!rotation.z) rotation.z = 0
+
+		rotation.x = degToRad(rotation.x)
+		rotation.y = degToRad(rotation.y)
+		rotation.z = degToRad(rotation.z)
+
+
 		this.id = id
 		this.size = size
 		this.scale = scale
@@ -71,16 +111,6 @@ class Picture {
 		this.video
 		this.loop = loop
 
-		if (!offset.x) offset.x = 0
-		if (!offset.y) offset.y = 0
-
-		if (!rotation.x) rotation.x = 0
-		if (!rotation.y) rotation.y = 0
-		if (!rotation.z) rotation.z = 0
-
-		rotation.x = degToRad(rotation.x)
-		rotation.y = degToRad(rotation.y)
-		rotation.z = degToRad(rotation.z)
 
 		const geometry = new THREE.PlaneGeometry(this.size.x, this.size.y, 1, 1)
 		let texture
@@ -152,23 +182,28 @@ class Picture {
 		let domX = rect.x
 		let domY = rect.y
 
-		if (this.alignment.includes('right')) {
+		let viewType = 'desktop'
+		if (window.innerWidth <= 600) viewType = 'mobile'
+
+
+		if (this.alignment[viewType].includes('right')) {
 			domX += rect.width
-		} else if (!this.alignment.includes('left')) {
+		} else if (!this.alignment[viewType].includes('left')) {
 			domX += rect.width / 2
 		}
 
-		if (this.alignment.includes('bottom')) {
+		if (this.alignment[viewType].includes('bottom')) {
 			domY += rect.height
-		} else if (!this.alignment.includes('top')) {
+		} else if (!this.alignment[viewType].includes('top')) {
 			domY += rect.height / 2
 		}
+
 
 		let newPosition = new THREE.Vector3()
 
 		newPosition.set(
-			((domX + this.offset.x) / window.innerWidth) * 2 - 1,
-			-((domY - this.offset.y) / window.innerHeight) * 2 + 1,
+			((domX + this.offset[viewType].x) / window.innerWidth) * 2 - 1,
+			-((domY - this.offset[viewType].y) / window.innerHeight) * 2 + 1,
 			-this.depth
 		)
 
@@ -186,15 +221,15 @@ class Picture {
 		let width = boundingBox.max.x - boundingBox.min.x
 		let height = boundingBox.max.y - boundingBox.min.y
 
-		if (this.alignment.includes('left')) {
+		if (this.alignment[viewType].includes('left')) {
 			newPosition.x -= width / 2
-		} else if (this.alignment.includes('right')) {
+		} else if (this.alignment[viewType].includes('right')) {
 			newPosition.x += width / 2
 		}
 
-		if (this.alignment.includes('top')) {
+		if (this.alignment[viewType].includes('top')) {
 			newPosition.y += height / 2
-		} else if (this.alignment.includes('bottom')) {
+		} else if (this.alignment[viewType].includes('bottom')) {
 			newPosition.y -= height / 2
 		}
 
@@ -209,35 +244,46 @@ class Picture {
 }
 
 // pictures
-// addPicture({
-// 	size: { x: 1843, y: 2305 },
-// 	scale: 0.0055,
-// 	position: {
-// 		desktop: { x: 7, y: 8, z: -20 },
-// 		mobile: { x: 7, y: 8, z: -20 }
-// 	},
-// 	rotation: { y: -20 },
-// 	src: './Images/me.png'
-// })
+new Picture({
+	size: { x: 1843, y: 2305 },
+	scale: 0.0055,
+	linkedTo: 'header',
+	alignment: 'right',
+	offset: { x: 100, y: 0 },
+	rotation: { y: -20 },
+	src: './Images/me.png'
+})
 
 // Software Development
 new Picture({
 	size: { x: 500, y: 500 },
 	scale: 0.007,
 	linkedTo: 'software-dev',
-	alignment: 'right',
+	alignment: {
+		desktop: 'right',
+		mobile: 'bottom'
+	},
+	offset: {
+		desktop: { x: 5, y: 0 },
+		mobile: { x: 0, y: -5 }
+	},
 	depth: 10,
-	offset: { x: 25, y: 0 },
-	rotation: { y: 35 },
+	rotation: { y: 30 },
 	src: './Images/Icons/javascript.png'
 })
 new Picture({
 	size: { x: 500, y: 500 },
 	scale: 0.007,
 	linkedTo: 'software-dev',
-	alignment: 'bottom right',
+	alignment: {
+		desktop: 'bottom right',
+		mobile: 'bottom'
+	},
+	offset: {
+		desktop: { x: 5, y: 20 },
+		mobile: { x: 20, y: -5 }
+	},
 	depth: 10,
-	offset: { x: 50, y: 70 },
 	rotation: { y: -30, z: -10 },
 	src: './Images/Icons/python.png'
 })
@@ -396,39 +442,37 @@ function isVisible(element) {
 
 let fazLoopTimeout = null
 function scroll() {
-
-
-	// const scrollAmount = document.body.getBoundingClientRect().top
+	const scrollAmount = document.body.getBoundingClientRect().top
+	const screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
 	// const cameraPosition = scrollAmount * 0.03
-	// const screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
 
 	// pointLight.position.y = cameraPosition + 10
 	// camera.position.y = cameraPosition
 
-	// const fazTerminalRect = document.getElementById('Faz-Terminal-Box').getBoundingClientRect()
-	// const fazTerminalImage = document.getElementById('Faz-Terminal-Image')
-	// const fazTerminalVideo = document.getElementById('Faz-Terminal-Video')
-	// if (
-	// 	fazTerminalRect.bottom < fazTerminalRect.height * 0.3 ||
-	// 	fazTerminalRect.top >= screenHeight - fazTerminalRect.height * 0.3
-	// ) {
-	// 	fazTerminalImage.style.display = 'block'
-	// 	fazTerminalVideo.style.display = 'none'
-	// 	fazTerminalVideo.pause()
-	// 	fazTerminalVideo.currentTime = 0
-	// 	fazTerminalVideo.loop = false
-	// 	fazTerminalVideo.src = './Images/Projects/Faz-Terminal-Load.mp4'
-	// } else if (fazTerminalImage.style.display != 'none') {
-	// 	fazTerminalImage.style.display = 'none'
-	// 	fazTerminalVideo.style.display = 'block'
-	// 	fazTerminalVideo.play()
-	// 	fazTerminalVideo.onended = () => {
-	// 		fazTerminalVideo.src = './Images/Projects/Faz-Terminal-Loop.mp4'
-	// 		fazTerminalVideo.play()
-	// 		fazTerminalVideo.loop = true
-	// 		fazTerminalVideo.onended = ''
-	// 	}
-	// }
+	const fazTerminalRect = document.getElementById('Faz-Terminal-Box').getBoundingClientRect()
+	const fazTerminalImage = document.getElementById('Faz-Terminal-Image')
+	const fazTerminalVideo = document.getElementById('Faz-Terminal-Video')
+	if (
+		fazTerminalRect.bottom < fazTerminalRect.height * 0.3 ||
+		fazTerminalRect.top >= screenHeight - fazTerminalRect.height * 0.3
+	) {
+		fazTerminalImage.style.display = 'block'
+		fazTerminalVideo.style.display = 'none'
+		fazTerminalVideo.pause()
+		fazTerminalVideo.currentTime = 0
+		fazTerminalVideo.loop = false
+		fazTerminalVideo.src = './Images/Projects/Faz-Terminal-Load.mp4'
+	} else if (fazTerminalImage.style.display != 'none') {
+		fazTerminalImage.style.display = 'none'
+		fazTerminalVideo.style.display = 'block'
+		fazTerminalVideo.play()
+		fazTerminalVideo.onended = () => {
+			fazTerminalVideo.src = './Images/Projects/Faz-Terminal-Loop.mp4'
+			fazTerminalVideo.play()
+			fazTerminalVideo.loop = true
+			fazTerminalVideo.onended = ''
+		}
+	}
 
 	for (const picture of pictures) {
 		picture.setPosition()
