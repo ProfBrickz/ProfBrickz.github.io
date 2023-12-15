@@ -290,9 +290,45 @@ class Picture {
 
 		let newPosition = new THREE.Vector3()
 
+		let offsetX = 0
+		let offsetXParts = null
+		let offsetY = 0
+		let offsetYParts = null
+
+		if (typeof this.offset[offsetViewType].x == 'number') {
+			offsetX = window.innerWidth * this.offset[offsetViewType].x / 100
+		} else if (typeof this.offset[offsetViewType].x == 'string') {
+			offsetXParts = this.offset[offsetViewType].x.match(/-?\d+%|\d+\w+/g);
+
+			for (let part of offsetXParts) {
+				if (part.includes('%')) {
+					offsetX += window.innerWidth * Number(part.replace('%', '')) / 100
+				} else if (part.includes('height')) {
+					offsetX += height * Number(part.replace('height', ''))
+				} else if (part.includes('width')) {
+					offsetX += width * Number(part.replace('width', ''))
+				} else if (part.includes('px')) {
+					offsetX += Number(part.replace('px', ''))
+				}
+			}
+		}
+		if (typeof this.offset[offsetViewType].y == 'number') {
+			offsetY = window.innerHeight * this.offset[offsetViewType].y / 100
+		} else if (typeof this.offset[offsetViewType].y == 'string') {
+			offsetYParts = this.offset[offsetViewType].y.match(/-?\d+%|\d+\w+/g);
+
+			for (let part of offsetYParts) {
+				if (part.includes('%')) {
+					offsetY += window.innerHeight * Number(part.replace('%', '')) / 100
+				} if (part.includes('px')) {
+					offsetY += Number(part.replace('px', ''))
+				}
+			}
+		}
+
 		newPosition.set(
-			((domX + window.innerWidth * this.offset[offsetViewType].x / 100) / window.innerWidth) * 2 - 1,
-			-((domY - window.innerHeight * this.offset[offsetViewType].y / 100) / window.innerHeight) * 2 + 1,
+			((domX + offsetX) / window.innerWidth) * 2 - 1,
+			-((domY - offsetY) / window.innerHeight) * 2 + 1,
 			-this.depth
 		)
 
@@ -340,6 +376,25 @@ class Picture {
 					newPosition.y -= height / 2
 				} else if (this.alignment[alignmentViewType].includes('bottom')) {
 					newPosition.y += height / 2
+				}
+			}
+		}
+
+		if (offsetXParts) {
+			for (let part of offsetYParts) {
+				if (part.includes('height')) {
+					newPosition.x += height * Number(part.replace('height', ''))
+				} else if (part.includes('width')) {
+					newPosition.x += width * Number(part.replace('width', ''))
+				}
+			}
+		}
+		if (offsetYParts) {
+			for (let part of offsetYParts) {
+				if (part.includes('height')) {
+					newPosition.y += height * Number(part.replace('height', ''))
+				} else if (part.includes('width')) {
+					newPosition.y += width * Number(part.replace('width', ''))
 				}
 			}
 		}
