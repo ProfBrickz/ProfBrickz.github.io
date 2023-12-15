@@ -225,17 +225,7 @@ class Picture {
 		this.picture.material.map = this.texture
 	}
 
-	resize = (scale) => {
-		let scaleViewType = this.getViewType(this.scale)
-
-		this.picture.scale.set(
-			this.scale[scaleViewType] * scale * 0.6,
-			this.scale[scaleViewType] * scale * 0.6,
-			this.scale[scaleViewType] * scale * 0.6
-		)
-	}
-
-	setPosition = () => {
+	update = () => {
 		let scaleViewType = 'desktop'
 		let alignmentViewType = 'desktop'
 		let offsetViewType = 'desktop'
@@ -356,10 +346,13 @@ class Picture {
 
 		this.picture.position.set(newPosition.x, newPosition.y, newPosition.z)
 
+		let windowScale = (window.innerWidth / window.innerHeight) ** 0.7
+		windowScale = Math.abs(windowScale)
+
 		this.picture.scale.set(
-			-newPosition.z * this.scale[scaleViewType] * 0.06,
-			-newPosition.z * this.scale[scaleViewType] * 0.06,
-			-newPosition.z * this.scale[scaleViewType] * 0.06
+			-newPosition.z * this.scale[scaleViewType] * 0.06 * windowScale,
+			-newPosition.z * this.scale[scaleViewType] * 0.06 * windowScale,
+			-newPosition.z * this.scale[scaleViewType] * 0.06 * windowScale
 		)
 	}
 }
@@ -411,7 +404,7 @@ new Picture({
 		mobile: 'outside bottom'
 	},
 	offset: {
-		desktop: { x: 4, y: -7 },
+		desktop: { x: 4, y: -20 },
 		mobile: { x: 2, y: 0 }
 	},
 	depth: 10,
@@ -492,18 +485,14 @@ new Picture({
 // Formal Education / Certifications
 new Picture({
 	size: { x: 2187, y: 1632 },
-	scale: {
-		desktop: 0.005,
-		'1000': 0.004,
-		mobile: 0.003
-	},
+	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -35, y: 30 },
+		desktop: { x: -35, y: 50 },
 		'1300': { x: -25, y: -5 }
 	},
 	depth: 13,
@@ -512,18 +501,14 @@ new Picture({
 })
 new Picture({
 	size: { x: 2187, y: 1622 },
-	scale: {
-		desktop: 0.005,
-		'1000': 0.004,
-		mobile: 0.003
-	},
+	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -16, y: 30 },
+		desktop: { x: -14, y: 50 },
 		'1300': { x: 0, y: -5 }
 	},
 	depth: 7,
@@ -532,18 +517,14 @@ new Picture({
 })
 new Picture({
 	size: { x: 2187, y: 1611 },
-	scale: {
-		desktop: 0.005,
-		'1000': 0.004,
-		mobile: 0.003
-	},
+	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: 1, y: 30 },
+		desktop: { x: 1, y: 50 },
 		'1300': { x: 25, y: -5 }
 	},
 	depth: 13,
@@ -553,21 +534,17 @@ new Picture({
 
 new Picture({
 	size: { x: 2198, y: 1696 },
-	scale: {
-		desktop: 0.005,
-		'1000': 0.004,
-		mobile: 0.003
-	},
+	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -35, y: -5 },
-		'1300': { x: -25, y: -40, },
-		'1000': { x: -25, y: -33 },
-		mobile: { x: -25, y: -26 }
+		desktop: { x: -35, y: -10 },
+		'1300': { x: -25, y: -60, },
+		'1000': { x: -25, y: -50, },
+		// mobile: { x: -25, y: -26 }
 	},
 	depth: 13,
 	rotation: { y: 40 },
@@ -575,21 +552,16 @@ new Picture({
 })
 new Picture({
 	size: { x: 2198, y: 1696 },
-	scale: {
-		desktop: 0.005,
-		'1000': 0.004,
-		mobile: 0.003
-	},
+	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -16, y: -5 },
-		'1300': { x: 0, y: -40 },
-		'1000': { x: 0, y: -33 },
-		mobile: { x: 0, y: -26 }
+		desktop: { x: -14, y: -10 },
+		'1300': { x: 0, y: -60 },
+		// mobile: { x: 0, y: -26 }
 	},
 	depth: 7,
 	rotation: { y: 0 },
@@ -597,21 +569,16 @@ new Picture({
 })
 new Picture({
 	size: { x: 2198, y: 1696 },
-	scale: {
-		desktop: 0.005,
-		'1000': 0.004,
-		mobile: 0.003
-	},
+	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: 1, y: -5 },
-		'1300': { x: 25, y: -40 },
-		'1000': { x: 25, y: -33 },
-		mobile: { x: 25, y: -26 }
+		desktop: { x: 1, y: -10 },
+		'1300': { x: 25, y: -60 },
+		// mobile: { x: 25, y: -26 }
 	},
 	depth: 13,
 	rotation: { y: -40 },
@@ -621,7 +588,11 @@ new Picture({
 
 // new Picture({
 // 	size: { x: 2198, y: 1696 },
-// 	scale: 0.005,
+// 	scale: {
+// 		desktop: 0.005,
+// 		'450': 0.004,
+// 		'370': 0.0035,
+// 	},
 // 	linkedTo: 'education',
 // 	alignment: {
 // 		desktop: 'outside left',
@@ -630,14 +601,18 @@ new Picture({
 // 	offset: {
 // 		desktop: { x: -32, y: -42 },
 // 		'1300': { x: -2, y: -5 },
-// 		mobile: { x: 0, y: 0 }
+// 		mobile: { x: -25, y: -50 }
 // 	},
 // 	depth: 10,
 // 	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
 // })
 // new Picture({
 // 	size: { x: 2208, y: 1696 },
-// 	scale: 0.005,
+// 	scale: {
+// 		desktop: 0.005,
+// 		'450': 0.004,
+// 		'470': 0.0035,
+// 	},
 // 	linkedTo: 'education',
 // 	alignment: {
 // 		desktop: 'outside left',
@@ -645,7 +620,7 @@ new Picture({
 // 	},
 // 	offset: {
 // 		desktop: { x: -2, y: -42 },
-// 		mobile: { x: 0, y: 0 }
+// 		mobile: { x: 25, y: -50 }
 // 	},
 // 	depth: 10,
 // 	src: './Images/Certifications and Awards/Civic Knowledge.png'
@@ -728,7 +703,7 @@ function scroll() {
 	}
 
 	for (const picture of pictures) {
-		picture.setPosition()
+		picture.update()
 	}
 }
 document.body.onscroll = scroll
@@ -766,7 +741,7 @@ function resizeWindow() {
 	}
 
 	for (const picture of pictures) {
-		picture.setPosition()
+		picture.update()
 	}
 }
 resizeWindow()
