@@ -4,10 +4,21 @@ function degToRad(deg) {
 	return deg * (Math.PI / 180)
 }
 
+let rows = document.getElementsByClassName('row')
+let boxes = document.getElementsByClassName('box')
+
+let boxData = {}
+
 // set rows
-let main = document.getElementById('main')
-for (let i = 0; i < main.children.length; i++) {
-	main.children[i].style.gridRow = i + 1
+for (let i = 0; i < rows.length; i++) {
+	rows[i].style.gridRow = i + 1
+}
+
+for (let box of boxes) {
+	boxData[box.id] = {
+		column: Number(window.getComputedStyle(box).gridColumnStart) - 1,
+		width: null
+	}
 }
 
 const scene = new THREE.Scene()
@@ -50,7 +61,7 @@ class Picture {
 	constructor({
 		id,
 		size,
-		scale,
+		scale = {},
 		linkedTo,
 		alignment = {},
 		offset = {},
@@ -59,6 +70,20 @@ class Picture {
 		src,
 		loop = false
 	}) {
+		if (typeof scale == 'number') {
+			scale = {
+				desktop: scale,
+				mobile: scale
+			}
+		}
+
+		if (typeof linkedTo == 'string') {
+			linkedTo = {
+				desktop: linkedTo,
+				mobile: linkedTo
+			}
+		}
+
 		if (typeof alignment == 'string') {
 			alignment = {
 				desktop: alignment,
@@ -67,8 +92,6 @@ class Picture {
 		}
 
 		if (!alignment.desktop) alignment.desktop = 'center'
-		if (!alignment.mobile) alignment.mobile = 'center'
-
 
 		if (typeof offset.x == 'number' && typeof offset.y == 'number') {
 			offset = {
@@ -80,9 +103,6 @@ class Picture {
 		if (!offset.desktop) offset.desktop = {}
 		if (!offset.desktop.x) offset.desktop.x = 0
 		if (!offset.desktop.y) offset.desktop.y = 0
-		if (!offset.mobile) offset.mobile = {}
-		if (!offset.mobile.x) offset.mobile.x = 0
-		if (!offset.mobile.y) offset.mobile.y = 0
 
 		if (!rotation.x) rotation.x = 0
 		if (!rotation.y) rotation.y = 0
@@ -92,6 +112,24 @@ class Picture {
 		rotation.y = degToRad(rotation.y)
 		rotation.z = degToRad(rotation.z)
 
+		this.viewTypes = []
+
+		for (let scaleKey of Object.keys(scale)) {
+			if (!this.viewTypes.includes(scaleKey) && !isNaN(scaleKey))
+				this.viewTypes.push(scaleKey)
+		}
+
+		for (let alignmentKey of Object.keys(alignment)) {
+			if (!this.viewTypes.includes(alignmentKey) && !isNaN(alignmentKey))
+				this.viewTypes.push(alignmentKey)
+		}
+
+		for (let offsetKey of Object.keys(offset)) {
+			if (!this.viewTypes.includes(offsetKey) && !isNaN(offsetKey))
+				this.viewTypes.push(offsetKey)
+		}
+
+		this.viewTypes = this.viewTypes.sort((a, b) => b - a)
 
 		this.id = id
 		this.size = size
@@ -130,11 +168,38 @@ class Picture {
 		})
 		this.picture = new THREE.Mesh(geometry, mesh)
 		this.picture.rotation.set(rotation.x, rotation.y, rotation.z)
-		this.picture.scale.set(this.scale, this.scale, this.scale)
+
+		let scaleViewType = this.getViewType(this.scale)
+		this.picture.scale.set(
+			this.scale[scaleViewType],
+			this.scale[scaleViewType],
+			this.scale[scaleViewType]
+		)
 
 		scene.add(this.picture)
 
 		pictures.push(this)
+	}
+
+	getViewType = (prop) => {
+		let viewType = 'desktop'
+		if (
+			window.innerWidth <= 600 &&
+			Object.keys(prop).includes('mobile')
+		)
+			viewType = 'mobile'
+
+		for (let viewType of this.viewTypes) {
+			if (
+				window.innerWidth > Number(viewType)
+			) continue
+
+			if (
+				Object.keys(prop).includes(viewType)
+			) viewType = viewType
+		}
+
+		return viewType
 	}
 
 	setSrc = (src) => {
@@ -155,54 +220,89 @@ class Picture {
 			this.video.play()
 
 			this.texture = new THREE.VideoTexture(this.video)
-		} else
-			this.texture = new THREE.TextureLoader().load(this.src)
+		} else this.texture = new THREE.TextureLoader().load(this.src)
 
 		this.picture.material.map = this.texture
 	}
 
 	resize = (scale) => {
+		let scaleViewType = this.getViewType(this.scale)
+
 		this.picture.scale.set(
-			this.scale * scale * 0.6,
-			this.scale * scale * 0.6,
-			this.scale * scale * 0.6
+			this.scale[scaleViewType] * scale * 0.6,
+			this.scale[scaleViewType] * scale * 0.6,
+			this.scale[scaleViewType] * scale * 0.6
 		)
 	}
 
 	setPosition = () => {
-		let element = document.getElementById(this.linkedTo)
+		let scaleViewType = 'desktop'
+		let alignmentViewType = 'desktop'
+		let offsetViewType = 'desktop'
+		let linkedToViewType = 'desktop'
+		if (window.innerWidth <= 600) {
+			if (Object.keys(this.scale).includes('mobile'))
+				scaleViewType = 'mobile'
+			if (Object.keys(this.linkedTo).includes('mobile'))
+				linkedToViewType = 'mobile'
+			if (Object.keys(this.alignment).includes('mobile'))
+				alignmentViewType = 'mobile'
+			if (Object.keys(this.offset).includes('mobile'))
+				offsetViewType = 'mobile'
+		}
+
+		for (let viewType of this.viewTypes) {
+			if (
+				window.innerWidth > Number(viewType)
+			) continue
+
+			if (
+				Object.keys(this.scale).includes(viewType) &&
+				!(Object.keys(this.scale).includes('mobile') && window.innerWidth <= 600 && Number(viewType) >= 600)
+			) scaleViewType = viewType
+			if (
+				Object.keys(this.linkedTo).includes(viewType) &&
+				!(Object.keys(this.linkedTo).includes('mobile') && window.innerWidth <= 600 && Number(viewType) >= 600)
+			) linkedToViewType = viewType
+			if (
+				Object.keys(this.alignment).includes(viewType) &&
+				!(Object.keys(this.alignment).includes('mobile') && window.innerWidth <= 600 && Number(viewType) >= 600)
+			) alignmentViewType = viewType
+			if (
+				Object.keys(this.offset).includes(viewType) &&
+				!(Object.keys(this.offset).includes('mobile') && window.innerWidth <= 600 && Number(viewType) >= 600)
+			) offsetViewType = viewType
+		}
+
+
+		let element = document.getElementById(this.linkedTo[linkedToViewType])
 		let rect = element.getBoundingClientRect()
 
 		let domX = rect.x
 		let domY = rect.y
 
-		let viewType = 'desktop'
-		if (window.innerWidth <= 600) viewType = 'mobile'
-
-
-		if (this.alignment[viewType].includes('right')) {
+		if (this.alignment[alignmentViewType].includes('center-x')) {
+			domX = window.innerWidth / 2
+		} else if (this.alignment[alignmentViewType].includes('right')) {
 			domX += rect.width
-		} else if (!this.alignment[viewType].includes('left')) {
+		} else if (!this.alignment[alignmentViewType].includes('left')) {
 			domX += rect.width / 2
 		}
 
-		if (this.alignment[viewType].includes('bottom')) {
+		if (this.alignment[alignmentViewType].includes('center-y')) {
+			domX = window.innerHeight / 2
+		} else if (this.alignment[alignmentViewType].includes('bottom')) {
 			domY += rect.height
-		} else if (!this.alignment[viewType].includes('top')) {
+		} else if (!this.alignment[alignmentViewType].includes('top')) {
 			domY += rect.height / 2
 		}
 
 
 		let newPosition = new THREE.Vector3()
 
-		console.log(
-			(window.innerWidth - rect.width),
-			this.offset[viewType].x / 100
-		);
-
 		newPosition.set(
-			((domX + (window.innerWidth - rect.width) * this.offset[viewType].x / 100) / window.innerWidth) * 2 - 1,
-			-((domY - (window.innerWidth - rect.width) * this.offset[viewType].y / 100) / window.innerHeight) * 2 + 1,
+			((domX + window.innerWidth * this.offset[offsetViewType].x / 100) / window.innerWidth) * 2 - 1,
+			-((domY - window.innerHeight * this.offset[offsetViewType].y / 100) / window.innerHeight) * 2 + 1,
 			-this.depth
 		)
 
@@ -210,7 +310,7 @@ class Picture {
 
 		newPosition.sub(camera.position).normalize()
 
-		let distance = -newPosition.z * 15
+		let distance = -newPosition.z * this.depth * 2.5
 
 		newPosition.x = camera.position.x + newPosition.x * distance
 		newPosition.y = camera.position.y + newPosition.y * distance
@@ -220,24 +320,46 @@ class Picture {
 		let width = boundingBox.max.x - boundingBox.min.x
 		let height = boundingBox.max.y - boundingBox.min.y
 
-		if (this.alignment[viewType].includes('left')) {
-			newPosition.x -= width / 2
-		} else if (this.alignment[viewType].includes('right')) {
-			newPosition.x += width / 2
-		}
+		if (this.alignment[alignmentViewType].includes('outside')) {
+			if (!this.alignment[alignmentViewType].includes('center-x')) {
+				if (this.alignment[alignmentViewType].includes('left')) {
+					newPosition.x -= width / 2
+				} else if (this.alignment[alignmentViewType].includes('right')) {
+					newPosition.x += width / 2
+				}
+			}
 
-		if (this.alignment[viewType].includes('top')) {
-			newPosition.y += height / 2
-		} else if (this.alignment[viewType].includes('bottom')) {
-			newPosition.y -= height / 2
+			if (!this.alignment[alignmentViewType].includes('center-y')) {
+				if (this.alignment[alignmentViewType].includes('top')) {
+					newPosition.y += height / 2
+				} else if (this.alignment[alignmentViewType].includes('bottom')) {
+					newPosition.y -= height / 2
+				}
+			}
+		} else if (this.alignment[alignmentViewType].includes('inside')) {
+			if (!this.alignment[alignmentViewType].includes('center-x')) {
+				if (this.alignment[alignmentViewType].includes('left')) {
+					newPosition.x += width / 2
+				} else if (this.alignment[alignmentViewType].includes('right')) {
+					newPosition.x -= width / 2
+				}
+			}
+
+			if (!this.alignment[alignmentViewType].includes('center-y')) {
+				if (this.alignment[alignmentViewType].includes('top')) {
+					newPosition.y -= height / 2
+				} else if (this.alignment[alignmentViewType].includes('bottom')) {
+					newPosition.y += height / 2
+				}
+			}
 		}
 
 		this.picture.position.set(newPosition.x, newPosition.y, newPosition.z)
 
 		this.picture.scale.set(
-			-newPosition.z * this.scale * 0.06,
-			-newPosition.z * this.scale * 0.06,
-			-newPosition.z * this.scale * 0.06
+			-newPosition.z * this.scale[scaleViewType] * 0.06,
+			-newPosition.z * this.scale[scaleViewType] * 0.06,
+			-newPosition.z * this.scale[scaleViewType] * 0.06
 		)
 	}
 }
@@ -246,13 +368,20 @@ class Picture {
 new Picture({
 	size: { x: 1843, y: 2305 },
 	scale: 0.0045,
-	linkedTo: 'header',
-	alignment: 'right',
-	offset: {
-		desktop: { x: 30, y: -10 },
-		mobile: { x: -25, y: -20 }
+	linkedTo: {
+		desktop: 'main',
+		mobile: 'skills'
 	},
-	rotation: { y: -20 },
+	alignment: {
+		desktop: 'inside top right',
+		mobile: 'outside top'
+	},
+	offset: {
+		desktop: { x: -10, y: -10 },
+		mobile: { x: 0, y: -2 },
+		'850': { x: -5, y: -5 }
+	},
+	rotation: { z: 7, y: -10 },
 	src: './Images/me.png'
 })
 
@@ -262,14 +391,14 @@ new Picture({
 	scale: 0.007,
 	linkedTo: 'software-dev',
 	alignment: {
-		desktop: 'right',
-		mobile: 'bottom'
+		desktop: 'outside right',
+		mobile: 'outside bottom'
 	},
 	offset: {
-		desktop: { x: 5, y: 0 },
-		mobile: { x: 0, y: 5 }
+		desktop: { x: 5, y: 10 },
+		mobile: { x: -25, y: -5 }
 	},
-	depth: 10,
+	depth: 11,
 	rotation: { y: 30 },
 	src: './Images/Icons/javascript.png'
 })
@@ -278,161 +407,283 @@ new Picture({
 	scale: 0.007,
 	linkedTo: 'software-dev',
 	alignment: {
-		desktop: 'bottom right',
-		mobile: 'bottom'
+		desktop: 'outside right',
+		mobile: 'outside bottom'
 	},
 	offset: {
-		desktop: { x: 25, y: 120 },
-		mobile: { x: 150, y: -25 }
+		desktop: { x: 4, y: -7 },
+		mobile: { x: 2, y: 0 }
 	},
 	depth: 10,
-	rotation: { y: -30, z: -10 },
+	rotation: { y: 30, z: -15 },
 	src: './Images/Icons/python.png'
 })
-// addPicture({
-// 	size: { x: 2135, y: 2083 },
-// 	scale: 0.0015,
-// 	position: {
-// 		desktop: { x: -27, y: -49.5, z: -20 },
-// 		mobile: { x: -27, y: -49.5, z: -20 }
-// 	},
-// 	rotation: { z: -30 },
-// 	src: './Images/Icons/GitHub.png'
-// })
+new Picture({
+	size: { x: 2135, y: 2083 },
+	scale: 0.0015,
+	linkedTo: 'software-dev',
+	alignment: {
+		desktop: 'outside bottom right',
+		mobile: 'outside bottom'
+	},
+	offset: {
+		desktop: { x: 1, y: 3 },
+		mobile: { x: 25, y: -7 }
+	},
+	depth: 10,
+	rotation: { z: -30 },
+	src: './Images/Icons/GitHub.png'
+})
 
 // Information Technology
-// addPicture({
-// 	size: { x: 588, y: 588 },
-// 	scale: 0.005,
-// 	position: {
-// 		desktop: { x: 6, y: -60, z: -20 },
-// 		mobile: { x: 6, y: -60, z: -20 }
-// 	},
-// 	rotation: { y: 20, z: 10 },
-// 	src: './Images/Icons/windows.png'
-// })
-// addPicture({
-// 	size: { x: 512, y: 512 },
-// 	scale: 0.005,
-// 	position: {
-// 		desktop: { x: 9, y: -71, z: -20 },
-// 		mobile: { x: 9, y: -71, z: -20 }
-// 	},
-// 	rotation: { z: -40, y: -10 },
-// 	src: './Images/Icons/linux.png'
-// })
+new Picture({
+	size: { x: 588, y: 588 },
+	scale: 0.005,
+	linkedTo: 'IT',
+	alignment: {
+		desktop: 'outside left',
+		mobile: 'outside bottom'
+	},
+	offset: {
+		desktop: { x: 0, y: 10 },
+		mobile: { x: -20, y: -2 }
+	},
+	rotation: { y: 20, z: 10 },
+	src: './Images/Icons/windows.png'
+})
+new Picture({
+	size: { x: 512, y: 512 },
+	scale: 0.005,
+	linkedTo: 'IT',
+	alignment: {
+		desktop: 'outside left',
+		mobile: 'outside bottom'
+	},
+	offset: {
+		desktop: { x: -5, y: -7 },
+		mobile: { x: 15, y: -6 }
+	},
+	depth: 15,
+	rotation: { z: -40, y: -10 },
+	src: './Images/Icons/linux.png'
+})
 
 // Accomplishments
-// addPicture({
-// 	size: { x: 1696, y: 2198 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: -7, y: -85, z: -23 },
-// 		mobile: { x: -7, y: -85, z: -23 }
-// 	},
-// 	rotation: { y: 15, z: 10 },
-// 	src: './Images/Certifications and Awards/National Honor Society.png'
-// })
+new Picture({
+	size: { x: 1696, y: 2198 },
+	scale: 0.006,
+	linkedTo: 'accomplishments',
+	alignment: {
+		desktop: 'outside right',
+		'1000': 'outside bottom'
+	},
+	offset: {
+		desktop: { x: 2, y: 3 },
+		mobile: { x: 0, y: 0 },
+		'1100': { x: -5, y: 3 },
+		'1000': { x: 0, y: 0 }
+	},
+	depth: 15,
+	rotation: { y: 15, z: 10 },
+	src: './Images/Certifications and Awards/National Honor Society.png'
+})
 
 
 // Formal Education / Certifications
-// addPicture({
-// 	size: { x: 2187, y: 1632 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: -9, y: -138, z: -20 },
-// 		mobile: { x: -9, y: -138, z: -20 }
-// 	},
-// 	rotation: { y: 40 },
-// 	src: './Images/Honor Roll/21-22-Q2.png'
-// })
-// addPicture({
-// 	size: { x: 2187, y: 1622 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: -4.4, y: -138, z: -20 },
-// 		mobile: { x: -4.4, y: -138, z: -20 }
-// 	},
-// 	rotation: { y: 0 },
-// 	src: './Images/Honor Roll/21-22-Q3.png'
-// })
-// addPicture({
-// 	size: { x: 2187, y: 1611 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: 1, y: -138, z: -20 },
-// 		mobile: { x: 1, y: -138, z: -20 }
-// 	},
-// 	rotation: { y: -40 },
-// 	src: './Images/Honor Roll/21-22-Q4.png'
-// })
+new Picture({
+	size: { x: 2187, y: 1632 },
+	scale: {
+		desktop: 0.005,
+		'1000': 0.004,
+		mobile: 0.003
+	},
+	linkedTo: 'education',
+	alignment: {
+		desktop: 'outside left',
+		'1300': 'outside bottom center-x',
+	},
+	offset: {
+		desktop: { x: -35, y: 30 },
+		'1300': { x: -25, y: -5 }
+	},
+	depth: 13,
+	rotation: { y: 40 },
+	src: './Images/Honor Roll/21-22-Q2.png'
+})
+new Picture({
+	size: { x: 2187, y: 1622 },
+	scale: {
+		desktop: 0.005,
+		'1000': 0.004,
+		mobile: 0.003
+	},
+	linkedTo: 'education',
+	alignment: {
+		desktop: 'outside left',
+		'1300': 'outside bottom center-x',
+	},
+	offset: {
+		desktop: { x: -16, y: 30 },
+		'1300': { x: 0, y: -5 }
+	},
+	depth: 7,
+	rotation: { y: 0 },
+	src: './Images/Honor Roll/21-22-Q3.png'
+})
+new Picture({
+	size: { x: 2187, y: 1611 },
+	scale: {
+		desktop: 0.005,
+		'1000': 0.004,
+		mobile: 0.003
+	},
+	linkedTo: 'education',
+	alignment: {
+		desktop: 'outside left',
+		'1300': 'outside bottom center-x',
+	},
+	offset: {
+		desktop: { x: 1, y: 30 },
+		'1300': { x: 25, y: -5 }
+	},
+	depth: 13,
+	rotation: { y: -40 },
+	src: './Images/Honor Roll/21-22-Q4.png'
+})
 
-// addPicture({
-// 	size: { x: 2198, y: 1696 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: -9, y: -149, z: -20 },
-// 		mobile: { x: -9, y: -149, z: -20 }
-// 	},
-// 	rotation: { y: 40 },
-// 	src: './Images/Honor Roll/22-23-Q1.png'
-// })
-// addPicture({
-// 	size: { x: 2198, y: 1696 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: -4, y: -149, z: -20 },
-// 		mobile: { x: -4, y: -149, z: -20 }
-// 	},
-// 	rotation: { y: 0 },
-// 	src: './Images/Honor Roll/22-23-Q2.png'
-// })
-// addPicture({
-// 	size: { x: 2198, y: 1696 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: 1, y: -149, z: -20 },
-// 		mobile: { x: 1, y: -149, z: -20 }
-// 	},
-// 	rotation: { y: -40 },
-// 	src: './Images/Honor Roll/22-23-Q3.png'
-// })
+new Picture({
+	size: { x: 2198, y: 1696 },
+	scale: {
+		desktop: 0.005,
+		'1000': 0.004,
+		mobile: 0.003
+	},
+	linkedTo: 'education',
+	alignment: {
+		desktop: 'outside left',
+		'1300': 'outside bottom center-x',
+	},
+	offset: {
+		desktop: { x: -35, y: -5 },
+		'1300': { x: -25, y: -40, },
+		'1000': { x: -25, y: -33 },
+		mobile: { x: -25, y: -26 }
+	},
+	depth: 13,
+	rotation: { y: 40 },
+	src: './Images/Honor Roll/22-23-Q1.png'
+})
+new Picture({
+	size: { x: 2198, y: 1696 },
+	scale: {
+		desktop: 0.005,
+		'1000': 0.004,
+		mobile: 0.003
+	},
+	linkedTo: 'education',
+	alignment: {
+		desktop: 'outside left',
+		'1300': 'outside bottom center-x',
+	},
+	offset: {
+		desktop: { x: -16, y: -5 },
+		'1300': { x: 0, y: -40 },
+		'1000': { x: 0, y: -33 },
+		mobile: { x: 0, y: -26 }
+	},
+	depth: 7,
+	rotation: { y: 0 },
+	src: './Images/Honor Roll/22-23-Q2.png'
+})
+new Picture({
+	size: { x: 2198, y: 1696 },
+	scale: {
+		desktop: 0.005,
+		'1000': 0.004,
+		mobile: 0.003
+	},
+	linkedTo: 'education',
+	alignment: {
+		desktop: 'outside left',
+		'1300': 'outside bottom center-x',
+	},
+	offset: {
+		desktop: { x: 1, y: -5 },
+		'1300': { x: 25, y: -40 },
+		'1000': { x: 25, y: -33 },
+		mobile: { x: 25, y: -26 }
+	},
+	depth: 13,
+	rotation: { y: -40 },
+	src: './Images/Honor Roll/22-23-Q3.png'
+})
 
 
-// addPicture({
+// new Picture({
 // 	size: { x: 2198, y: 1696 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: 1, y: -161, z: -20 },
-// 		mobile: { x: 1, y: -161, z: -20 }
+// 	scale: 0.005,
+// 	linkedTo: 'education',
+// 	alignment: {
+// 		desktop: 'outside left',
+// 		mobile: 'outside bottom',
 // 	},
+// 	offset: {
+// 		desktop: { x: -32, y: -42 },
+// 		'1300': { x: -2, y: -5 },
+// 		mobile: { x: 0, y: 0 }
+// 	},
+// 	depth: 10,
 // 	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
 // })
-// addPicture({
+// new Picture({
 // 	size: { x: 2208, y: 1696 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: -6, y: -169, z: -20 },
-// 		mobile: { x: -6, y: -169, z: -20 }
+// 	scale: 0.005,
+// 	linkedTo: 'education',
+// 	alignment: {
+// 		desktop: 'outside left',
+// 		mobile: 'outside bottom',
 // 	},
+// 	offset: {
+// 		desktop: { x: -2, y: -42 },
+// 		mobile: { x: 0, y: 0 }
+// 	},
+// 	depth: 10,
 // 	src: './Images/Certifications and Awards/Civic Knowledge.png'
 // })
-// addPicture({
+// new Picture({
 // 	size: { x: 2200, y: 1700 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: 2, y: -178, z: -20 },
-// 		mobile: { x: 2, y: -178, z: -20 }
+// 	scale: 0.005,
+// 	linkedTo: 'education',
+// 	alignment: {
+// 		desktop: 'outside bottom left',
+// 		'1300': 'outside left',
+// 		mobile: 'outside bottom',
 // 	},
+// 	offset: {
+// 		desktop: { x: -2, y: -1 },
+// 		'1300': { x: -2, y: 33 },
+// 		mobile: { x: 0, y: 0 }
+// 	},
+// 	depth: 10,
 // 	src: './Images/Certifications and Awards/OSHA Certifacate.png'
 // })
-// addPicture({
+// new Picture({
 // 	size: { x: 2200, y: 1700 },
-// 	scale: 0.006,
-// 	position: {
-// 		desktop: { x: -5, y: -186, z: -20 },
-// 		mobile: { x: -5, y: -186, z: -20 }
+// 	scale: 0.005,
+// 	linkedTo: 'education',
+// 	alignment: {
+// 		desktop: 'outside bottom',
+// 		'1300': 'outside left',
+// 		'1250': 'inside bottom',
+// 		mobile: 'outside bottom',
 // 	},
+// 	offset: {
+// 		desktop: { x: 0, y: -2 },
+// 		'1300': { x: -33, y: -5 },
+// 		'1250': { x: 5, y: 7 },
+// 		mobile: { x: 0, y: 0 }
+// 	},
+// 	depth: 10,
 // 	src: './Images/Certifications and Awards/ITF Certifacate.png'
 // })
 
@@ -490,9 +741,32 @@ function resizeWindow() {
 	renderer.setPixelRatio(window.devicePixelRatio)
 	renderer.setSize(window.innerWidth, window.innerHeight)
 
+	for (let i = 0; i < rows.length; i++) {
+		let row = rows[i]
+		let box = boxes[i]
+
+		let rowRect = row.getBoundingClientRect()
+		let boxRect = box.getBoundingClientRect()
+
+		if (rowRect.width / 20 * boxData[box.id].column + (boxData[box.id].width ?? boxRect.width) > rowRect.width) {
+			// row.style.backgroundColor = 'red'
+			box.style.gridColumnStart = 'none'
+			box.style.float = 'right'
+			if (!boxData[box.id].width) {
+				box.style.width = 'min-content'
+				boxData[box.id].width = boxRect.width
+				box.style.width = ''
+			}
+		} else {
+			row.style.backgroundColor = ''
+			box.style.gridColumnStart = ''
+			box.style.float = ''
+			box.style.width = ''
+		}
+	}
+
 	for (const picture of pictures) {
 		picture.setPosition()
-		// picture.resize(window.innerWidth / window.innerHeight)
 	}
 }
 resizeWindow()

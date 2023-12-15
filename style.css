@@ -21,6 +21,7 @@ body {
 	z-index: 99;
 	margin: 0px;
 	padding: 100px 0px;
+	width: 100%;
 }
 
 /* text */
@@ -40,6 +41,7 @@ a {
 	width: 100%;
 	display: grid;
 	grid-template-columns: repeat(20, 1fr);
+	/* overflow-x: scroll; */
 }
 
 .box {
@@ -47,7 +49,7 @@ a {
 	font-size: clamp(1.2rem, 2vmin, 1.7rem);
 	padding: clamp(1rem, 2vmin, 2.5rem);
 	border-radius: 3rem;
-	grid-column-end: 20;
+	grid-column-end: 21;
 	width: fit-content;
 }
 
@@ -113,6 +115,7 @@ li {
 
 #IT {
 	grid-column-start: 16;
+	/* float: right; */
 	max-width: 25rem;
 	margin-bottom: 13rem;
 }
@@ -124,7 +127,7 @@ li {
 }
 
 #education {
-	grid-column-start: 15;
+	grid-column-start: 14;
 	max-width: 30rem;
 	margin-bottom: 15rem;
 }
@@ -174,13 +177,27 @@ img, video {
 	max-width: 100%;
 }
 
-@media (max-width: 1000px) and (min-width: 600px) {
+@media (max-width: 1300px) {
+	#education {
+		margin-bottom: 40rem;
+	}
+}
+
+@media (max-width: 1000px) {
 	#header {
 		width: min-content;
+	}
+
+	#accomplishments {
+		margin-bottom: 30rem;
 	}
 }
 
 @media (max-width: 600px) {
+	#header {
+			width: max-content;
+		}
+
 	.row {
 		display: block;
 	}
@@ -188,6 +205,10 @@ img, video {
 	.row, .box {
 		width: 100%;
 		max-width: none !important;
+	}
+
+	#accomplishments {
+		margin-bottom: 32rem;
 	}
 }
 
