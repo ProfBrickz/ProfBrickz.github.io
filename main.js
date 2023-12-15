@@ -295,16 +295,18 @@ class Picture {
 		let offsetY = 0
 		let offsetYParts = null
 
+
 		if (typeof this.offset[offsetViewType].x == 'number') {
 			offsetX = window.innerWidth * this.offset[offsetViewType].x / 100
 		} else if (typeof this.offset[offsetViewType].x == 'string') {
-			offsetXParts = this.offset[offsetViewType].x.match(/(-?\d*\w+[%]?)/g);
+			offsetXParts = this.offset[offsetViewType].x.match(/(-?\d*\.?\w+[%]?)/g);
+
 
 			for (let part of offsetXParts) {
 				if (part.endsWith('px')) {
 					offsetX += Number(part.replace('px', ''))
 				} else if (part.endsWith('w%')) {
-					offsetX += window.innerWidth * Number(part.replace('%', '')) / 100
+					offsetX += window.innerWidth * Number(part.replace('w%', '')) / 100
 				} else if (part.endsWith('e%')) {
 					offsetX += rect.height * Number(part.replace('e%', '')) / 100
 				}
@@ -313,13 +315,13 @@ class Picture {
 		if (typeof this.offset[offsetViewType].y == 'number') {
 			offsetY = window.innerHeight * this.offset[offsetViewType].y / 100
 		} else if (typeof this.offset[offsetViewType].y == 'string') {
-			offsetYParts = this.offset[offsetViewType].y.match(/(-?\d*\w+[%]?)/g);
+			offsetYParts = this.offset[offsetViewType].y.match(/(-?\d*\.?\w+[%]?)/g);
 
 			for (let part of offsetYParts) {
 				if (part.endsWith('px')) {
 					offsetY += Number(part.replace('px', ''))
 				} else if (part.endsWith('w%')) {
-					offsetY += window.innerHeight * Number(part.replace('%', '')) / 100
+					offsetY += window.innerHeight * Number(part.replace('w%', '')) / 100
 				} else if (part.endsWith('e%')) {
 					offsetY += rect.height * Number(part.replace('e%', '')) / 100
 				}
@@ -380,8 +382,9 @@ class Picture {
 			}
 		}
 
+
 		if (offsetXParts) {
-			for (let part of offsetYParts) {
+			for (let part of offsetXParts) {
 				if (part.endsWith('height')) {
 					newPosition.x += height * Number(part.replace('height', ''))
 				} else if (part.endsWith('width')) {
@@ -401,10 +404,6 @@ class Picture {
 
 		this.picture.position.set(newPosition.x, newPosition.y, newPosition.z)
 
-		if (this.src.endsWith('21-22-Q2.png')) {
-			console.log(this.picture.position);
-		}
-
 		let windowScale = (window.innerWidth / window.innerHeight) ** 0.7
 		windowScale = Math.abs(windowScale)
 
@@ -419,7 +418,7 @@ class Picture {
 // pictures
 new Picture({
 	size: { x: 1843, y: 2305 },
-	scale: 0.0045,
+	scale: 0.004,
 	linkedTo: {
 		desktop: 'main',
 		mobile: 'skills'
@@ -429,7 +428,7 @@ new Picture({
 		mobile: 'outside top'
 	},
 	offset: {
-		desktop: { x: -10, y: -10 },
+		desktop: { x: -7, y: -7 },
 		mobile: { x: 0, y: -2 },
 		'850': { x: -5, y: -5 }
 	},
@@ -440,7 +439,7 @@ new Picture({
 // Software Development
 new Picture({
 	size: { x: 500, y: 500 },
-	scale: 0.007,
+	scale: 0.006,
 	linkedTo: 'software-dev',
 	alignment: {
 		desktop: 'outside right',
@@ -456,7 +455,7 @@ new Picture({
 })
 new Picture({
 	size: { x: 500, y: 500 },
-	scale: 0.007,
+	scale: 0.006,
 	linkedTo: 'software-dev',
 	alignment: {
 		desktop: 'outside right',
@@ -479,10 +478,10 @@ new Picture({
 		mobile: 'outside bottom'
 	},
 	offset: {
-		desktop: { x: 1, y: 3 },
+		desktop: { x: 0, y: 4 },
 		mobile: { x: 25, y: -7 }
 	},
-	depth: 10,
+	depth: 12,
 	rotation: { z: -30 },
 	src: './Images/Icons/GitHub.png'
 })
@@ -523,7 +522,7 @@ new Picture({
 // Accomplishments
 new Picture({
 	size: { x: 1696, y: 2198 },
-	scale: 0.006,
+	scale: 0.005,
 	linkedTo: 'accomplishments',
 	alignment: {
 		desktop: 'outside right',
@@ -544,7 +543,7 @@ new Picture({
 // Formal Education / Certifications
 new Picture({
 	size: { x: 2187, y: 1632 },
-	scale: 0.004,
+	scale: 0.0035,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside top left',
@@ -552,7 +551,7 @@ new Picture({
 	},
 	offset: {
 		desktop: { x: -35, y: '-1height-10e%' },
-		// '1300': { x: -25, y: -5 }
+		'1300': { x: -25, y: -5 }
 	},
 	depth: 13,
 	rotation: { y: 40 },
@@ -560,7 +559,7 @@ new Picture({
 })
 new Picture({
 	size: { x: 2187, y: 1622 },
-	scale: 0.004,
+	scale: 0.0035,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside top left',
@@ -576,7 +575,7 @@ new Picture({
 })
 new Picture({
 	size: { x: 2187, y: 1611 },
-	scale: 0.004,
+	scale: 0.0035,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside top left',
@@ -593,7 +592,7 @@ new Picture({
 
 new Picture({
 	size: { x: 2198, y: 1696 },
-	scale: 0.004,
+	scale: 0.0035,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside top left',
@@ -601,8 +600,7 @@ new Picture({
 	},
 	offset: {
 		desktop: { x: -35, y: '-2height-12e%' },
-		'1300': { x: -25, y: -60, },
-		'1000': { x: -25, y: -50, },
+		'1300': { x: -25, y: '-1height-7w%', },
 		// mobile: { x: -25, y: -26 }
 	},
 	depth: 13,
@@ -611,7 +609,7 @@ new Picture({
 })
 new Picture({
 	size: { x: 2198, y: 1696 },
-	scale: 0.004,
+	scale: 0.0035,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside top left',
@@ -619,7 +617,7 @@ new Picture({
 	},
 	offset: {
 		desktop: { x: -14, y: '-2height-12e%' },
-		'1300': { x: 0, y: -60 },
+		'1300': { x: 0, y: '-1height-7w%' },
 		// mobile: { x: 0, y: -26 }
 	},
 	depth: 7,
@@ -628,7 +626,7 @@ new Picture({
 })
 new Picture({
 	size: { x: 2198, y: 1696 },
-	scale: 0.004,
+	scale: 0.0035,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside top left',
@@ -636,7 +634,7 @@ new Picture({
 	},
 	offset: {
 		desktop: { x: 1, y: '-2height-12e%' },
-		'1300': { x: 25, y: -60 },
+		'1300': { x: 25, y: '-1height-7w%' },
 		// mobile: { x: 25, y: -26 }
 	},
 	depth: 13,
@@ -648,17 +646,17 @@ new Picture({
 new Picture({
 	size: { x: 2198, y: 1696 },
 	scale: {
-		desktop: 0.004
+		desktop: 0.0035
 	},
 	linkedTo: 'education',
 	alignment: {
-		desktop: 'outside left',
+		desktop: 'outside top left',
 		mobile: 'outside bottom',
 	},
 	offset: {
-		desktop: { x: -32, y: -42 },
+		desktop: { x: -32, y: '-3height-14e%' },
 		'1300': { x: -2, y: -5 },
-		mobile: { x: -25, y: -50 }
+		mobile: { x: -25, y: -47 }
 	},
 	depth: 10,
 	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
@@ -666,54 +664,54 @@ new Picture({
 new Picture({
 	size: { x: 2208, y: 1696 },
 	scale: {
-		desktop: 0.004
+		desktop: 0.0035
 	},
 	linkedTo: 'education',
 	alignment: {
-		desktop: 'outside left',
+		desktop: 'outside top left',
 		mobile: 'outside bottom',
 	},
 	offset: {
-		desktop: { x: -2, y: -42 },
-		mobile: { x: 25, y: -50 }
+		desktop: { x: -2, y: '-3height-14e%' },
+		mobile: { x: 25, y: -47 }
 	},
 	depth: 10,
 	src: './Images/Certifications and Awards/Civic Knowledge.png'
 })
 new Picture({
 	size: { x: 2200, y: 1700 },
-	scale: 0.004,
+	scale: 0.0035,
 	linkedTo: 'education',
 	alignment: {
-		desktop: 'outside bottom left',
+		desktop: 'outside top left',
 		'1300': 'outside left',
 		mobile: 'outside bottom',
 	},
 	offset: {
-		desktop: { x: -2, y: -1 },
+		desktop: { x: -2, y: '-4height-16e%' },
 		'1300': { x: -2, y: 33 },
-		mobile: { x: 0, y: 0 }
+		mobile: { x: -25, y: -67 }
 	},
-	depth: 10,
+	depth: 15,
 	src: './Images/Certifications and Awards/OSHA Certifacate.png'
 })
 new Picture({
 	size: { x: 2200, y: 1700 },
-	scale: 0.004,
+	scale: 0.0035,
 	linkedTo: 'education',
 	alignment: {
-		desktop: 'outside bottom',
+		desktop: 'outside top left',
 		'1300': 'outside left',
 		'1250': 'inside bottom',
 		mobile: 'outside bottom',
 	},
 	offset: {
-		desktop: { x: 0, y: -2 },
+		desktop: { x: '1width', y: '-4height-16e%' },
 		'1300': { x: -33, y: -5 },
 		'1250': { x: 5, y: 7 },
-		mobile: { x: 0, y: 0 }
+		mobile: { x: 25, y: -67 }
 	},
-	depth: 10,
+	depth: 15,
 	src: './Images/Certifications and Awards/ITF Certifacate.png'
 })
 
@@ -793,8 +791,8 @@ function resizeWindow() {
 		picture.update()
 	}
 }
-resizeWindow()
 window.onresize = resizeWindow
+resizeWindow()
 
 function animate(time) {
 	requestAnimationFrame(animate)
