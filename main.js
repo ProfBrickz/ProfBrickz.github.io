@@ -40,10 +40,10 @@ scene.background = spaceTexture
 
 
 // lights
-const pointLight = new THREE.PointLight(0xFFFFFF, 400, 40)
+const pointLight = new THREE.PointLight(0xFFFFFF, 100, 40)
 scene.add(pointLight)
 
-const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.4)
+const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5)
 scene.add(ambientLight)
 
 
@@ -298,30 +298,30 @@ class Picture {
 		if (typeof this.offset[offsetViewType].x == 'number') {
 			offsetX = window.innerWidth * this.offset[offsetViewType].x / 100
 		} else if (typeof this.offset[offsetViewType].x == 'string') {
-			offsetXParts = this.offset[offsetViewType].x.match(/-?\d+%|\d+\w+/g);
+			offsetXParts = this.offset[offsetViewType].x.match(/(-?\d*\w+[%]?)/g);
 
 			for (let part of offsetXParts) {
-				if (part.includes('%')) {
-					offsetX += window.innerWidth * Number(part.replace('%', '')) / 100
-				} else if (part.includes('height')) {
-					offsetX += height * Number(part.replace('height', ''))
-				} else if (part.includes('width')) {
-					offsetX += width * Number(part.replace('width', ''))
-				} else if (part.includes('px')) {
+				if (part.endsWith('px')) {
 					offsetX += Number(part.replace('px', ''))
+				} else if (part.endsWith('w%')) {
+					offsetX += window.innerWidth * Number(part.replace('%', '')) / 100
+				} else if (part.endsWith('e%')) {
+					offsetX += rect.height * Number(part.replace('e%', '')) / 100
 				}
 			}
 		}
 		if (typeof this.offset[offsetViewType].y == 'number') {
 			offsetY = window.innerHeight * this.offset[offsetViewType].y / 100
 		} else if (typeof this.offset[offsetViewType].y == 'string') {
-			offsetYParts = this.offset[offsetViewType].y.match(/-?\d+%|\d+\w+/g);
+			offsetYParts = this.offset[offsetViewType].y.match(/(-?\d*\w+[%]?)/g);
 
 			for (let part of offsetYParts) {
-				if (part.includes('%')) {
-					offsetY += window.innerHeight * Number(part.replace('%', '')) / 100
-				} if (part.includes('px')) {
+				if (part.endsWith('px')) {
 					offsetY += Number(part.replace('px', ''))
+				} else if (part.endsWith('w%')) {
+					offsetY += window.innerHeight * Number(part.replace('%', '')) / 100
+				} else if (part.endsWith('e%')) {
+					offsetY += rect.height * Number(part.replace('e%', '')) / 100
 				}
 			}
 		}
@@ -382,24 +382,28 @@ class Picture {
 
 		if (offsetXParts) {
 			for (let part of offsetYParts) {
-				if (part.includes('height')) {
+				if (part.endsWith('height')) {
 					newPosition.x += height * Number(part.replace('height', ''))
-				} else if (part.includes('width')) {
+				} else if (part.endsWith('width')) {
 					newPosition.x += width * Number(part.replace('width', ''))
 				}
 			}
 		}
 		if (offsetYParts) {
 			for (let part of offsetYParts) {
-				if (part.includes('height')) {
+				if (part.endsWith('height')) {
 					newPosition.y += height * Number(part.replace('height', ''))
-				} else if (part.includes('width')) {
+				} else if (part.endsWith('width')) {
 					newPosition.y += width * Number(part.replace('width', ''))
 				}
 			}
 		}
 
 		this.picture.position.set(newPosition.x, newPosition.y, newPosition.z)
+
+		if (this.src.endsWith('21-22-Q2.png')) {
+			console.log(this.picture.position);
+		}
 
 		let windowScale = (window.innerWidth / window.innerHeight) ** 0.7
 		windowScale = Math.abs(windowScale)
@@ -543,12 +547,12 @@ new Picture({
 	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
-		desktop: 'outside left',
+		desktop: 'outside top left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -35, y: 50 },
-		'1300': { x: -25, y: -5 }
+		desktop: { x: -35, y: '-1height-10e%' },
+		// '1300': { x: -25, y: -5 }
 	},
 	depth: 13,
 	rotation: { y: 40 },
@@ -559,11 +563,11 @@ new Picture({
 	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
-		desktop: 'outside left',
+		desktop: 'outside top left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -14, y: 50 },
+		desktop: { x: -14, y: '-1height-10e%' },
 		'1300': { x: 0, y: -5 }
 	},
 	depth: 7,
@@ -575,11 +579,11 @@ new Picture({
 	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
-		desktop: 'outside left',
+		desktop: 'outside top left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: 1, y: 50 },
+		desktop: { x: 1, y: '-1height-10e%' },
 		'1300': { x: 25, y: -5 }
 	},
 	depth: 13,
@@ -592,11 +596,11 @@ new Picture({
 	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
-		desktop: 'outside left',
+		desktop: 'outside top left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -35, y: -10 },
+		desktop: { x: -35, y: '-2height-12e%' },
 		'1300': { x: -25, y: -60, },
 		'1000': { x: -25, y: -50, },
 		// mobile: { x: -25, y: -26 }
@@ -610,11 +614,11 @@ new Picture({
 	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
-		desktop: 'outside left',
+		desktop: 'outside top left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -14, y: -10 },
+		desktop: { x: -14, y: '-2height-12e%' },
 		'1300': { x: 0, y: -60 },
 		// mobile: { x: 0, y: -26 }
 	},
@@ -627,11 +631,11 @@ new Picture({
 	scale: 0.004,
 	linkedTo: 'education',
 	alignment: {
-		desktop: 'outside left',
+		desktop: 'outside top left',
 		'1300': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: 1, y: -10 },
+		desktop: { x: 1, y: '-2height-12e%' },
 		'1300': { x: 25, y: -60 },
 		// mobile: { x: 25, y: -26 }
 	},
@@ -641,89 +645,79 @@ new Picture({
 })
 
 
-// new Picture({
-// 	size: { x: 2198, y: 1696 },
-// 	scale: {
-// 		desktop: 0.005,
-// 		'450': 0.004,
-// 		'370': 0.0035,
-// 	},
-// 	linkedTo: 'education',
-// 	alignment: {
-// 		desktop: 'outside left',
-// 		mobile: 'outside bottom',
-// 	},
-// 	offset: {
-// 		desktop: { x: -32, y: -42 },
-// 		'1300': { x: -2, y: -5 },
-// 		mobile: { x: -25, y: -50 }
-// 	},
-// 	depth: 10,
-// 	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
-// })
-// new Picture({
-// 	size: { x: 2208, y: 1696 },
-// 	scale: {
-// 		desktop: 0.005,
-// 		'450': 0.004,
-// 		'470': 0.0035,
-// 	},
-// 	linkedTo: 'education',
-// 	alignment: {
-// 		desktop: 'outside left',
-// 		mobile: 'outside bottom',
-// 	},
-// 	offset: {
-// 		desktop: { x: -2, y: -42 },
-// 		mobile: { x: 25, y: -50 }
-// 	},
-// 	depth: 10,
-// 	src: './Images/Certifications and Awards/Civic Knowledge.png'
-// })
-// new Picture({
-// 	size: { x: 2200, y: 1700 },
-// 	scale: 0.005,
-// 	linkedTo: 'education',
-// 	alignment: {
-// 		desktop: 'outside bottom left',
-// 		'1300': 'outside left',
-// 		mobile: 'outside bottom',
-// 	},
-// 	offset: {
-// 		desktop: { x: -2, y: -1 },
-// 		'1300': { x: -2, y: 33 },
-// 		mobile: { x: 0, y: 0 }
-// 	},
-// 	depth: 10,
-// 	src: './Images/Certifications and Awards/OSHA Certifacate.png'
-// })
-// new Picture({
-// 	size: { x: 2200, y: 1700 },
-// 	scale: 0.005,
-// 	linkedTo: 'education',
-// 	alignment: {
-// 		desktop: 'outside bottom',
-// 		'1300': 'outside left',
-// 		'1250': 'inside bottom',
-// 		mobile: 'outside bottom',
-// 	},
-// 	offset: {
-// 		desktop: { x: 0, y: -2 },
-// 		'1300': { x: -33, y: -5 },
-// 		'1250': { x: 5, y: 7 },
-// 		mobile: { x: 0, y: 0 }
-// 	},
-// 	depth: 10,
-// 	src: './Images/Certifications and Awards/ITF Certifacate.png'
-// })
+new Picture({
+	size: { x: 2198, y: 1696 },
+	scale: {
+		desktop: 0.004
+	},
+	linkedTo: 'education',
+	alignment: {
+		desktop: 'outside left',
+		mobile: 'outside bottom',
+	},
+	offset: {
+		desktop: { x: -32, y: -42 },
+		'1300': { x: -2, y: -5 },
+		mobile: { x: -25, y: -50 }
+	},
+	depth: 10,
+	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
+})
+new Picture({
+	size: { x: 2208, y: 1696 },
+	scale: {
+		desktop: 0.004
+	},
+	linkedTo: 'education',
+	alignment: {
+		desktop: 'outside left',
+		mobile: 'outside bottom',
+	},
+	offset: {
+		desktop: { x: -2, y: -42 },
+		mobile: { x: 25, y: -50 }
+	},
+	depth: 10,
+	src: './Images/Certifications and Awards/Civic Knowledge.png'
+})
+new Picture({
+	size: { x: 2200, y: 1700 },
+	scale: 0.004,
+	linkedTo: 'education',
+	alignment: {
+		desktop: 'outside bottom left',
+		'1300': 'outside left',
+		mobile: 'outside bottom',
+	},
+	offset: {
+		desktop: { x: -2, y: -1 },
+		'1300': { x: -2, y: 33 },
+		mobile: { x: 0, y: 0 }
+	},
+	depth: 10,
+	src: './Images/Certifications and Awards/OSHA Certifacate.png'
+})
+new Picture({
+	size: { x: 2200, y: 1700 },
+	scale: 0.004,
+	linkedTo: 'education',
+	alignment: {
+		desktop: 'outside bottom',
+		'1300': 'outside left',
+		'1250': 'inside bottom',
+		mobile: 'outside bottom',
+	},
+	offset: {
+		desktop: { x: 0, y: -2 },
+		'1300': { x: -33, y: -5 },
+		'1250': { x: 5, y: 7 },
+		mobile: { x: 0, y: 0 }
+	},
+	depth: 10,
+	src: './Images/Certifications and Awards/ITF Certifacate.png'
+})
 
-function isVisible(element) {
-	const rect = element.getBoundingClientRect()
-	const screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
-	return rect.bottom >= 0 && rect.top - screenHeight < 0
-}
 
-let fazLoopTimeout = null
 function scroll() {
 	const scrollAmount = document.body.getBoundingClientRect().top
 	const screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
