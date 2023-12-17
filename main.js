@@ -9,11 +9,6 @@ let boxes = document.getElementsByClassName('box')
 
 let boxData = {}
 
-// set rows
-for (let i = 0; i < rows.length; i++) {
-	rows[i].style.gridRow = i + 1
-}
-
 for (let box of boxes) {
 	boxData[box.id] = {
 		column: Number(window.getComputedStyle(box).gridColumnStart) - 1,
@@ -418,7 +413,11 @@ class Picture {
 // pictures
 new Picture({
 	size: { x: 1843, y: 2305 },
-	scale: 0.004,
+	scale: {
+		desktop: 0.0035,
+		'1000': 0.005,
+		'500': 0.006
+	},
 	linkedTo: {
 		desktop: 'main',
 		mobile: 'skills'
@@ -439,15 +438,18 @@ new Picture({
 // Software Development
 new Picture({
 	size: { x: 500, y: 500 },
-	scale: 0.006,
+	scale: {
+		desktop: 0.005,
+		'1000': 0.006
+	},
 	linkedTo: 'software-dev',
 	alignment: {
 		desktop: 'outside right',
-		mobile: 'outside bottom'
+		'700': 'outside bottom'
 	},
 	offset: {
 		desktop: { x: 5, y: 10 },
-		mobile: { x: -25, y: -5 }
+		'700': { x: -25, y: -5 }
 	},
 	depth: 11,
 	rotation: { y: 30 },
@@ -455,15 +457,18 @@ new Picture({
 })
 new Picture({
 	size: { x: 500, y: 500 },
-	scale: 0.006,
+	scale: {
+		desktop: 0.005,
+		'1000': 0.006
+	},
 	linkedTo: 'software-dev',
 	alignment: {
 		desktop: 'outside right',
-		mobile: 'outside bottom'
+		'700': 'outside bottom'
 	},
 	offset: {
 		desktop: { x: 4, y: -20 },
-		mobile: { x: 2, y: 0 }
+		'700': { x: 2, y: 0 }
 	},
 	depth: 10,
 	rotation: { y: 30, z: -15 },
@@ -471,15 +476,18 @@ new Picture({
 })
 new Picture({
 	size: { x: 2135, y: 2083 },
-	scale: 0.0015,
+	scale: {
+		desktop: 0.0011,
+		mobile: 0.0015
+	},
 	linkedTo: 'software-dev',
 	alignment: {
 		desktop: 'outside bottom right',
-		mobile: 'outside bottom'
+		'700': 'outside bottom'
 	},
 	offset: {
 		desktop: { x: 0, y: 4 },
-		mobile: { x: 25, y: -7 }
+		'700': { x: 25, y: -7 }
 	},
 	depth: 12,
 	rotation: { z: -30 },
@@ -489,7 +497,11 @@ new Picture({
 // Information Technology
 new Picture({
 	size: { x: 588, y: 588 },
-	scale: 0.005,
+	scale: {
+		desktop: 0.004,
+		'1000': 0.005,
+		mobile: 0.006
+	},
 	linkedTo: 'IT',
 	alignment: {
 		desktop: 'outside left',
@@ -504,7 +516,11 @@ new Picture({
 })
 new Picture({
 	size: { x: 512, y: 512 },
-	scale: 0.005,
+	scale: {
+		desktop: 0.004,
+		'1000': 0.005,
+		mobile: 0.006
+	},
 	linkedTo: 'IT',
 	alignment: {
 		desktop: 'outside left',
@@ -522,7 +538,11 @@ new Picture({
 // Accomplishments
 new Picture({
 	size: { x: 1696, y: 2198 },
-	scale: 0.005,
+	scale: {
+		desktop: 0.004,
+		'1000': 0.005,
+		'700': 0.006
+	},
 	linkedTo: 'accomplishments',
 	alignment: {
 		desktop: 'outside right',
@@ -531,7 +551,7 @@ new Picture({
 	offset: {
 		desktop: { x: 2, y: 3 },
 		mobile: { x: 0, y: 0 },
-		'1100': { x: -5, y: 3 },
+		'1100': { x: 0, y: 3 },
 		'1000': { x: 0, y: 0 }
 	},
 	depth: 15,
@@ -645,35 +665,31 @@ new Picture({
 
 new Picture({
 	size: { x: 2198, y: 1696 },
-	scale: {
-		desktop: 0.0035
-	},
+	scale: 0.0035,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside top left',
-		mobile: 'outside bottom',
+		'1100': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -32, y: '-3height-14e%' },
-		'1300': { x: -2, y: -5 },
-		mobile: { x: -25, y: -47 }
+		desktop: { x: -32, y: '-3height-20e%' },
+		'1300': { x: '-1width-5w%', y: '-2height-16e%' },
+		'1100': { x: -25, y: '-2height-10w%' }
 	},
 	depth: 10,
 	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
 })
 new Picture({
 	size: { x: 2208, y: 1696 },
-	scale: {
-		desktop: 0.0035
-	},
+	scale: 0.0035,
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside top left',
-		mobile: 'outside bottom',
+		'1100': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -2, y: '-3height-14e%' },
-		mobile: { x: 25, y: -47 }
+		desktop: { x: -2, y: '-3height-20e%' },
+		'1100': { x: 25, y: '-2height-10w%' }
 	},
 	depth: 10,
 	src: './Images/Certifications and Awards/Civic Knowledge.png'
@@ -684,13 +700,12 @@ new Picture({
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside top left',
-		'1300': 'outside left',
-		mobile: 'outside bottom',
+		'1100': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: -2, y: '-4height-16e%' },
-		'1300': { x: -2, y: 33 },
-		mobile: { x: -25, y: -67 }
+		desktop: { x: -2, y: '-4height-22e%' },
+		'1300': { x: -2, y: '-1height-14e%' },
+		'1100': { x: -25, y: '-3height-13w%' }
 	},
 	depth: 15,
 	src: './Images/Certifications and Awards/OSHA Certifacate.png'
@@ -701,15 +716,12 @@ new Picture({
 	linkedTo: 'education',
 	alignment: {
 		desktop: 'outside top left',
-		'1300': 'outside left',
-		'1250': 'inside bottom',
-		mobile: 'outside bottom',
+		'1100': 'outside bottom center-x',
 	},
 	offset: {
-		desktop: { x: '1width', y: '-4height-16e%' },
-		'1300': { x: -33, y: -5 },
-		'1250': { x: 5, y: 7 },
-		mobile: { x: 25, y: -67 }
+		desktop: { x: '1width', y: '-4height-22e%' },
+		'1300': { x: -2, y: '-2height-16e%' },
+		'1100': { x: 25, y: '-3height-13w%' }
 	},
 	depth: 15,
 	src: './Images/Certifications and Awards/ITF Certifacate.png'
@@ -770,7 +782,10 @@ function resizeWindow() {
 		let rowRect = row.getBoundingClientRect()
 		let boxRect = box.getBoundingClientRect()
 
-		if (rowRect.width / 20 * boxData[box.id].column + (boxData[box.id].width ?? boxRect.width) > rowRect.width) {
+		if (
+			boxData[box.id].column > 10 &&
+			rowRect.width / 20 * boxData[box.id].column + (boxData[box.id].width ?? boxRect.width) > rowRect.width
+		) {
 			// row.style.backgroundColor = 'red'
 			box.style.gridColumnStart = 'none'
 			box.style.float = 'right'
