@@ -86,6 +86,17 @@ class Picture {
 			}
 		}
 
+		if (
+			typeof rotation.x != 'undefined' ||
+			typeof rotation.y != 'undefined' ||
+			typeof rotation.z != 'undefined'
+		) {
+			rotation = {
+				desktop: structuredClone(rotation),
+				mobile: structuredClone(rotation)
+			}
+		}
+
 		if (!alignment.desktop) alignment.desktop = 'center'
 
 		if (typeof offset.x == 'number' && typeof offset.y == 'number') {
@@ -99,13 +110,19 @@ class Picture {
 		if (!offset.desktop.x) offset.desktop.x = 0
 		if (!offset.desktop.y) offset.desktop.y = 0
 
-		if (!rotation.x) rotation.x = 0
-		if (!rotation.y) rotation.y = 0
-		if (!rotation.z) rotation.z = 0
+		for (let view of Object.keys(rotation)) {
+			if (!rotation[view].x) rotation[view].x = 0
+			if (!rotation[view].y) rotation[view].y = 0
+			if (!rotation[view].z) rotation[view].z = 0
 
-		rotation.x = degToRad(rotation.x)
-		rotation.y = degToRad(rotation.y)
-		rotation.z = degToRad(rotation.z)
+			rotation[view].x = degToRad(rotation[view].x)
+			rotation[view].y = degToRad(rotation[view].y)
+			rotation[view].z = degToRad(rotation[view].z)
+		}
+		if (pictures.length == 0) {
+			console.log(rotation);
+		}
+
 
 		this.viewTypes = []
 
@@ -124,9 +141,14 @@ class Picture {
 				this.viewTypes.push(offsetKey)
 		}
 
+		for (let rotationKey of Object.keys(rotation)) {
+			if (!this.viewTypes.includes(rotationKey) && !isNaN(rotationKey))
+				this.viewTypes.push(rotationKey)
+		}
+
 		this.viewTypes = this.viewTypes.sort((a, b) => b - a)
 
-		this.id = id
+		this.id = pictures.length
 		this.size = size
 		this.scale = scale
 		this.linkedTo = linkedTo
@@ -162,13 +184,17 @@ class Picture {
 			side: THREE.DoubleSide
 		})
 		this.picture = new THREE.Mesh(geometry, mesh)
-		this.picture.rotation.set(rotation.x, rotation.y, rotation.z)
 
 		let scaleViewType = this.getViewType(this.scale)
 		this.picture.scale.set(
 			this.scale[scaleViewType],
 			this.scale[scaleViewType],
 			this.scale[scaleViewType]
+		)
+		this.picture.rotation.set(
+			this.rotation.desktop.x,
+			this.rotation.desktop.y,
+			this.rotation.desktop.z
 		)
 
 		scene.add(this.picture)
@@ -225,6 +251,7 @@ class Picture {
 		let alignmentViewType = 'desktop'
 		let offsetViewType = 'desktop'
 		let linkedToViewType = 'desktop'
+		let rotationViewType = 'desktop'
 		if (window.innerWidth <= 600) {
 			if (Object.keys(this.scale).includes('mobile'))
 				scaleViewType = 'mobile'
@@ -257,8 +284,20 @@ class Picture {
 				Object.keys(this.offset).includes(viewType) &&
 				!(Object.keys(this.offset).includes('mobile') && window.innerWidth <= 600 && Number(viewType) >= 600)
 			) offsetViewType = viewType
+			if (
+				Object.keys(this.rotation).includes(viewType) &&
+				!(Object.keys(this.rotation).includes('mobile') && window.innerWidth <= 600 && Number(viewType) >= 600)
+			) rotationViewType = viewType
 		}
 
+		// if (this.id == 1) {
+		// 	console.log(this.rotation[rotationViewType]);
+		// }
+		this.picture.rotation.set(
+			this.rotation[rotationViewType].x,
+			this.rotation[rotationViewType].y,
+			this.rotation[rotationViewType].z
+		)
 
 		let element = document.getElementById(this.linkedTo[linkedToViewType])
 		let rect = element.getBoundingClientRect()
@@ -676,7 +715,8 @@ new Picture({
 		'1300': { x: '-1width-5w%', y: '-2height-16e%' },
 		'1100': { x: -25, y: '-2height-10w%' }
 	},
-	depth: 10,
+	depth: 12,
+	rotation: { y: 30 },
 	src: './Images/Certifications and Awards/Outstanding Chemistry.png'
 })
 new Picture({
@@ -692,6 +732,7 @@ new Picture({
 		'1100': { x: 25, y: '-2height-10w%' }
 	},
 	depth: 10,
+	rotation: { y: -30 },
 	src: './Images/Certifications and Awards/Civic Knowledge.png'
 })
 new Picture({
@@ -708,6 +749,11 @@ new Picture({
 		'1100': { x: -25, y: '-3height-13w%' }
 	},
 	depth: 15,
+	rotation: {
+		desktop: { y: 30 },
+		'1300': { y: -30 },
+		'1100': { y: 30 }
+	},
 	src: './Images/Certifications and Awards/OSHA Certifacate.png'
 })
 new Picture({
@@ -724,6 +770,7 @@ new Picture({
 		'1100': { x: 25, y: '-3height-13w%' }
 	},
 	depth: 15,
+	rotation: { y: -30 },
 	src: './Images/Certifications and Awards/ITF Certifacate.png'
 })
 
