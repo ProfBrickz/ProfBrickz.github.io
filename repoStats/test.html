@@ -1,0 +1,504 @@
+<html data-theme="dark">
+
+    <head>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            html {
+                min-height: 100%
+            }
+
+            .ctxmenu {
+                position: fixed;
+                border: 1px solid #999;
+                padding: 2px 0;
+                box-shadow: #aaa 3px 3px 3px;
+                background: #fff;
+                margin: 0;
+                z-index: 9999;
+                overflow-y: auto;
+                font: 15px Verdana, sans-serif;
+                box-sizing: border-box
+            }
+
+            .ctxmenu li {
+                margin: 1px 0;
+                display: block;
+                position: relative;
+                user-select: none
+            }
+
+            .ctxmenu li.heading {
+                font-weight: bold;
+                margin-left: -5px
+            }
+
+            .ctxmenu li span {
+                display: block;
+                padding: 2px 20px;
+                cursor: default
+            }
+
+            .ctxmenu li a {
+                color: inherit;
+                text-decoration: none
+            }
+
+            .ctxmenu li.icon {
+                padding-left: 15px
+            }
+
+            .ctxmenu img.icon {
+                position: absolute;
+                width: 18px;
+                left: 10px;
+                top: 2px
+            }
+
+            .ctxmenu li.disabled {
+                color: #ccc
+            }
+
+            .ctxmenu li.divider {
+                border-bottom: 1px solid #aaa;
+                margin: 5px 0
+            }
+
+            .ctxmenu li.interactive:hover {
+                background: rgba(0, 0, 0, .1)
+            }
+
+            .ctxmenu li.submenu::after {
+                content: "";
+                position: absolute;
+                display: block;
+                top: 0;
+                bottom: 0;
+                right: .4em;
+                margin: auto .1rem auto auto;
+                border-right: 1px solid #000;
+                border-top: 1px solid #000;
+                transform: rotate(45deg);
+                width: .3rem;
+                height: .3rem
+            }
+
+            .ctxmenu li.submenu.disabled::after {
+                border-color: #ccc
+            }
+        </style>
+        <base href="">
+        <link rel="stylesheet" href="https://party.websim.ai/fonts.css?v=aa29febd8de5d3120253cd5275890e794585e333">
+        <link rel="stylesheet" href="https://party.websim.ai/ctxmenu.css?v=aa29febd8de5d3120253cd5275890e794585e333">
+
+
+        <title>repoStats</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            @import url('https://fonts.googleapis.com/css?family=Martian%20Mono:700|Martian%20Mono:400');
+
+            :root {
+                --font-scale: 1.333;
+                --small: calc(var(--p) / var(--font-scale));
+                --p: 1rem;
+                --h5: calc(var(--p) * var(--font-scale));
+                --h4: calc(var(--h5) * var(--font-scale));
+                --h3: calc(var(--h4) * var(--font-scale));
+                --h2: calc(var(--h3) * var(--font-scale));
+                --h1: calc(var(--h2) * var(--font-scale));
+            }
+
+            :root {
+                --text-light: hsl(281, 16%, 20%);
+                --background-light: hsl(280, 33%, 93%);
+                --primary-light: hsl(280, 46%, 30%);
+                --accent-light: hsl(280, 70%, 30%);
+
+                --text-dark: hsl(281, 16%, 80%);
+                --background-dark: hsl(280, 33%, 7%);
+                --primary-dark: hsl(280, 46%, 70%);
+                --accent-dark: hsl(280, 70%, 70%);
+            }
+
+            [data-theme="light"] {
+                --text: var(--text-light);
+                --background: var(--background-light);
+                --primary: var(--primary-light);
+                --accent: var(--accent-light);
+            }
+
+            [data-theme="dark"] {
+                --text: var(--text-dark);
+                --background: var(--background-dark);
+                --primary: var(--primary-dark);
+                --accent: var(--accent-dark);
+            }
+
+            body {
+                font-family: 'Martian Mono', monospace;
+                font-weight: 400;
+                background-color: var(--background);
+                color: var(--text);
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 2rem;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4,
+            h5 {
+                font-family: 'Martian Mono', monospace;
+                font-weight: 700;
+            }
+
+            html {
+                font-size: 100%;
+            }
+
+            .title {
+                color: var(--accent);
+                text-shadow: 0 0 10px var(--accent);
+                margin-bottom: 2rem;
+            }
+
+            .container {
+                background-color: var(--background);
+                border: 1px solid var(--primary);
+                border-radius: 8px;
+                padding: 1.5rem;
+                width: 100%;
+                max-width: 800px;
+                margin-top: 2rem;
+                transition: background-color 0.3s ease, border-color 0.3s ease;
+            }
+
+            .settings-container {
+                margin-bottom: 2rem;
+            }
+
+            .settings-form {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .form-group {
+                flex: 1;
+                min-width: 200px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 0.5rem;
+                color: var(--text);
+            }
+
+            input,
+            select {
+                width: 100%;
+                padding: 0.5rem;
+                border-radius: 4px;
+                border: 1px solid var(--primary);
+                background-color: var(--background);
+                color: var(--text);
+                font-family: 'Martian Mono', monospace;
+                transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            }
+
+            .repo-link {
+                display: block;
+                margin-top: 0.5rem;
+                font-size: 0.8rem;
+                color: var(--accent);
+                text-decoration: none;
+            }
+
+            .repo-link:hover {
+                text-decoration: underline;
+            }
+
+            button {
+                padding: 0.5rem 1rem;
+                background-color: var(--accent);
+                color: var(--background);
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-family: 'Martian Mono', monospace;
+                font-weight: 700;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+            button:hover {
+                background-color: var(--primary);
+            }
+
+            .tree,
+            .tree ul {
+                list-style-type: none;
+                padding-left: 1.5rem;
+            }
+
+            .tree {
+                padding-left: 0;
+            }
+
+            .tree li {
+                position: relative;
+                padding: 0.5rem 0;
+            }
+
+            .tree li::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -1rem;
+                border-left: 1px solid var(--primary);
+                height: 100%;
+                transition: border-color 0.3s ease;
+            }
+
+            .tree li:last-child::before {
+                height: 1rem;
+            }
+
+            .tree li::after {
+                content: '';
+                position: absolute;
+                top: 1rem;
+                left: -1rem;
+                border-top: 1px solid var(--primary);
+                width: 1rem;
+                transition: border-color 0.3s ease;
+            }
+
+            .tree-toggler {
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .tree-toggler::before {
+                content: '▶';
+                display: inline-block;
+                margin-right: 0.5rem;
+                transition: transform 0.3s ease;
+            }
+
+            .tree-toggler.open::before {
+                transform: rotate(90deg);
+            }
+
+            .tree-content {
+                display: none;
+                margin-top: 0.5rem;
+            }
+
+            .tree-content.open {
+                display: block;
+            }
+
+            .stat-value {
+                color: var(--accent);
+                font-weight: bold;
+                margin-left: 0.5rem;
+            }
+
+            /* Theme toggle styles */
+            .theme-toggle-wrapper {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+            }
+
+            .theme-toggle-label {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+            }
+
+            .theme-toggle-checkbox {
+                display: none;
+            }
+
+            .theme-toggle-switch {
+                width: 60px;
+                height: 30px;
+                background-color: var(--primary);
+                border-radius: 15px;
+                position: relative;
+                transition: background-color 0.3s ease;
+            }
+
+            .theme-toggle-switch::before {
+                content: '🌙';
+                position: absolute;
+                top: 50%;
+                left: 5px;
+                transform: translateY(-50%);
+                font-size: 20px;
+                transition: transform 0.3s ease;
+            }
+
+            .theme-toggle-checkbox:checked+.theme-toggle-switch::before {
+                content: '☀️';
+                transform: translateY(-50%) translateX(30px);
+            }
+
+            .theme-toggle-switch::after {
+                content: '';
+                position: absolute;
+                top: 3px;
+                left: 3px;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background-color: var(--background);
+                transition: transform 0.3s ease;
+            }
+
+            .theme-toggle-checkbox:checked+.theme-toggle-switch::after {
+                transform: translateX(30px);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="theme-toggle-wrapper">
+            <label class="theme-toggle-label">
+                <input type="checkbox" class="theme-toggle-checkbox" id="themeToggle">
+                <span class="theme-toggle-switch"></span>
+            </label>
+        </div>
+        <h1 class="title">repoStats</h1>
+
+        <div class="container settings-container">
+            <form class="settings-form" method="GET" action="https://websim.ai/repoStats">
+                <div class="form-group">
+                    <label for="repo">Repository:</label>
+                    <input type="text" id="repo" name="repo" value="websim/ai" placeholder="username/repository"
+                        required="">
+                    <a href="https://github.com/websim/ai" class="repo-link" target="_blank">View on
+                        GitHub</a>
+                </div>
+                <div class="form-group">
+                    <label for="period">Time Period:</label>
+                    <select id="period" name="period">
+                        <option value="7d">Last 7 days</option>
+                        <option value="30d">Last 30 days</option>
+                        <option value="3m">Last 3 months</option>
+                        <option value="1y">Last year</option>
+                        <option value="all">All time</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit">Update Stats</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="container stats-container">
+            <ul class="tree">
+                <li>
+                    <span class="tree-toggler">Issues <span class="stat-value">(183)</span></span>
+                    <ul class="tree-content">
+                        <li>
+                            <span class="tree-toggler">Open <span class="stat-value">(132)</span></span>
+                            <ul class="tree-content">
+                                <li>ProfBrickz <span class="stat-value">(78)</span></li>
+                                <li>csmith1188 <span class="stat-value">(54)</span></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="tree-toggler">Closed <span class="stat-value">(51)</span></span>
+                            <ul class="tree-content">
+                                <li>ProfBrickz <span class="stat-value">(30)</span></li>
+                                <li>csmith1188 <span class="stat-value">(21)</span></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span class="tree-toggler">Commits <span class="stat-value">(2,731)</span></span>
+                    <ul class="tree-content">
+                        <li>ProfBrickz <span class="stat-value">(1,523)</span></li>
+                        <li>csmith1188 <span class="stat-value">(1,208)</span></li>
+                    </ul>
+                </li>
+                <li>
+                    <span class="tree-toggler">Pull Requests <span class="stat-value">(95)</span></span>
+                    <ul class="tree-content">
+                        <li>ProfBrickz <span class="stat-value">(52)</span></li>
+                        <li>csmith1188 <span class="stat-value">(43)</span></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <script>
+            document.querySelectorAll('.tree-toggler').forEach(toggler => {
+                toggler.addEventListener('click', function () {
+                    this.classList.toggle('open');
+                    this.nextElementSibling.classList.toggle('open');
+                });
+            });
+
+            // Update repo link when input changes
+            document.getElementById('repo').addEventListener('input', function () {
+                const repoLink = document.querySelector('.repo-link');
+                repoLink.href = `https://github.com/${this.value}`;
+            });
+
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                themeToggle.checked = theme === 'dark';
+            }
+
+            function loadTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) {
+                    setTheme(savedTheme);
+                } else {
+                    const preferredScheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    setTheme(preferredScheme);
+                }
+            }
+
+            themeToggle.addEventListener('change', () => {
+                const theme = themeToggle.checked ? 'dark' : 'light';
+                setTheme(theme);
+            });
+
+            loadTheme();
+        </script>
+
+    </body>
+
+</html>
