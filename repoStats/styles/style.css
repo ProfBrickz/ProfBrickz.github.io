@@ -42,12 +42,8 @@ body {
 
 	visibility: hidden;
 	transition-property: color, background-color, border-color, transform;
-	/* transition-duration: 0.3s; */
+	transition-duration: 0.3s;
 	transition-timing-function: ease;
-}
-
-* {
-	transition: inherit;
 }
 
 h1,
@@ -160,7 +156,6 @@ h5 {
 }
 
 
-
 .container {
 	background-color: var(--background);
 	border-width: 0.1rem;
@@ -230,7 +225,6 @@ button {
 	cursor: pointer;
 	font-family: 'Martian Mono', monospace;
 	font-weight: 700;
-	transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 button:hover {
@@ -259,7 +253,6 @@ button:hover {
 	left: -1rem;
 	border-left: 1px solid var(--primary);
 	height: 100%;
-	transition: border-color 0.3s ease;
 }
 
 .tree-item:last-child::before {
@@ -273,7 +266,6 @@ button:hover {
 	left: -1rem;
 	border-top: 1px solid var(--primary);
 	width: 1rem;
-	transition: border-color 0.3s ease;
 }
 
 .tree-toggler {
@@ -285,7 +277,6 @@ button:hover {
 	content: '▶';
 	display: inline-block;
 	margin-right: 0.5rem;
-	transition: transform 0.3s ease;
 }
 
 .tree-toggler.open::before {
@@ -305,4 +296,19 @@ button:hover {
 	color: var(--accent);
 	font-weight: bold;
 	margin-left: 0.5rem;
+}
+
+.hidden {
+	display: none;
+}
+
+.error-message {
+	color: var(--error);
+	font-size: 0.9rem;
+	margin-top: 0.6rem;
+}
+
+
+.setting:has(.error-message.visible) input {
+	border-color: var(--error);
 }

@@ -63,4 +63,6 @@ html[data-theme="light"] {
 	--accent-800: hsl(269, 71%, 20%);
 	--accent-900: hsl(269, 69%, 10%);
 	--accent-950: hsl(267, 69%, 5%);
+
+	--error: hsl(0, 70%, 50%);
 }
