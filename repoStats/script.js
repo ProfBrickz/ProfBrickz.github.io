@@ -69,29 +69,31 @@ function makeBranch(branch, name) {
 function clearRepo() {
    repo = {
       name: '',
-      period: null,
-      from: null,
+      period: '',
+      defaultBranch: '',
       branches: [],
-      contributors: {}
+      contributors: [],
+      issues: [],
+      commits: [],
+      pullRequests: []
    }
 
-   stats = {
-      issues: {
-         'Closed issue assigned': {},
-         'Percent of closed issues you assigned': {},
-         'Closed issue authors': {},
-         'Percent of closed issues you made': {},
-         'Open issue authors': {},
-         'Percent of open issues you made': {},
-         'Issues opened and closed by the same person': {},
-         'Percent of issues you opened and also closed': {}
-      }
+   stats = {}
+}
+
+function toggleSettings(disable) {
+   let settingInputs = document.querySelectorAll(
+      '.setting input:not(#repo-input), .setting select'
+   )
+
+   for (let settingInput of settingInputs) {
+      settingInput.disabled = disable
    }
 }
 
 function validateRepoName() {
    try {
-      let repoName = repoInput.value.trim()
+      let repoName = repoInput.value
       let [username, repository] = repoName.split('/')
 
       let messages = []
@@ -113,7 +115,7 @@ function validateRepoName() {
             messages.push('Username is too long (maximum is 39 characters)')
          }
       } else {
-         messages.push('Please enter a username')
+         messages.push('Missing username')
       }
 
       // Repository validation
@@ -127,7 +129,9 @@ function validateRepoName() {
             )
          }
       } else {
-         messages.push('Please enter a repository')
+         messages.push(
+            'Missing repository or Missing / between username and repository'
+         )
       }
 
       if (messages.length > 0) {
@@ -142,6 +146,7 @@ function validateRepoName() {
 
          repoError.classList.add('hidden')
       }
+      return messages
    } catch (error) {
       console.error(error)
 
@@ -166,6 +171,10 @@ async function checkRepoExistence() {
          repoLink.href = `https://github.com/${repoName}`
 
          repo.name = repoName
+         repo.defaultBranch = response.data.default_branch
+
+         getBranches()
+         toggleSettings(false)
       } else {
          repoError.innerText = `Unexpected status code: ${response.status}`
          repoError.classList.remove('hidden')
@@ -174,9 +183,10 @@ async function checkRepoExistence() {
          repoLink.href = ''
 
          clearRepo()
+         toggleSettings(true)
       }
    } catch (error) {
-      if (error.response.status === 404) {
+      if (error?.response?.status === 404) {
          repoError.innerText = 'Repository does not exist'
          repoError.classList.remove('hidden')
 
@@ -184,6 +194,7 @@ async function checkRepoExistence() {
          repoLink.href = ''
 
          clearRepo()
+         toggleSettings(true)
       } else {
          console.error(error)
 
@@ -194,32 +205,53 @@ async function checkRepoExistence() {
          repoLink.href = ''
 
          clearRepo()
+         toggleSettings(true)
       }
    }
 }
 
-// variables
-let repo = {}
-let stats = {}
-let themeLoaded = false
+async function getBranches() {
+   try {
+      let branches = []
+      let page = 1
+      const perPage = 100
 
-clearRepo()
+      do {
+         try {
+            let response = await axios.get(
+               `https://api.github.com/repos/${repo.name}/branches?per_page=${perPage}&page=${page}`
+            )
 
-// HTML elements
-const themeToggle = document.getElementById('theme-toggle-checkbox')
-const themeToggleSwitch = document.getElementById('theme-toggle-switch')
-const lightThemeStyle = document.getElementById('light-theme-style')
-const darkThemeStyle = document.getElementById('dark-theme-style')
-const lightThemeIcon = document.getElementById('light-theme-icon')
-const darkThemeIcon = document.getElementById('dark-theme-icon')
-const repoInput = document.getElementById('repo-input')
-const repoPeriod = document.getElementById('repo-period')
-const treeTogglers = document.getElementsByClassName('tree-toggler')
-const tree = document.getElementById('tree')
-const repoLink = document.getElementById('repo-link')
-const repoError = document.getElementById('repo-error')
+            if (response.status === 200 && response.data.length > 0) {
+               branches = branches.concat(response.data)
+               page++
+            } else {
+               break
+            }
+         } catch (error) {
+            console.error('Error fetching branches:', error)
+            throw error
+         }
+      } while (true)
 
-// Theme toggle functionality
+      repo.branches = branches.map((branch) => branch.name)
+
+      setBranches()
+   } catch (error) {}
+}
+
+function setBranches() {
+   for (let branch of repo.branches) {
+      let option = document.createElement('option')
+      option.value = branch
+      option.textContent = branch
+
+      branchInput.appendChild(option)
+   }
+
+   branchInput.value = repo.defaultBranch
+}
+
 function setTheme(theme) {
    localStorage.setItem('theme', theme)
    themeToggle.checked = theme === 'dark'
@@ -235,6 +267,35 @@ function setTheme(theme) {
       themeLoaded = true
    }
 }
+
+// variables
+let repo = {
+   name: '',
+   period: '',
+   defaultBranch: '',
+   branches: [],
+   contributors: [],
+   issues: [],
+   commits: [],
+   pullRequests: []
+}
+let stats = {}
+let themeLoaded = false
+
+// HTML elements
+const themeToggle = document.getElementById('theme-toggle-checkbox')
+const themeToggleSwitch = document.getElementById('theme-toggle-switch')
+const lightThemeStyle = document.getElementById('light-theme-style')
+const darkThemeStyle = document.getElementById('dark-theme-style')
+const lightThemeIcon = document.getElementById('light-theme-icon')
+const darkThemeIcon = document.getElementById('dark-theme-icon')
+const repoInput = document.getElementById('repo-input')
+const repoPeriod = document.getElementById('repo-period')
+const treeTogglers = document.getElementsByClassName('tree-toggler')
+const tree = document.getElementById('tree')
+const repoLink = document.getElementById('repo-link')
+const repoError = document.getElementById('repo-error')
+const branchInput = document.getElementById('branch-input')
 
 // Load theme
 const savedTheme = localStorage.getItem('theme')
@@ -259,7 +320,11 @@ repoInput.addEventListener('keydown', (event) => {
       checkRepoExistence()
 
       repoInput.blur()
-   } else validateRepoName()
+   }
+})
+
+repoInput.addEventListener('input', () => {
+   validateRepoName()
 })
 
 repoInput.addEventListener('blur', checkRepoExistence)

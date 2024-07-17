@@ -1,42 +1,22 @@
 <html lang="en">
    <head>
       <meta charset="UTF-8" />
-      <meta
-         name="viewport"
-         content="width=device-width, initial-scale=1.0"
-      />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>repoStats</title>
-      <link
-         rel="stylesheet"
-         href="./styles/style.css"
-      />
-      <link
-         id="light-theme-style"
-         rel="stylesheet"
-         href="./styles/light.css"
-      />
-      <link
-         id="dark-theme-style"
-         rel="stylesheet"
-         href="./styles/dark.css"
-      />
+      <link rel="stylesheet" href="./styles/style.css" />
+      <link id="light-theme-style" rel="stylesheet" href="./styles/light.css" />
+      <link id="dark-theme-style" rel="stylesheet" href="./styles/dark.css" />
       <script
          type="module"
          src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
       ></script>
-      <script
-         type="module"
-         src="script.js"
-      ></script>
+      <script type="module" src="script.js"></script>
    </head>
 
    <body>
       <div id="theme-toggle-wrapper">
          <label id="theme-toggle-label">
-            <input
-               type="checkbox"
-               id="theme-toggle-checkbox"
-            />
+            <input type="checkbox" id="theme-toggle-checkbox" />
             <div id="theme-toggle-switch">
                <svg
                   id="light-theme-icon"
@@ -51,59 +31,15 @@
                   stroke-linejoin="round"
                   xmlns="http://www.w3.org/2000/svg"
                >
-                  <circle
-                     cx="12"
-                     cy="12"
-                     r="5"
-                  ></circle>
-                  <line
-                     x1="12"
-                     y1="1"
-                     x2="12"
-                     y2="3"
-                  ></line>
-                  <line
-                     x1="12"
-                     y1="21"
-                     x2="12"
-                     y2="23"
-                  ></line>
-                  <line
-                     x1="4.22"
-                     y1="4.22"
-                     x2="5.64"
-                     y2="5.64"
-                  ></line>
-                  <line
-                     x1="18.36"
-                     y1="18.36"
-                     x2="19.78"
-                     y2="19.78"
-                  ></line>
-                  <line
-                     x1="1"
-                     y1="12"
-                     x2="3"
-                     y2="12"
-                  ></line>
-                  <line
-                     x1="21"
-                     y1="12"
-                     x2="23"
-                     y2="12"
-                  ></line>
-                  <line
-                     x1="4.22"
-                     y1="19.78"
-                     x2="5.64"
-                     y2="18.36"
-                  ></line>
-                  <line
-                     x1="18.36"
-                     y1="5.64"
-                     x2="19.78"
-                     y2="4.22"
-                  ></line>
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                </svg>
                <svg
                   id="dark-theme-icon"
@@ -125,24 +61,26 @@
          </label>
       </div>
       <h1 id="title">repoStats</h1>
-      <div
-         id="settings"
-         class="container"
-      >
+      <div id="settings" class="container">
          <div class="setting">
             <label for="repo-input">Repository:</label>
+            <datalist id="repo-list">
+               <option value="csmith1188/Formbar.js"></option>
+               <option value="csmith1188/formPix"></option>
+               <option value="CP2324/docpacs2324"></option>
+               <option value="ProfBrickz/ProfBrickz.github.io"></option>
+               <option value="ProfBrickz/LegoSetTracker"></option>
+               <option value="ProfBrickz/RepoStats"></option>
+            </datalist>
             <input
                id="repo-input"
                type="text"
                name="repo-input"
-               placeholder="username/repository"
-               title="Format: username/repository"
+               placeholder="username(or organization)/repository"
                autocomplete="off"
+               list="repo-list"
             />
-            <div
-               id="repo-error"
-               class="error-message hidden"
-            ></div>
+            <div id="repo-error" class="error-message hidden"></div>
             <a
                id="repo-link"
                class="hidden"
@@ -153,87 +91,22 @@
             </a>
          </div>
          <div class="setting">
+            <label for="branch-input">Branch:</label>
+            <select id="branch-input" name="branch-input" disabled></select>
+         </div>
+         <div class="setting">
             <label for="period">Time Period:</label>
-            <select
-               id="period"
-               name="period"
-            >
+            <select id="period" name="period" disabled>
                <option value="7d">Last 7 days</option>
                <option value="30d">Last 30 days</option>
                <option value="3m">Last 3 months</option>
                <option value="1y">Last year</option>
-               <option value="all">All time</option>
+               <option value="all" selected>All time</option>
             </select>
          </div>
-         <div class="setting">
-            <button>Update Stats</button>
-         </div>
       </div>
-      <div
-         id="stats"
-         class="container"
-      >
-         <ul id="tree">
-            <li class="tree-item">
-               <span class="tree-toggler"
-                  >Issues <span class="stat-value">(183)</span></span
-               >
-               <ul class="branch">
-                  <li class="tree-item">
-                     <span class="tree-toggler"
-                        >Open <span class="stat-value">(132)</span></span
-                     >
-                     <ul class="branch">
-                        <li class="tree-item">
-                           ProfBrickz <span class="stat-value">(78)</span>
-                        </li>
-                        <li class="tree-item">
-                           csmith1188 <span class="stat-value">(54)</span>
-                        </li>
-                     </ul>
-                  </li>
-                  <li class="tree-item">
-                     <span class="tree-toggler"
-                        >Closed <span class="stat-value">(51)</span></span
-                     >
-                     <ul class="branch">
-                        <li class="tree-item">
-                           ProfBrickz <span class="stat-value">(30)</span>
-                        </li>
-                        <li class="tree-item">
-                           csmith1188 <span class="stat-value">(21)</span>
-                        </li>
-                     </ul>
-                  </li>
-               </ul>
-            </li>
-            <li class="tree-item">
-               <span class="tree-toggler"
-                  >Commits <span class="stat-value">(2,731)</span></span
-               >
-               <ul class="branch">
-                  <li class="tree-item">
-                     ProfBrickz <span class="stat-value">(1,523)</span>
-                  </li>
-                  <li class="tree-item">
-                     csmith1188 <span class="stat-value">(1,208)</span>
-                  </li>
-               </ul>
-            </li>
-            <li class="tree-item">
-               <span class="tree-toggler"
-                  >Pull Requests <span class="stat-value">(95)</span></span
-               >
-               <ul class="branch">
-                  <li class="tree-item">
-                     ProfBrickz <span class="stat-value">(52)</span>
-                  </li>
-                  <li class="tree-item">
-                     csmith1188 <span class="stat-value">(43)</span>
-                  </li>
-               </ul>
-            </li>
-         </ul>
+      <div id="stats" class="container">
+         <ul id="tree"></ul>
       </div>
    </body>
 </html>
