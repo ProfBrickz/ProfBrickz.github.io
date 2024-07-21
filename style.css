@@ -33,7 +33,7 @@ body {
 }
 
 a {
-	color:hsl(193, 72%, 53%);
+	color: hsl(193, 72%, 53%);
 }
 
 /* grid */
@@ -58,11 +58,16 @@ a {
 	text-align: center;
 }
 
-p, h1, h2, h3 {
+p,
+h1,
+h2,
+h3 {
 	margin: 0px;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
 	line-height: 1.5;
 	color: hsl(34, 100%, 50%);
 }
@@ -171,7 +176,8 @@ li {
 	max-width: 80rem;
 }
 
-img, video {
+img,
+video {
 	width: clamp(350px, 95vw, 1500px);
 	margin-top: clamp(1rem, 5vmin, 3rem);
 	max-width: 100%;
@@ -201,14 +207,15 @@ img, video {
 
 @media (max-width: 600px) {
 	#header {
-			width: max-content;
-		}
+		width: max-content;
+	}
 
 	.row {
 		display: flex;
 	}
 
-	.row, .box {
+	.row,
+	.box {
 		width: 100%;
 		max-width: none !important;
 	}
@@ -224,6 +231,6 @@ img, video {
 
 @media (max-width: 400px) {
 	.box:not(#software-dev) > ul {
-			columns: 1;
+		columns: 1;
 	}
 }
