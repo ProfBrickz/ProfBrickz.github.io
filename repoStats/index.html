@@ -1,15 +1,21 @@
+<!DOCTYPE html>
 <html lang="en">
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>repoStats</title>
-      <link rel="stylesheet" href="./styles/style.css" />
-      <link id="light-theme-style" rel="stylesheet" href="./styles/light.css" />
-      <link id="dark-theme-style" rel="stylesheet" href="./styles/dark.css" />
+      <link
+         rel="stylesheet"
+         href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.js"></script>
       <script
          type="module"
          src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
       ></script>
+      <link rel="stylesheet" href="./styles/style.css" />
+      <link id="light-theme-style" rel="stylesheet" href="./styles/light.css" />
+      <link id="dark-theme-style" rel="stylesheet" href="./styles/dark.css" />
       <script type="module" src="script.js"></script>
    </head>
 
@@ -61,7 +67,7 @@
          </label>
       </div>
       <h1 id="title">repoStats</h1>
-      <div id="settings" class="container">
+      <div id="settings" class="container scrollable">
          <div class="setting">
             <label for="repo-input">Repository:</label>
             <datalist id="repo-list">
@@ -76,7 +82,7 @@
                id="repo-input"
                type="text"
                name="repo-input"
-               placeholder="username(or organization)/repository"
+               placeholder="username/repository"
                autocomplete="off"
                list="repo-list"
             />
@@ -92,21 +98,23 @@
          </div>
          <div class="setting">
             <label for="branch-input">Branch:</label>
-            <select id="branch-input" name="branch-input" disabled></select>
+            <select id="branch-input" name="branch-input"></select>
          </div>
          <div class="setting">
-            <label for="period">Time Period:</label>
-            <select id="period" name="period" disabled>
+            <label for="period-input">Time Period:</label>
+            <select id="period-input" name="period-input">
                <option value="7d">Last 7 days</option>
                <option value="30d">Last 30 days</option>
                <option value="3m">Last 3 months</option>
                <option value="1y">Last year</option>
-               <option value="all" selected>All time</option>
+               <option value="all">All time</option>
             </select>
          </div>
       </div>
       <div id="stats" class="container">
-         <ul id="tree"></ul>
+         <div class="scroll-container">
+            <div id="tree"></div>
+         </div>
       </div>
    </body>
 </html>

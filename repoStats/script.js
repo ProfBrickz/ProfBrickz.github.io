@@ -67,6 +67,14 @@ function makeBranch(branch, name) {
 }
 
 function clearRepo() {
+   repoLink.classList.add('hidden')
+   repoLink.href = ''
+
+   branchSelect.clear()
+   branchSelect.clearOptions()
+   branchSelect.disable()
+   periodSelect.disable()
+
    repo = {
       name: '',
       period: '',
@@ -139,11 +147,9 @@ function validateRepoName() {
 
          repoError.classList.remove('hidden')
 
-         repoLink.classList.add('hidden')
-         repoLink.href = ''
+         clearRepo()
       } else {
          repoError.innerText = ''
-
          repoError.classList.add('hidden')
       }
       return messages
@@ -153,8 +159,7 @@ function validateRepoName() {
       repoError.innerText = 'Unknown error'
       repoError.classList.remove('hidden')
 
-      repoLink.classList.add('hidden')
-      repoLink.href = ''
+      clearRepo()
    }
 }
 
@@ -173,14 +178,14 @@ async function checkRepoExistence() {
          repo.name = repoName
          repo.defaultBranch = response.data.default_branch
 
+         branchSelect.enable()
+         periodSelect.enable()
+
          getBranches()
          toggleSettings(false)
       } else {
          repoError.innerText = `Unexpected status code: ${response.status}`
          repoError.classList.remove('hidden')
-
-         repoLink.classList.add('hidden')
-         repoLink.href = ''
 
          clearRepo()
          toggleSettings(true)
@@ -190,9 +195,6 @@ async function checkRepoExistence() {
          repoError.innerText = 'Repository does not exist'
          repoError.classList.remove('hidden')
 
-         repoLink.classList.add('hidden')
-         repoLink.href = ''
-
          clearRepo()
          toggleSettings(true)
       } else {
@@ -200,9 +202,6 @@ async function checkRepoExistence() {
 
          repoError.innerText = 'Unknown error'
          repoError.classList.remove('hidden')
-
-         repoLink.classList.add('hidden')
-         repoLink.href = ''
 
          clearRepo()
          toggleSettings(true)
@@ -242,14 +241,18 @@ async function getBranches() {
 
 function setBranches() {
    for (let branch of repo.branches) {
-      let option = document.createElement('option')
-      option.value = branch
-      option.textContent = branch
+      // let option = document.createElement("option");
+      // option.value = branch;
+      // option.textContent = branch;
 
-      branchInput.appendChild(option)
+      // branchInput.appendChild(option);
+      branchSelect.addOption({
+         value: branch,
+         text: branch
+      })
    }
 
-   branchInput.value = repo.defaultBranch
+   branchSelect.addItem(repo.defaultBranch)
 }
 
 function setTheme(theme) {
@@ -328,3 +331,17 @@ repoInput.addEventListener('input', () => {
 })
 
 repoInput.addEventListener('blur', checkRepoExistence)
+
+// Selects
+let branchSelect = new TomSelect('#branch-input', {
+   plugins: ['dropdown_input'],
+   maxOptions: null,
+   maxItems: 1
+})
+let periodSelect = new TomSelect('#period-input', {
+   plugins: ['dropdown_input'],
+   maxOptions: null,
+   maxItems: 1
+})
+branchSelect.disable()
+periodSelect.disable()
