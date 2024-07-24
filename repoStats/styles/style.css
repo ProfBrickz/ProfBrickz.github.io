@@ -1,4 +1,21 @@
+/* Imports */
 @import url('https://fonts.googleapis.com/css?family=Martian%20Mono:700|Martian%20Mono:400');
+
+
+/* Variables */
+html {
+	--font-scale: calc(1.25);
+	--small: calc(var(--p) / var(--font-scale));
+	--p: 1.125rem;
+	--h5: calc(var(--p) * var(--font-scale));
+	--h4: calc(var(--h5) * var(--font-scale));
+	--h3: calc(var(--h4) * var(--font-scale));
+	--h2: calc(var(--h3) * var(--font-scale));
+	--h1: calc(var(--h2) * var(--font-scale));
+
+	--theme-toggle-width: 5rem;
+}
+
 
 /* Universal styles */
 * {
@@ -16,22 +33,11 @@ html {
 	line-height: 1.5;
 }
 
-/* Root variables */
-html {
-	--font-scale: calc(1 + (1 / 4));
-	--small: calc(var(--p) / var(--font-scale));
-	--p: 1.25rem;
-	--h5: calc(var(--p) * var(--font-scale));
-	--h4: calc(var(--h5) * var(--font-scale));
-	--h3: calc(var(--h4) * var(--font-scale));
-	--h2: calc(var(--h3) * var(--font-scale));
-	--h1: calc(var(--h2) * var(--font-scale));
-}
 
 /* Font styles */
 body {
 	font-family: 'Martian Mono';
-	font-weight: 400;
+	font-size: var(--p);
 	background-color: var(--background);
 	color: var(--text);
 	min-height: 100vh;
@@ -51,16 +57,12 @@ h2,
 h3,
 h4,
 h5 {
-	font-family: 'Martian Mono';
-	font-weight: 700;
+	font-weight: bold;
 }
 
-small {
+small,
+.small {
 	font-size: var(--small);
-}
-
-p {
-	font-size: var(--p);
 }
 
 h1 {
@@ -100,7 +102,7 @@ select {
 	border-color: var(--primary);
 	background-color: var(--background);
 	color: var(--text);
-	font-family: 'Martian Mono', monospace;
+	font-family: inherit;
 	cursor: pointer;
 }
 
@@ -127,8 +129,6 @@ button {
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
-	font-family: 'Martian Mono', monospace;
-	font-weight: 700;
 }
 
 button:hover {
@@ -140,15 +140,11 @@ button:hover {
 #title {
 	color: var(--accent);
 	text-shadow: 0 0 10px var(--accent);
-	margin: 0 0rem;
+	margin: 0 0;
 }
 
 
 /* Theme toggle styles */
-html {
-	--theme-toggle-width: 5rem;
-}
-
 #theme-toggle-wrapper {
 	position: fixed;
 	top: 1rem;
@@ -215,7 +211,11 @@ html {
 	border-radius: 1rem;
 	padding: 1.5rem;
 	width: clamp(15rem, 100%, 60rem);
-	margin: 1.5rem 0rem;
+	margin: 1.25rem 0;
+}
+
+.container:last-of-type {
+	margin-bottom: 0;
 }
 
 
@@ -223,7 +223,7 @@ html {
 #settings {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 1rem;
+	gap: 2rem;
 }
 
 .setting {
@@ -233,7 +233,6 @@ html {
 
 #repo-link {
 	margin-top: 0.5rem;
-	font-size: 0.8rem;
 }
 
 
@@ -319,7 +318,6 @@ html {
 /* Error message */
 .error-message {
 	color: var(--error);
-	font-size: 0.9rem;
 	margin-top: 0.6rem;
 }
 
@@ -390,14 +388,12 @@ html {
 .ts-wrapper.single.input.active {
 	color: var(--text);
 	background-color: var(--background);
-	font-family: 'Martian Mono', monospace;
 	line-height: 1.5rem;
 	border-radius: 0.7rem;
 	border-width: 0.2rem;
 	border-style: solid;
 	border-color: var(--primary);
 	padding: 0.5rem;
-
 
 	&.dropdown-active {
 		border-bottom-left-radius: 0;
@@ -408,9 +404,8 @@ html {
 		line-height: 1.5rem;
 		color: var(--text);
 		font-size: var(--p);
-		padding: 0.5rem;
+		padding: 0;
 		background-color: var(--background);
-		padding: 0rem;
 		border: none;
 		outline: none;
 		cursor: pointer;
@@ -425,7 +420,7 @@ html {
 			position: absolute;
 			top: 50%;
 			transform: translateY(-50%);
-			right: 0rem;
+			right: 0;
 			width: 1rem;
 			height: 1rem;
 			transition: transform 0.5s;
@@ -491,8 +486,8 @@ html {
 @media screen and (max-width: 550px) {
 	#theme-toggle-wrapper {
 		position: relative;
-		top: 0rem;
-		right: 0rem;
+		top: 0;
+		right: 0;
 		margin-top: 0.5rem;
 		margin-bottom: 1rem;
 	}
@@ -504,6 +499,6 @@ html {
 	}
 
 	#stats {
-		margin-bottom: 0rem;
+		margin-bottom: 0;
 	}
 }

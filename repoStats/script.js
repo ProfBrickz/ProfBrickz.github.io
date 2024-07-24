@@ -1,9 +1,7 @@
-// Imports
-// import * as axios from 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js'
-
 // get query params
 let urlParams = new URLSearchParams(window.location.search)
 urlParams = Object.fromEntries(urlParams.entries())
+
 
 // github oauth
 if (!urlParams.code) {
@@ -11,7 +9,16 @@ if (!urlParams.code) {
       'https://github.com/login/oauth/authorize?client_id=Ov23lip2neN6Jn4zu8tg'
 }
 
+
 // functions
+/**
+ * Updates the DOM element representing a tree structure.
+ *
+ * This function clears the current content of the `tree` element and then iterates over the `stats` object.
+ * For each entry in `stats`, it creates a new branch element using the `makeBranch` function and appends it to the `tree` element.
+ *
+ * @function updateTree
+ */
 function updateTree() {
    tree.innerHTML = ''
 
@@ -20,6 +27,18 @@ function updateTree() {
    }
 }
 
+/**
+ * Creates a tree branch element for a hierarchical tree structure.
+ *
+ * This function generates a list item (`li`) element representing a branch in a tree structure.
+ * It includes a toggler span element that can be clicked to expand or collapse the branch,
+ * and it recursively creates child branches if the branch contains nested objects.
+ *
+ * @function makeBranch
+ * @param {Object} branch - The branch data containing values and a total.
+ * @param {string} name - The name of the branch.
+ * @returns {HTMLElement} The DOM element representing the tree branch.
+ */
 function makeBranch(branch, name) {
    let treeItem = document.createElement('li')
    treeItem.classList.add('tree-item')
@@ -66,6 +85,14 @@ function makeBranch(branch, name) {
    return treeItem
 }
 
+/**
+ * Resets the repository-related UI elements and data structures.
+ *
+ * This function hides the repository link, clears and disables branch and period selectors,
+ * and resets the repository and statistics objects to their initial empty states.
+ *
+ * @function clearRepo
+ */
 function clearRepo() {
    repoLink.classList.add('hidden')
    repoLink.href = ''
@@ -89,6 +116,16 @@ function clearRepo() {
    stats = {}
 }
 
+/**
+ * Toggles the enabled/disabled state of settings inputs.
+ *
+ * This function selects all input and select elements within elements with the class `setting`,
+ * excluding the element with the ID `repo-input`. It then sets the `disabled` property of these elements
+ * based on the `disable` parameter.
+ *
+ * @function toggleSettings
+ * @param {boolean} disable - A boolean value indicating whether to disable (true) or enable (false) the settings inputs.
+ */
 function toggleSettings(disable) {
    let settingInputs = document.querySelectorAll(
       '.setting input:not(#repo-input), .setting select'
@@ -99,6 +136,16 @@ function toggleSettings(disable) {
    }
 }
 
+/**
+ * Validates the repository name input and provides feedback on errors.
+ *
+ * This function checks the format of the repository name entered by the user. It validates both the username and repository name
+ * according to specific rules, such as allowed characters and length. If any validation rules are violated, it displays error messages
+ * and clears the repository data. If the input is valid, it hides any error messages.
+ *
+ * @function validateRepoName
+ * @returns {string[]} An array of error messages, if any validation rules are violated.
+ */
 function validateRepoName() {
    try {
       let repoName = repoInput.value
@@ -163,6 +210,15 @@ function validateRepoName() {
    }
 }
 
+/**
+ * Checks the existence of a GitHub repository and updates the UI accordingly.
+ *
+ * This asynchronous function sends a GET request to the GitHub API to verify if the repository specified in the `repoInput` exists.
+ * If the repository exists, it updates the repository link, enables branch and period selectors, and fetches branch information.
+ * If the repository does not exist or an error occurs, it displays an appropriate error message and resets the repository-related UI elements.
+ *
+ * @function checkRepoExistence
+ */
 async function checkRepoExistence() {
    try {
       let repoName = repoInput.value
@@ -209,6 +265,15 @@ async function checkRepoExistence() {
    }
 }
 
+/**
+ * Fetches all branches of the specified GitHub repository and updates the branch list.
+ *
+ * This asynchronous function retrieves branches from the GitHub API in a paginated manner,
+ * concatenating the results until no more branches are available. It then updates the repository's
+ * branch list and calls `setBranches` to update the UI with the fetched branches.
+ *
+ * @function getBranches
+ */
 async function getBranches() {
    try {
       let branches = []
@@ -239,13 +304,16 @@ async function getBranches() {
    } catch (error) {}
 }
 
+/**
+ * Populates the branch selector with the branches of the repository.
+ *
+ * This function iterates over the list of branches in the `repo` object and adds each branch as an option
+ * to the `branchSelect` element. It also sets the default branch as the selected item in the selector.
+ *
+ * @function setBranches
+ */
 function setBranches() {
    for (let branch of repo.branches) {
-      // let option = document.createElement("option");
-      // option.value = branch;
-      // option.textContent = branch;
-
-      // branchInput.appendChild(option);
       branchSelect.addOption({
          value: branch,
          text: branch
@@ -255,6 +323,16 @@ function setBranches() {
    branchSelect.addItem(repo.defaultBranch)
 }
 
+/**
+ * Sets the theme of the application and updates the UI accordingly.
+ *
+ * This function saves the selected theme to local storage, updates the theme toggle state,
+ * and applies the theme to the document. If the theme is being loaded for the first time,
+ * it makes the body visible and sets a transition duration for smooth theme changes.
+ *
+ * @function setTheme
+ * @param {string} theme - The theme to be applied ('light' or 'dark').
+ */
 function setTheme(theme) {
    localStorage.setItem('theme', theme)
    themeToggle.checked = theme === 'dark'
@@ -271,6 +349,7 @@ function setTheme(theme) {
    }
 }
 
+
 // variables
 let repo = {
    name: '',
@@ -284,6 +363,7 @@ let repo = {
 }
 let stats = {}
 let themeLoaded = false
+
 
 // HTML elements
 const themeToggle = document.getElementById('theme-toggle-checkbox')
@@ -300,6 +380,7 @@ const repoLink = document.getElementById('repo-link')
 const repoError = document.getElementById('repo-error')
 const branchInput = document.getElementById('branch-input')
 
+
 // Load theme
 const savedTheme = localStorage.getItem('theme')
 if (savedTheme) {
@@ -311,6 +392,7 @@ if (savedTheme) {
       : 'light'
    setTheme(preferredScheme)
 }
+
 
 // Event listeners
 themeToggle.addEventListener('change', () => {
@@ -332,6 +414,7 @@ repoInput.addEventListener('input', () => {
 
 repoInput.addEventListener('blur', checkRepoExistence)
 
+
 // Selects
 let branchSelect = new TomSelect('#branch-input', {
    plugins: ['dropdown_input'],
@@ -345,3 +428,45 @@ let periodSelect = new TomSelect('#period-input', {
 })
 branchSelect.disable()
 periodSelect.disable()
+
+
+
+
+// Test
+// stats = {
+//    Issues: {
+//       total: 183,
+//       values: {
+//          Open: {
+//             total: 132,
+//             values: {
+//                ProfBrickz: 78,
+//                csmith1188: 51
+//             }
+//          },
+//          Closed: {
+//             total: 51,
+//             values: {
+//                ProfBrickz: 30,
+//                csmith1188: 21
+//             }
+//          }
+//       }
+//    },
+//    Commits: {
+//       total: 2731,
+//       values: {
+//          ProfBrickz: 1523,
+//          csmith1188: 1208
+//       }
+//    },
+//    'Pull Requests': {
+//       total: 95,
+//       values: {
+//          ProfBrickz: 52,
+//          csmith1188: 43
+//       }
+//    }
+// }
+
+// updateTree()
