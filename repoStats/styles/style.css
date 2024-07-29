@@ -4,9 +4,9 @@
 
 /* Variables */
 html {
-	--font-scale: calc(1.25);
+	--font-scale: calc(1.2);
 	--small: calc(var(--p) / var(--font-scale));
-	--p: 1.125rem;
+	--p: 1.25rem;
 	--h5: calc(var(--p) * var(--font-scale));
 	--h4: calc(var(--h5) * var(--font-scale));
 	--h3: calc(var(--h4) * var(--font-scale));
@@ -169,6 +169,10 @@ button:hover {
 	position: relative;
 }
 
+.icon {
+	color: var(--accent);
+}
+
 #theme-toggle-switch .icon {
 	position: absolute;
 	top: calc(var(--theme-toggle-width) * 0.05);
@@ -178,7 +182,6 @@ button:hover {
 	padding: calc(var(--theme-toggle-width) * 0.025);
 	border-radius: 50%;
 	background-color: var(--background);
-	color: var(--accent-200)
 }
 
 #theme-toggle-checkbox:checked + #theme-toggle-switch .icon {
@@ -237,65 +240,96 @@ button:hover {
 
 
 /* Tree styles */
+/* Tree styles */
 #tree {
-	list-style-type: none;
+	--spacing: 3rem;
+	--line-width: 0.15rem;
+
 	padding-left: 0;
 }
 
-.branch {
-	list-style-type: none;
-	padding-left: 1.5rem;
-}
-
 .tree-item {
+	display: block;
 	position: relative;
-	padding: 0.5rem 0;
 }
 
-.tree-item::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: -1rem;
-	border-left: 1px solid var(--primary);
-	height: 100%;
+.tree-item:not(:last-of-type) {
+	margin-bottom: 0.5rem;
 }
 
-.tree-item:last-child::before {
-	height: 1rem;
+.branch-list {
+	padding-left: calc(var(--spacing));
+	margin: 1rem 0rem;
+
+	.tree-item::before {
+		content: '';
+		display: block;
+		position: absolute;
+		border-left: var(--line-width) solid var(--primary);
+		height: calc(100% + 1rem);
+		left: calc(var(--spacing) * -1 + 0.7rem);
+		top: -1.5rem;
+	}
+
+	.tree-item:first-child::before {
+		top: -0.75rem;
+	}
+
+	.tree-item:last-child::before {
+		height: calc(2.33rem + var(--line-width));
+	}
+
+	.tree-item:first-child:last-child::before {
+		height: calc(1.58rem + var(--line-width));
+	}
+
+	.tree-item::after {
+		content: '';
+		display: block;
+		position: absolute;
+		border-bottom: var(--line-width) solid var(--primary);
+		width: calc(var(--spacing) * 0.6);
+		top: calc(1.875rem / 2 - 0.1rem);
+		left: calc(var(--spacing) * -1 + 0.75rem);
+	}
 }
 
-.tree-item::after {
-	content: '';
-	position: absolute;
-	top: 1rem;
-	left: -1rem;
-	border-top: 1px solid var(--primary);
-	width: 1rem;
-}
-
-.tree-toggler {
+.branch-summary {
+	display: flex;
 	cursor: pointer;
-	user-select: none;
+	align-items: center;
+
+	&::marker,
+	&::-webkit-details-marker {
+		display: none;
+	}
+
+	&:focus {
+		outline: none;
+	}
+
+	&:focus-visible {
+		outline: 1px dotted #000;
+	}
+
+	.branch-name {
+		margin-left: 0.5rem;
+	}
+
+	.icon {
+		height: 1.5rem;
+		transition: transform 0.3s ease;
+	}
 }
 
-.tree-toggler::before {
-	content: '▶';
-	display: inline-block;
-	margin-right: 0.5rem;
-}
-
-.tree-toggler.open::before {
+.branch[open] > .branch-summary .icon {
 	transform: rotate(90deg);
 }
 
-.branch {
-	display: none;
-	margin-top: 0.5rem;
-}
-
-.branch.open {
-	display: block;
+.stat-value {
+	color: var(--accent);
+	font-weight: bold;
+	margin-left: 0.5rem;
 }
 
 
@@ -388,7 +422,7 @@ button:hover {
 .ts-wrapper.single.input.active {
 	color: var(--text);
 	background-color: var(--background);
-	line-height: 1.5rem;
+	line-height: 1.5;
 	border-radius: 0.7rem;
 	border-width: 0.2rem;
 	border-style: solid;
@@ -414,7 +448,7 @@ button:hover {
 		/* caret */
 		&::after {
 			content: "";
-			mask: url("../svgs/chevron-down.svg") no-repeat center;
+			mask: url("../icons/chevron-down.svg") no-repeat center;
 			background-color: var(--text);
 			display: block;
 			position: absolute;

@@ -2,13 +2,11 @@
 let urlParams = new URLSearchParams(window.location.search)
 urlParams = Object.fromEntries(urlParams.entries())
 
-
 // github oauth
 if (!urlParams.code) {
    window.location.href =
       'https://github.com/login/oauth/authorize?client_id=Ov23lip2neN6Jn4zu8tg'
 }
-
 
 // functions
 /**
@@ -28,44 +26,56 @@ function updateTree() {
 }
 
 /**
- * Creates a tree branch element for a hierarchical tree structure.
+ * Creates a tree structure for a branch and its sub-branches.
  *
- * This function generates a list item (`li`) element representing a branch in a tree structure.
- * It includes a toggler span element that can be clicked to expand or collapse the branch,
- * and it recursively creates child branches if the branch contains nested objects.
+ * This function generates a nested list item (`<li>`) representing a branch and its sub-branches.
+ * It recursively processes each sub-branch and appends them to the main branch element.
+ * The branch element includes a summary with an icon, branch name, and statistics.
  *
  * @function makeBranch
- * @param {Object} branch - The branch data containing values and a total.
+ * @param {Object} branch - The branch object containing sub-branches and their values.
  * @param {string} name - The name of the branch.
- * @returns {HTMLElement} The DOM element representing the tree branch.
+ * @returns {HTMLElement} The tree item element representing the branch.
  */
 function makeBranch(branch, name) {
    let treeItem = document.createElement('li')
    treeItem.classList.add('tree-item')
 
-   let treeToggler = document.createElement('span')
-   treeToggler.classList.add('tree-toggler')
-   treeToggler.textContent = name
-   treeToggler.addEventListener('click', (event) => {
-      let treeToggler = event.target
-
-      treeToggler.classList.toggle('open')
-      treeToggler.nextElementSibling.classList.toggle('open')
-   })
-
-   let total = document.createElement('span')
-   total.classList.add('stat-value')
-   total.textContent = `(${branch.total})`
-   treeToggler.appendChild(total)
-
-   treeItem.appendChild(treeToggler)
-
-   let branchElement = document.createElement('ul')
+   let branchElement = document.createElement('details')
    branchElement.classList.add('branch')
+
+   let branchSummary = document.createElement('summary')
+   branchSummary.classList.add('branch-summary')
+
+   let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+   svg.classList.add('icon')
+   svg.setAttribute('viewBox', '0 0 1024 1024')
+   svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+
+   let use = document.createElementNS('http://www.w3.org/2000/svg', 'use')
+   use.setAttribute('href', './icons/chevron-right.svg#icon')
+
+   svg.appendChild(use)
+   branchSummary.appendChild(svg)
+
+   let branchName = document.createElement('span')
+   branchName.classList.add('branch-name')
+   branchName.textContent = name
+   branchSummary.appendChild(branchName)
+
+   let statValue = document.createElement('span')
+   statValue.classList.add('stat-value')
+   statValue.textContent = `(${branch.total})`
+   branchSummary.appendChild(statValue)
+
+   branchElement.appendChild(branchSummary)
+
+   let branchList = document.createElement('ul')
+   branchList.classList.add('branch-list')
 
    for (let [key, value] of Object.entries(branch.values)) {
       if (typeof value === 'object' && !Array.isArray(value)) {
-         branchElement.appendChild(makeBranch(value, `${key} `))
+         branchList.appendChild(makeBranch(value, `${key} `))
       } else {
          let treeItem = document.createElement('li')
          treeItem.classList.add('tree-item')
@@ -76,10 +86,11 @@ function makeBranch(branch, name) {
          statValue.textContent = `(${value})`
          treeItem.appendChild(statValue)
 
-         branchElement.appendChild(treeItem)
+         branchList.appendChild(treeItem)
       }
    }
 
+   branchElement.appendChild(branchList)
    treeItem.appendChild(branchElement)
 
    return treeItem
@@ -349,7 +360,6 @@ function setTheme(theme) {
    }
 }
 
-
 // variables
 let repo = {
    name: '',
@@ -363,7 +373,6 @@ let repo = {
 }
 let stats = {}
 let themeLoaded = false
-
 
 // HTML elements
 const themeToggle = document.getElementById('theme-toggle-checkbox')
@@ -380,7 +389,6 @@ const repoLink = document.getElementById('repo-link')
 const repoError = document.getElementById('repo-error')
 const branchInput = document.getElementById('branch-input')
 
-
 // Load theme
 const savedTheme = localStorage.getItem('theme')
 if (savedTheme) {
@@ -392,7 +400,6 @@ if (savedTheme) {
       : 'light'
    setTheme(preferredScheme)
 }
-
 
 // Event listeners
 themeToggle.addEventListener('change', () => {
@@ -414,7 +421,6 @@ repoInput.addEventListener('input', () => {
 
 repoInput.addEventListener('blur', checkRepoExistence)
 
-
 // Selects
 let branchSelect = new TomSelect('#branch-input', {
    plugins: ['dropdown_input'],
@@ -429,44 +435,93 @@ let periodSelect = new TomSelect('#period-input', {
 branchSelect.disable()
 periodSelect.disable()
 
-
-
-
 // Test
-// stats = {
-//    Issues: {
-//       total: 183,
-//       values: {
-//          Open: {
-//             total: 132,
-//             values: {
-//                ProfBrickz: 78,
-//                csmith1188: 51
-//             }
-//          },
-//          Closed: {
-//             total: 51,
-//             values: {
-//                ProfBrickz: 30,
-//                csmith1188: 21
-//             }
-//          }
-//       }
-//    },
-//    Commits: {
-//       total: 2731,
-//       values: {
-//          ProfBrickz: 1523,
-//          csmith1188: 1208
-//       }
-//    },
-//    'Pull Requests': {
-//       total: 95,
-//       values: {
-//          ProfBrickz: 52,
-//          csmith1188: 43
-//       }
-//    }
-// }
+stats = {
+   Issues: {
+      total: 183,
+      values: {
+         Open: {
+            total: 132,
+            values: {
+               ProfBrickz: 78,
+               csmith1188: 51,
+               Talon24229: 0
+            }
+         },
+         Closed: {
+            total: 51,
+            values: {
+               ProfBrickz: 30,
+               csmith1188: 21,
+               Talon24229: 0
+            }
+         },
+         All: {
+            total: 183,
+            values: {
+               ProfBrickz: {
+                  total: 108,
+                  values: {
+                     Open: 78,
+                     Closed: 30
+                  }
+               },
+               csmith1188: {
+                  total: 72,
+                  values: {
+                     Open: 51,
+                     Closed: 21
+                  }
+               },
+               Talon24229: {
+                  total: 0,
+                  values: {
+                     Open: 0,
+                     Closed: 0
+                  }
+               }
+            }
+         },
+         ALL: 183
+      }
+   },
+   Commits: {
+      total: 2731,
+      values: {
+         ProfBrickz: 1523,
+         csmith1188: 1208,
+         Talon24229: 0
+      }
+   },
+   'Pull Requests': {
+      total: 95,
+      values: {
+         ProfBrickz: 52,
+         csmith1188: 43,
+         Talon24229: 0
+      }
+   },
+   a: {
+      total: 0,
+      values: {
+         b: {
+            total: 0,
+            values: {
+               c: {
+                  total: 0,
+                  values: {
+                     d: {
+                        total: 0,
+                        values: {
+                           e: 0
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+}
 
-// updateTree()
+updateTree()
