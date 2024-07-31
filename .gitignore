@@ -2,3 +2,6 @@ repoStats/test.html
 *temp*
 *test*
 /.vscode
+
+/repoStatsAuthServer/node_modules
+/repoStatsAuthServer/settings.json

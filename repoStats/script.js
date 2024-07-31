@@ -1,12 +1,5 @@
-// get query params
-let urlParams = new URLSearchParams(window.location.search)
-urlParams = Object.fromEntries(urlParams.entries())
-
-// github oauth
-if (!urlParams.code) {
-   window.location.href =
-      'https://github.com/login/oauth/authorize?client_id=Ov23lip2neN6Jn4zu8tg'
-}
+// Constants
+const AUTHENTICATION_URL = 'http://127.0.0.1:3000'
 
 // functions
 /**
@@ -360,7 +353,7 @@ function setTheme(theme) {
    }
 }
 
-// variables
+// Variables
 let repo = {
    name: '',
    period: '',
@@ -373,6 +366,7 @@ let repo = {
 }
 let stats = {}
 let themeLoaded = false
+let token = null
 
 // HTML elements
 const themeToggle = document.getElementById('theme-toggle-checkbox')
@@ -420,6 +414,35 @@ repoInput.addEventListener('input', () => {
 })
 
 repoInput.addEventListener('blur', checkRepoExistence)
+
+document.addEventListener('DOMContentLoaded', async () => {
+   let urlParams = new URLSearchParams(window.location.search)
+   urlParams = Object.fromEntries(urlParams.entries())
+
+   if (localStorage.getItem('token')) {
+      let tempToken = localStorage.getItem('token')
+
+      console.log(tempToken)
+   } else if (urlParams.code) {
+      try {
+         let code = urlParams.code
+
+         let response = await axios.post(
+            `${AUTHENTICATION_URL}/authenticate`,
+            {},
+            {
+               params: {
+                  code
+               }
+            }
+         )
+
+         localStorage.setItem('token', response.data.token)
+      } catch (error) {
+         console.log(error)
+      }
+   }
+})
 
 // Selects
 let branchSelect = new TomSelect('#branch-input', {
@@ -524,4 +547,4 @@ stats = {
    }
 }
 
-updateTree()
+// updateTree()
