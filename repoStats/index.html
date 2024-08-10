@@ -13,6 +13,11 @@
          type="module"
          src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
       ></script>
+      <script src="https://unpkg.com/lucide@latest"></script>
+
+      <link rel="preconnect" href="https://rsms.me/" />
+      <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
       <link rel="stylesheet" href="./styles/style.css" />
       <link id="light-theme-style" rel="stylesheet" href="./styles/light.css" />
       <link id="dark-theme-style" rel="stylesheet" href="./styles/dark.css" />
@@ -20,77 +25,68 @@
    </head>
 
    <body>
-      <div id="theme-toggle-wrapper">
-         <label id="theme-toggle-label">
-            <input type="checkbox" id="theme-toggle-checkbox" />
-            <div id="theme-toggle-switch">
-               <svg
-                  id="light-theme-icon"
-                  class="icon"
-                  viewBox="0 0 1024 1024"
-                  xmlns="http://www.w3.org/2000/svg"
+      <div id="nav">
+         <div id="nav-left"> </div>
+         <h1 id="title">repoStats</h1>
+         <div id="nav-right">
+            <label id="theme-toggle-label">
+               <input type="checkbox" id="theme-toggle-checkbox" />
+               <div id="theme-toggle-switch">
+                  <i id="light-theme-icon" data-lucide="sun" class="icon"></i>
+                  <i id="dark-theme-icon" data-lucide="moon" class="icon"></i>
+               </div>
+            </label>
+         </div>
+      </div>
+      <div id="main">
+         <div id="settings" class="container scrollable">
+            <div class="setting">
+               <label for="repo-input">Repository:</label>
+               <datalist id="repo-list">
+                  <option value="csmith1188/Formbar.js"></option>
+                  <option value="csmith1188/formPix"></option>
+                  <option value="CP2324/docpacs2324"></option>
+                  <option value="ProfBrickz/ProfBrickz.github.io"></option>
+                  <option value="ProfBrickz/LegoSetTracker"></option>
+                  <option value="ProfBrickz/RepoStats"></option>
+               </datalist>
+               <input
+                  id="repo-input"
+                  type="text"
+                  name="repo-input"
+                  placeholder="username/repository"
+                  autocomplete="off"
+                  list="repo-list"
+               />
+               <div id="repo-error" class="error-message small hidden"></div>
+               <a
+                  id="repo-link"
+                  class="small hidden"
+                  href="https://github.com/csmith1188/Formbar.js"
+                  target="_blank"
                >
-                  <use href="./icons/sun.svg#icon"></use>
-               </svg>
-               <svg
-                  id="dark-theme-icon"
-                  class="icon"
-                  viewBox="0 0 1024 1024"
-                  xmlns="http://www.w3.org/2000/svg"
-               >
-                  <use href="./icons/moon.svg#icon"></use>
-               </svg>
+                  View on GitHub
+               </a>
             </div>
-         </label>
-      </div>
-      <h1 id="title">repoStats</h1>
-      <div id="settings" class="container scrollable">
-         <div class="setting">
-            <label for="repo-input">Repository:</label>
-            <datalist id="repo-list">
-               <option value="csmith1188/Formbar.js"></option>
-               <option value="csmith1188/formPix"></option>
-               <option value="CP2324/docpacs2324"></option>
-               <option value="ProfBrickz/ProfBrickz.github.io"></option>
-               <option value="ProfBrickz/LegoSetTracker"></option>
-               <option value="ProfBrickz/RepoStats"></option>
-            </datalist>
-            <input
-               id="repo-input"
-               type="text"
-               name="repo-input"
-               placeholder="username/repository"
-               autocomplete="off"
-               list="repo-list"
-            />
-            <div id="repo-error" class="error-message small hidden"></div>
-            <a
-               id="repo-link"
-               class="small hidden"
-               href="https://github.com/csmith1188/Formbar.js"
-               target="_blank"
-            >
-               View on GitHub
-            </a>
+            <div class="setting">
+               <label for="branch-input">Branch:</label>
+               <select id="branch-input" name="branch-input"></select>
+            </div>
+            <div class="setting">
+               <label for="period-input">Time Period:</label>
+               <select id="period-input" name="period-input">
+                  <option value="7d">Last 7 days</option>
+                  <option value="30d">Last 30 days</option>
+                  <option value="3m">Last 3 months</option>
+                  <option value="1y">Last year</option>
+                  <option value="all">All time</option>
+               </select>
+            </div>
          </div>
-         <div class="setting">
-            <label for="branch-input">Branch:</label>
-            <select id="branch-input" name="branch-input"></select>
-         </div>
-         <div class="setting">
-            <label for="period-input">Time Period:</label>
-            <select id="period-input" name="period-input">
-               <option value="7d">Last 7 days</option>
-               <option value="30d">Last 30 days</option>
-               <option value="3m">Last 3 months</option>
-               <option value="1y">Last year</option>
-               <option value="all">All time</option>
-            </select>
-         </div>
-      </div>
-      <div id="stats" class="container">
-         <div class="scroll-container">
-            <div id="tree"></div>
+         <div id="stats" class="container">
+            <div class="scroll-container scrollbar-top">
+               <div id="tree"></div>
+            </div>
          </div>
       </div>
    </body>

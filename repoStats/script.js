@@ -40,16 +40,11 @@ function makeBranch(branch, name) {
    let branchSummary = document.createElement('summary')
    branchSummary.classList.add('branch-summary')
 
-   let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-   svg.classList.add('icon')
-   svg.setAttribute('viewBox', '0 0 1024 1024')
-   svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+   let icon = document.createElement('i')
+   icon.classList.add('icon')
+   icon.setAttribute('data-lucide', 'chevron-right')
 
-   let use = document.createElementNS('http://www.w3.org/2000/svg', 'use')
-   use.setAttribute('href', './icons/chevron-right.svg#icon')
-
-   svg.appendChild(use)
-   branchSummary.appendChild(svg)
+   branchSummary.appendChild(icon)
 
    let branchName = document.createElement('span')
    branchName.classList.add('branch-name')
@@ -342,18 +337,33 @@ function setTheme(theme) {
    themeToggle.checked = theme === 'dark'
 
    document.documentElement.setAttribute('data-theme', theme)
-
-   if (themeLoaded === false) {
-      document.body.style.visibility = 'visible'
-      setTimeout(() => {
-         document.body.style.transitionDuration = '0.3s'
-      }, 0)
-
-      themeLoaded = true
-   }
 }
 
 // Variables
+async function getUser(token) {
+   try {
+      // remove last letter from token
+      token = token.substring(0, token.length - 1)
+
+      let response = await axios.get('https://api.github.com/user', {
+         headers: {
+            Authorization: `Bearer ${token}`
+         }
+      })
+
+      console.log(response.data)
+   } catch (error) {
+      toast(error.response.data.message, 'error')
+      for (let i = 1; i <= 10; i++) {
+         setTimeout(() => {
+            toast(i, 'error')
+         }, 250 * i)
+      }
+      console.error(error)
+   }
+}
+
+// variables
 let repo = {
    name: '',
    period: '',
@@ -365,7 +375,6 @@ let repo = {
    pullRequests: []
 }
 let stats = {}
-let themeLoaded = false
 let token = null
 
 // HTML elements
@@ -415,35 +424,6 @@ repoInput.addEventListener('input', () => {
 
 repoInput.addEventListener('blur', checkRepoExistence)
 
-document.addEventListener('DOMContentLoaded', async () => {
-   let urlParams = new URLSearchParams(window.location.search)
-   urlParams = Object.fromEntries(urlParams.entries())
-
-   if (localStorage.getItem('token')) {
-      let tempToken = localStorage.getItem('token')
-
-      console.log(tempToken)
-   } else if (urlParams.code) {
-      try {
-         let code = urlParams.code
-
-         let response = await axios.post(
-            `${AUTHENTICATION_URL}/authenticate`,
-            {},
-            {
-               params: {
-                  code
-               }
-            }
-         )
-
-         localStorage.setItem('token', response.data.token)
-      } catch (error) {
-         console.log(error)
-      }
-   }
-})
-
 // Selects
 let branchSelect = new TomSelect('#branch-input', {
    plugins: ['dropdown_input'],
@@ -476,6 +456,14 @@ stats = {
             values: {
                ProfBrickz: 30,
                csmith1188: 21,
+               Talon24229: 0
+            }
+         },
+         A: {
+            total: 0,
+            values: {
+               ProfBrickz: 0,
+               csmith1188: 0,
                Talon24229: 0
             }
          },
@@ -547,4 +535,35 @@ stats = {
    }
 }
 
-// updateTree()
+updateTree()
+
+lucide.createIcons()
+
+let urlParams = new URLSearchParams(window.location.search)
+urlParams = Object.fromEntries(urlParams.entries())
+
+if (localStorage.getItem('token')) {
+   let tempToken = localStorage.getItem('token')
+
+   console.log(tempToken)
+
+   getUser(tempToken)
+} else if (urlParams.code) {
+   try {
+      let code = urlParams.code
+
+      let response = await axios.post(
+         `${AUTHENTICATION_URL}/authenticate`,
+         {},
+         {
+            params: {
+               code
+            }
+         }
+      )
+
+      localStorage.setItem('token', response.data.token)
+   } catch (error) {
+      console.log(error)
+   }
+}
