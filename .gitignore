@@ -1,7 +1,7 @@
-repoStats/test.html
+dev-insights/test.html
 *temp*
 *test*
 /.vscode
 
-/repoStatsAuthServer/node_modules
-/repoStatsAuthServer/settings.json
+/dev-insights-auth-server/node_modules
+/dev-insights-auth-server/settings.json

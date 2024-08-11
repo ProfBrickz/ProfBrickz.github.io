@@ -1,5 +1,5 @@
 {
-   "name": "repoStatsAuthServer",
+   "name": "dev-insights-auth-server",
    "version": "1.0.0",
    "description": "",
    "main": "app.js",
