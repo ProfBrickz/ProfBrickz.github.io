@@ -360,6 +360,8 @@ async function checkAuth() {
       if (queryToken) token = queryToken
       else if (storageToken) token = storageToken
 
+      console.log(token)
+
       if (token) {
          user = await getUser(token)
 
@@ -382,9 +384,6 @@ async function checkAuth() {
 
          usernameElement.textContent = currentUser.username
 
-         githubLogo.classList.toggle('hidden')
-         avatar.classList.toggle('hidden')
-      } else {
          githubLogo.classList.toggle('hidden')
          avatar.classList.toggle('hidden')
       }
@@ -416,11 +415,6 @@ async function getUser(token) {
 }
 
 function login() {
-   if (currentUser.token) {
-      logout()
-      return
-   }
-
    window.location.href = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}`
 }
 
