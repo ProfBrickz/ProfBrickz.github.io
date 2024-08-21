@@ -2,7 +2,7 @@
 import fs from 'fs'
 import axios from 'axios'
 import cors from 'cors'
-import express, { query } from 'express'
+import express from 'express'
 
 // Settings
 const settings = JSON.parse(fs.readFileSync('settings.json'))
@@ -12,7 +12,7 @@ let app = express()
 
 app.use(cors())
 
-app.post(
+app.get(
    '/authenticate',
    // cors({
    //    origin: settings.redirectUri,
@@ -21,12 +21,14 @@ app.post(
    // }),
    async (request, response) => {
       try {
-         let code = request.query.code
-
-         if (!code) {
-            response.status(400).send('Missing code')
+         if (request.query.error) {
+            response.redirect(
+               `${settings.redirectURL}?error=${request.query.error}`
+            )
             return
          }
+
+         let code = request.query.code
 
          let authenticate = await axios.post(
             'https://github.com/login/oauth/access_token',
@@ -36,7 +38,7 @@ app.post(
                   client_id: settings.clientId,
                   client_secret: settings.clientSecret,
                   code: code,
-                  redirect_uri: settings.redirectUri
+                  redirect_uri: settings.redirectURI
                },
                headers: {
                   Accept: 'application/json'
@@ -44,11 +46,11 @@ app.post(
             }
          )
 
-         console.log(authenticate.data)
-
-         response.send({ token: authenticate.data.access_token })
+         response.redirect(
+            `${settings.redirectURL}?token=${authenticate.data.access_token}`
+         )
       } catch (error) {
-         response.status(500).send(error)
+         response.redirect(`${settings.redirectURL}?error=${error.message}`)
       }
    }
 )

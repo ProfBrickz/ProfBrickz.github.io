@@ -68,4 +68,10 @@ html[data-theme="dark"] {
 
 
 	--error: hsl(0, 70%, 60%);
+
+
+	#github-logo {
+		/* Do not change this, it is from the GitHub logo */
+		background-color: #0d1117;
+	}
 }

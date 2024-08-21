@@ -1,5 +1,7 @@
 // Constants
 const AUTHENTICATION_URL = 'http://127.0.0.1:3000'
+const CLIENT_ID = 'Ov23lip2neN6Jn4zu8tg'
+const REDIRECT_URL = 'http://127.0.0.1:3000/authenticate'
 
 // functions
 /**
@@ -11,10 +13,10 @@ const AUTHENTICATION_URL = 'http://127.0.0.1:3000'
  * @function updateTree
  */
 function updateTree() {
-   tree.innerHTML = ''
+   statsTree.innerHTML = ''
 
    for (let [name, branch] of Object.entries(stats)) {
-      tree.appendChild(makeBranch(branch, name))
+      statsTree.appendChild(makeBranch(branch, name))
    }
 }
 
@@ -224,7 +226,7 @@ async function checkRepoExistence() {
 
       if (!repoError.classList.contains('hidden')) return
 
-      let response = await axios.get(`https://api.github.com/repos/${repoName}`)
+      let response = await apiQuery(`https://api.github.com/repos/${repoName}`)
 
       if (response.status === 200) {
          repoLink.classList.remove('hidden')
@@ -281,7 +283,7 @@ async function getBranches() {
 
       do {
          try {
-            let response = await axios.get(
+            let response = await apiQuery(
                `https://api.github.com/repos/${repo.name}/branches?per_page=${perPage}&page=${page}`
             )
 
@@ -336,14 +338,64 @@ function setTheme(theme) {
    localStorage.setItem('theme', theme)
    themeToggle.checked = theme === 'dark'
 
+   if (theme === 'light') {
+      githubLogo.src = './icons/github-mark.svg'
+   } else if (theme === 'dark') {
+      githubLogo.src = './icons/github-mark-white.svg'
+   }
+
    document.documentElement.setAttribute('data-theme', theme)
 }
 
-// Variables
+async function checkAuth() {
+   try {
+      let urlParams = new URLSearchParams(window.location.search)
+      urlParams = Object.fromEntries(urlParams.entries())
+
+      let storageToken = localStorage.getItem('token')
+      let queryToken = urlParams.token
+      let user = {}
+      let token = null
+
+      if (queryToken) token = queryToken
+      else if (storageToken) token = storageToken
+
+      if (token) {
+         user = await getUser(token)
+
+         if (typeof user === 'string') {
+            console.log(user)
+            return
+         }
+
+         localStorage.setItem('token', token)
+
+         currentUser.username = user.login
+         currentUser.name = user.name
+         currentUser.avatar = user.avatar_url
+         currentUser.token = token
+
+         loginButton.classList.toggle('hidden')
+
+         avatar.src = currentUser.avatar
+         avatar.title = currentUser.username
+
+         usernameElement.textContent = currentUser.username
+
+         githubLogo.classList.toggle('hidden')
+         avatar.classList.toggle('hidden')
+      } else {
+         githubLogo.classList.toggle('hidden')
+         avatar.classList.toggle('hidden')
+      }
+   } catch (error) {
+      console.log(error)
+   }
+}
+
 async function getUser(token) {
    try {
-      // remove last letter from token
-      token = token.substring(0, token.length - 1)
+      if (!token) return 'missing token'
 
       let response = await axios.get('https://api.github.com/user', {
          headers: {
@@ -351,19 +403,67 @@ async function getUser(token) {
          }
       })
 
-      console.log(response.data)
+      return response.data
    } catch (error) {
-      toast(error.response.data.message, 'error')
-      for (let i = 1; i <= 10; i++) {
-         setTimeout(() => {
-            toast(i, 'error')
-         }, 250 * i)
+      if (error?.response?.status === 401) {
+         logout()
+
+         return 'invalid token'
+      } else {
+         console.error(error)
       }
-      console.error(error)
    }
 }
 
-// variables
+function login() {
+   if (currentUser.token) {
+      logout()
+      return
+   }
+
+   window.location.href = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}`
+}
+
+function logout() {
+   localStorage.removeItem('token')
+
+   currentUser = {
+      username: '',
+      name: '',
+      avatar: '',
+      token: ''
+   }
+
+   loginButton.classList.toggle('hidden')
+
+   avatar.src = ''
+   avatar.title = ''
+   usernameElement.textContent = currentUser.username
+
+   githubLogo.classList.toggle('hidden')
+   avatar.classList.toggle('hidden')
+
+   userDropdown.classList.add('hidden')
+
+   avatar.title = ''
+}
+
+async function apiQuery(url, data, config) {
+   if (currentUser.token) {
+      if (!config) config = {}
+      if (!config.headers) config.headers = {}
+
+      config.headers.Authorization = `Bearer ${currentUser.token}`
+   }
+
+   return await axios.get(url, data, config)
+}
+
+function remToPx(rem) {
+   return rem * parseFloat(getComputedStyle(document.documentElement).fontSize)
+}
+
+// Variables
 let repo = {
    name: '',
    period: '',
@@ -375,7 +475,12 @@ let repo = {
    pullRequests: []
 }
 let stats = {}
-let token = null
+let currentUser = {
+   username: '',
+   name: '',
+   avatar: '',
+   token: ''
+}
 
 // HTML elements
 const themeToggle = document.getElementById('theme-toggle-checkbox')
@@ -387,10 +492,17 @@ const darkThemeIcon = document.getElementById('dark-theme-icon')
 const repoInput = document.getElementById('repo-input')
 const repoPeriod = document.getElementById('repo-period')
 const treeTogglers = document.getElementsByClassName('tree-toggler')
-const tree = document.getElementById('tree')
+const statsTree = document.getElementById('stats')
 const repoLink = document.getElementById('repo-link')
 const repoError = document.getElementById('repo-error')
 const branchInput = document.getElementById('branch-input')
+const navBar = document.getElementById('nav-bar')
+const loginButton = document.getElementById('login-button')
+const githubLogo = document.getElementById('github-logo')
+const avatar = document.getElementById('avatar')
+const userDropdown = document.getElementById('user-dropdown')
+const logoutButton = document.getElementById('logout-button')
+const usernameElement = document.getElementById('username')
 
 // Load theme
 const savedTheme = localStorage.getItem('theme')
@@ -424,19 +536,46 @@ repoInput.addEventListener('input', () => {
 
 repoInput.addEventListener('blur', checkRepoExistence)
 
+loginButton.addEventListener('click', login)
+
+githubLogo.addEventListener('click', login)
+
+avatar.addEventListener('click', () => {
+   userDropdown.classList.toggle('hidden')
+})
+
+logoutButton.addEventListener('click', logout)
+
 // Selects
 let branchSelect = new TomSelect('#branch-input', {
    plugins: ['dropdown_input'],
    maxOptions: null,
    maxItems: 1
 })
+
 let periodSelect = new TomSelect('#period-input', {
    plugins: ['dropdown_input'],
    maxOptions: null,
    maxItems: 1
 })
+
 branchSelect.disable()
 periodSelect.disable()
+
+// Floating UI
+FloatingUIDOM.autoUpdate(navBar, userDropdown, () => {
+   FloatingUIDOM.computePosition(navBar, userDropdown, {
+      placement: 'bottom-end',
+      middleware: [
+         FloatingUIDOM.offset({
+            mainAxis: remToPx(0.25),
+            crossAxis: remToPx(-0.5)
+         })
+      ]
+   }).then(({ x, y }) => {
+      Object.assign(userDropdown.style, { top: `${y}px`, left: `${x}px` })
+   })
+})
 
 // Test
 stats = {
@@ -534,36 +673,9 @@ stats = {
       }
    }
 }
-
 updateTree()
 
+// Load icons
 lucide.createIcons()
 
-let urlParams = new URLSearchParams(window.location.search)
-urlParams = Object.fromEntries(urlParams.entries())
-
-if (localStorage.getItem('token')) {
-   let tempToken = localStorage.getItem('token')
-
-   console.log(tempToken)
-
-   getUser(tempToken)
-} else if (urlParams.code) {
-   try {
-      let code = urlParams.code
-
-      let response = await axios.post(
-         `${AUTHENTICATION_URL}/authenticate`,
-         {},
-         {
-            params: {
-               code
-            }
-         }
-      )
-
-      localStorage.setItem('token', response.data.token)
-   } catch (error) {
-      console.log(error)
-   }
-}
+checkAuth()
