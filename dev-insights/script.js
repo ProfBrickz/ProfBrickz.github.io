@@ -368,8 +368,6 @@ async function checkAuth() {
       if (queryToken) token = queryToken
       else if (storageToken) token = storageToken
 
-      console.log(token)
-
       if (token) {
          user = await getUser(token)
 
@@ -396,7 +394,7 @@ async function checkAuth() {
          avatar.classList.toggle('hidden')
       }
    } catch (error) {
-      console.log(error)
+      console.error(error)
    }
 }
 
@@ -423,27 +421,13 @@ async function getUser(token) {
 }
 
 function login() {
-   // let params = new URLSearchParams({
-   //    client_id: MODES[MODE].clientId,
-   //    redirect_uri: MODES[MODE].authenticationURL,
-   //    scope: 'repo'
-   // })
-
-   // console.log(`https://github.com/login/oauth/authorize?${params.toString()}`)
-   // window.location.href = `https://github.com/login/oauth/authorize${params.toString()}`
-
    let params = new URLSearchParams({
-      client_id: MODES.production.clientId,
-      redirect_uri: MODES.production.authenticationURL,
+      client_id: MODES[MODE].clientId,
+      redirect_uri: MODES[MODE].authenticationURL,
       scope: 'repo'
    })
-   console.log(`https://github.com/login/oauth/authorize?${params.toString()}`)
-   params = new URLSearchParams({
-      client_id: MODES.dev.clientId,
-      redirect_uri: MODES.dev.authenticationURL,
-      scope: 'repo'
-   })
-   console.log(`https://github.com/login/oauth/authorize?${params.toString()}`)
+
+   window.location.href = `https://github.com/login/oauth/authorize${params.toString()}`
 }
 
 function logout() {

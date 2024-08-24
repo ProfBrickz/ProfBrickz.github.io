@@ -24,8 +24,6 @@ app.get(
    }),
    async (request, response) => {
       try {
-         console.log(request.params)
-
          let mode = request.params.mode || 'production'
 
          if (request.query.error) {
@@ -36,8 +34,6 @@ app.get(
          }
 
          let code = request.query.code
-
-         console.log(mode, settings[mode], code)
 
          let authenticate = await axios.post(
             'https://github.com/login/oauth/access_token',
@@ -54,8 +50,6 @@ app.get(
                }
             }
          )
-
-         console.log(authenticate.data)
 
          response.redirect(
             `${settings[mode].redirectURL}?token=${authenticate.data.access_token}`
