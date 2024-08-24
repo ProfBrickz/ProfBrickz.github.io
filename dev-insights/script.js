@@ -427,7 +427,7 @@ function login() {
       scope: 'repo'
    })
 
-   window.location.href = `https://github.com/login/oauth/authorize${params.toString()}`
+   window.location.href = `https://github.com/login/oauth/authorize?${params.toString()}`
 }
 
 function logout() {
