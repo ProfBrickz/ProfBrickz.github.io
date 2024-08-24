@@ -51,6 +51,15 @@ app.get(
             }
          )
 
+         if (authenticate.data.error) {
+            let params = new URLSearchParams(authenticate.data)
+
+            response.redirect(
+               `${settings[mode].redirectURL}?error=${params.toString()}`
+            )
+            return
+         }
+
          response.redirect(
             `${settings[mode].redirectURL}?token=${authenticate.data.access_token}`
          )
