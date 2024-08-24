@@ -13,32 +13,41 @@ let app = express()
 app.use(cors())
 
 app.get(
-   '/authenticate',
-   // cors({
-   //    origin: settings.redirectUri,
-   //    methods: ['POST'],
-   //    credentials: true
-   // }),
+   '/authenticate/:mode',
+   cors({
+      origin: [
+         settings.dev.authenticationURL,
+         settings.production.authenticationURL
+      ],
+      methods: ['POST'],
+      credentials: true
+   }),
    async (request, response) => {
       try {
+         console.log(request.params)
+
+         let mode = request.params.mode || 'production'
+
          if (request.query.error) {
             response.redirect(
-               `${settings.redirectURL}?error=${request.query.error}`
+               `${settings[mode].redirectURL}?error=${request.query.error}`
             )
             return
          }
 
          let code = request.query.code
 
+         console.log(mode, settings[mode], code)
+
          let authenticate = await axios.post(
             'https://github.com/login/oauth/access_token',
             {},
             {
                params: {
-                  client_id: settings.clientId,
-                  client_secret: settings.clientSecret,
+                  client_id: settings[mode].clientId,
+                  client_secret: settings[mode].clientSecret,
                   code: code,
-                  redirect_uri: settings.redirectURI
+                  redirect_uri: settings[mode].authenticationURL
                },
                headers: {
                   Accept: 'application/json'
@@ -46,11 +55,15 @@ app.get(
             }
          )
 
+         console.log(authenticate.data)
+
          response.redirect(
-            `${settings.redirectURL}?token=${authenticate.data.access_token}`
+            `${settings[mode].redirectURL}?token=${authenticate.data.access_token}`
          )
       } catch (error) {
-         response.redirect(`${settings.redirectURL}?error=${error.message}`)
+         response.redirect(
+            `${settings[mode].redirectURL}?error=${error.message}`
+         )
       }
    }
 )

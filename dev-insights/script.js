@@ -1,7 +1,15 @@
 // Constants
-const AUTHENTICATION_URL = 'http://127.0.0.1:3000'
-const CLIENT_ID = 'Ov23lip2neN6Jn4zu8tg'
-const REDIRECT_URL = 'http://127.0.0.1:3000/authenticate'
+const MODE = 'production'
+const MODES = {
+   production: {
+      clientId: 'Ov23lip2neN6Jn4zu8tg',
+      authenticationURL: 'http://129.80.106.196:3000/authenticate/production'
+   },
+   dev: {
+      clientId: 'Ov23li0dMcFk9ugsMljs',
+      authenticationURL: 'http://129.80.106.196:3000/authenticate/dev'
+   }
+}
 
 // functions
 /**
@@ -415,7 +423,27 @@ async function getUser(token) {
 }
 
 function login() {
-   window.location.href = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}`
+   // let params = new URLSearchParams({
+   //    client_id: MODES[MODE].clientId,
+   //    redirect_uri: MODES[MODE].authenticationURL,
+   //    scope: 'repo'
+   // })
+
+   // console.log(`https://github.com/login/oauth/authorize?${params.toString()}`)
+   // window.location.href = `https://github.com/login/oauth/authorize${params.toString()}`
+
+   let params = new URLSearchParams({
+      client_id: MODES.production.clientId,
+      redirect_uri: MODES.production.authenticationURL,
+      scope: 'repo'
+   })
+   console.log(`https://github.com/login/oauth/authorize?${params.toString()}`)
+   params = new URLSearchParams({
+      client_id: MODES.dev.clientId,
+      redirect_uri: MODES.dev.authenticationURL,
+      scope: 'repo'
+   })
+   console.log(`https://github.com/login/oauth/authorize?${params.toString()}`)
 }
 
 function logout() {
