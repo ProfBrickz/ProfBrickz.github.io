@@ -1,6 +1,5 @@
 // Imports
 import fs from 'fs'
-import axios from 'axios'
 import cors from 'cors'
 import express from 'express'
 
@@ -35,24 +34,27 @@ app.get(
 
          let code = request.query.code
 
-         let authenticate = await axios.post(
-            'https://github.com/login/oauth/access_token',
-            {},
+         const params = new URLSearchParams({
+            client_id: settings[mode].clientId,
+            client_secret: settings[mode].clientSecret,
+            code: code,
+            redirect_uri: settings[mode].authenticationURL
+         }).toString()
+
+         let authenticationResponse = await fetch(
+            `https://github.com/login/oauth/access_token?${params}`,
             {
-               params: {
-                  client_id: settings[mode].clientId,
-                  client_secret: settings[mode].clientSecret,
-                  code: code,
-                  redirect_uri: settings[mode].authenticationURL
-               },
+               method: 'POST',
                headers: {
                   Accept: 'application/json'
                }
             }
          )
 
-         if (authenticate.data.error) {
-            let params = new URLSearchParams(authenticate.data)
+         let authentication = await authenticationResponse.json()
+
+         if (authentication.error) {
+            let params = new URLSearchParams(authentication)
 
             response.redirect(
                `${settings[mode].redirectURL}?error=${params.toString()}`
@@ -61,9 +63,11 @@ app.get(
          }
 
          response.redirect(
-            `${settings[mode].redirectURL}?token=${authenticate.data.access_token}`
+            `${settings[mode].redirectURL}?token=${authentication.access_token}`
          )
       } catch (error) {
+         let mode = request.params.mode || 'production'
+
          response.redirect(
             `${settings[mode].redirectURL}?error=${error.message}`
          )

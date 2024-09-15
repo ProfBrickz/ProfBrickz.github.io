@@ -1,5 +1,5 @@
 // Constants
-const MODE = 'production'
+const MODE = 'dev'
 const MODES = {
    production: {
       clientId: 'Ov23lip2neN6Jn4zu8tg',
@@ -372,7 +372,7 @@ async function checkAuth() {
          user = await getUser(token)
 
          if (typeof user === 'string') {
-            console.log(user)
+            console.error(user)
             return
          }
 
@@ -402,7 +402,7 @@ async function getUser(token) {
    try {
       if (!token) return 'missing token'
 
-      let response = await axios.get('https://api.github.com/user', {
+      let response = await apiQuery('https://api.github.com/user', {
          headers: {
             Authorization: `Bearer ${token}`
          }
@@ -454,16 +454,21 @@ function logout() {
    avatar.title = ''
 }
 
-async function apiQuery(url, data, config) {
+async function apiQuery(url, options) {
    if (currentUser.token) {
-      if (!config) config = {}
-      if (!config.headers) config.headers = {}
+      if (!options) options = {}
+      if (!options.headers) options.headers = {}
 
-      config.headers.Authorization = `Bearer ${currentUser.token}`
+      options.headers.Authorization = `Bearer ${currentUser.token}`
    }
 
-   return await axios.get(url, data, config)
+   let response = await fetch(url, options)
+   response.data = await response.json()
+
+   return response
 }
+
+async function paginatedAPIQuery(url, options) {}
 
 function remToPx(rem) {
    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize)
