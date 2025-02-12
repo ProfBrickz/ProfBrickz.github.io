@@ -1,7 +1,19 @@
-dev-insights/test.html
+# Ignore temporary and test files
 *temp*
+!*template*
 *test*
+
+# Ignore VS Code settings
 /.vscode
 
+# Ignore node_modules and settings in dev-insights-auth-server
 /dev-insights-auth-server/node_modules
 /dev-insights-auth-server/settings.json
+
+# Ignore pnpm related files in dev-insights
+/dev-insights/node_modules/.pnpm/
+/dev-insights/node_modules/.modules.yaml
+
+# Ignore lock files
+**/package-lock.json
+**/pnpm-lock.yaml

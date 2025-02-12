@@ -1,4 +1,5 @@
 html[data-theme="light"] {
+	/* Colors */
 	--text: hsl(260, 33%, 7%);
 	--background: hsl(260, 33%, 93%);
 	--primary: hsl(260, 46%, 30%);
@@ -70,6 +71,7 @@ html[data-theme="light"] {
 	--error: hsl(0, 70%, 50%);
 
 
+	/* GitHub Logo */
 	#github-logo {
 		/* Do not change this, it is from the GitHub logo */
 		background-color: #ffffff;
