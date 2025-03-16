@@ -32,15 +32,21 @@ const lucide = window['lucide'];
  * @property {string[]} pullRequests - An array of pull requests.
 */
 
+/**
+ * @typedef {Object} CurrentUser
+ * @property {string} username - The username of the current user.
+ * @property {string} name - The name of the current user.
+ * @property {string} avatar - The avatar URL of the current user.
+ * @property {string} token - The authentication token of the current user.
+ */
+
 // Constants
 const MODE = 'dev';
 const MODES = {
    production: {
-      clientId: 'Ov23lip2neN6Jn4zu8tg',
       authenticationURL: 'http://129.80.106.196:3000/authenticate/production'
    },
    dev: {
-      clientId: 'Ov23li0dMcFk9ugsMljs',
       authenticationURL: 'http://129.80.106.196:3000/authenticate/dev'
    }
 };
@@ -53,6 +59,8 @@ const MODES = {
  * For each entry in `stats`, it creates a new branch element using the `makeBranch` function and appends it to the `tree` element.
  *
  * @function updateTree
+ *
+ * @returns {void}
  */
 function updateTree() {
    statsTree.innerHTML = '';
@@ -70,6 +78,7 @@ function updateTree() {
  * The branch element includes a summary with an icon, branch name, and statistics.
  *
  * @function makeBranch
+ *
  * @param {Object} branch - The branch object containing sub-branches and their values.
  * @param {string} name - The name of the branch.
  * @returns {HTMLElement} The tree item element representing the branch.
@@ -135,6 +144,8 @@ function makeBranch(branch, name) {
  * and resets the repository and statistics objects to their initial empty states.
  *
  * @function clearRepo
+ *
+ * @returns {void}
  */
 function clearRepo() {
    repoLink.classList.add('hidden');
@@ -167,9 +178,13 @@ function clearRepo() {
  * based on the `disable` parameter.
  *
  * @function toggleSettings
+ *
  * @param {boolean} disable - A boolean value indicating whether to disable (true) or enable (false) the settings inputs.
+ *
+ * @returns {void}
  */
 function toggleSettings(disable) {
+   /**@type {NodeListOf<HTMLSelectElement>} */
    let settingInputs = document.querySelectorAll(
       '.setting input:not(#repo-input), .setting select'
    );
@@ -187,7 +202,8 @@ function toggleSettings(disable) {
  * and clears the repository data. If the input is valid, it hides any error messages.
  *
  * @function validateRepoName
- * @returns {string[]} An array of error messages, if any validation rules are violated.
+ *
+ * @returns {string[]|void} An array of validation error messages, if there are no errors.
  */
 function validateRepoName() {
    try {
@@ -202,9 +218,7 @@ function validateRepoName() {
             messages.push('Username cannot begin or end with a hyphen');
          }
          if (!/^[a-zA-Z0-9-]+$/.test(username)) {
-            messages.push(
-               'Username may only contain alphanumeric characters or single hyphens'
-            );
+            messages.push('Username may only contain alphanumeric characters or single hyphens');
          }
          if (username.includes('--')) {
             messages.push('Username cannot contain consecutive hyphens');
@@ -222,14 +236,10 @@ function validateRepoName() {
             messages.push('Repository name can only contain ASCII characters');
          }
          if (repository.length > 100) {
-            messages.push(
-               'Repository name is too long (maximum is 100 characters)'
-            );
+            messages.push('Repository name is too long (maximum is 100 characters)');
          }
       } else {
-         messages.push(
-            'Missing repository or Missing / between username and repository'
-         );
+         messages.push('Missing repository or Missing / between username and repository');
       }
 
       if (messages.length > 0) {
@@ -242,6 +252,7 @@ function validateRepoName() {
          repoError.innerText = '';
          repoError.classList.add('hidden');
       }
+
       return messages;
    } catch (error) {
       console.error(error);
@@ -261,6 +272,8 @@ function validateRepoName() {
  * If the repository does not exist or an error occurs, it displays an appropriate error message and resets the repository-related UI elements.
  *
  * @function checkRepoExistence
+ *
+ * @returns {Promise<void>}
  */
 async function checkRepoExistence() {
    try {
@@ -316,6 +329,8 @@ async function checkRepoExistence() {
  * branch list and calls `setBranches` to update the UI with the fetched branches.
  *
  * @function getBranches
+ *
+ * @returns {Promise<void>}
  */
 async function getBranches() {
    try {
@@ -324,27 +339,24 @@ async function getBranches() {
       const perPage = 100;
 
       do {
-         try {
-            let response = await apiQuery(
-               `https://api.github.com/repos/${repo.name}/branches?per_page=${perPage}&page=${page}`
-            );
+         let response = await apiQuery(
+            `https://api.github.com/repos/${repo.name}/branches?per_page=${perPage}&page=${page}`
+         );
 
-            if (response.status === 200 && response.data.length > 0) {
-               branches = branches.concat(response.data);
-               page++;
-            } else {
-               break;
-            }
-         } catch (error) {
-            console.error('Error fetching branches:', error);
-            throw error;
+         if (response.status === 200 && response.data.length > 0) {
+            branches = branches.concat(response.data);
+            page++;
+         } else {
+            break;
          }
       } while (true);
 
       repo.branches = branches.map((branch) => branch.name);
 
       setBranches();
-   } catch (error) { }
+   } catch (error) {
+      console.error('Error fetching branches:', error);
+   }
 }
 
 /**
@@ -354,6 +366,8 @@ async function getBranches() {
  * to the `branchSelect` element. It also sets the default branch as the selected item in the selector.
  *
  * @function setBranches
+ *
+ * @returns {void}
  */
 function setBranches() {
    for (let branch of repo.branches) {
@@ -374,7 +388,9 @@ function setBranches() {
  * it makes the body visible and sets a transition duration for smooth theme changes.
  *
  * @function setTheme
- * @param {string} theme - The theme to be applied ('light' or 'dark').
+ *
+ * @param {'light' | 'dark'} theme - The theme to be applied ('light' or 'dark').
+ * @returns {void}
  */
 function setTheme(theme) {
    localStorage.setItem('theme', theme);
@@ -390,10 +406,15 @@ function setTheme(theme) {
 }
 
 /**
+ * Checks the authentication status of the user and updates the UI accordingly.
+ *
+ * This asynchronous function checks if the user is authenticated by retrieving the user information from the GitHub API.
+ * If the user is authenticated, it updates the current user object, sets the login button to hidden, and displays the user avatar.
+ * If the user is not authenticated, it logs the user out and displays the login button.
+ *
  * @function checkAuth
  *
- * @returns {Promise<void>} A promise that resolves when the user's authentication status
- * @description Checks if the user is authenticated and updates the UI accordingly.
+ * @returns {Promise<void>}
  */
 async function checkAuth() {
    try {
@@ -439,11 +460,16 @@ async function checkAuth() {
 }
 
 /**
+ * Retrieves the user information from the GitHub API.
+ *
+ * This asynchronous function sends a GET request to the GitHub API to retrieve the user information.
+ * If the user is authenticated, it returns the user object. If the user is not authenticated,
+ * it logs the user out and returns an error message.
+ *
  * @function getUser
  *
  * @param {string} token - The user's GitHub token.
  * @returns {Promise<Object | string>} The user object or an error message.
- * @description This function retrieves the user object from the GitHub API using the provided token.
  */
 async function getUser(token) {
    try {
@@ -468,13 +494,14 @@ async function getUser(token) {
 }
 
 /**
+ * Logs the user in by redirecting to the GitHub OAuth login page.
+ *
  * @function login
  *
- * @description This function redirects the user to the GitHub OAuth login page.
+ * @returns {void}
  */
 function login() {
    let params = new URLSearchParams({
-      client_id: MODES[MODE].clientId,
       redirect_uri: MODES[MODE].authenticationURL,
       scope: 'repo'
    });
@@ -483,9 +510,12 @@ function login() {
 }
 
 /**
+ * Logs the user out by removing the token from local storage,
+ * resetting the current user object, and updating the UI.
+ *
  * @function logout
  *
- * @description This function logs the user out by removing the token from local storage, resetting the current user object, and updating the UI accordingly.
+ * @returns {void}
  */
 function logout() {
    localStorage.removeItem('token');
@@ -512,12 +542,13 @@ function logout() {
 }
 
 /**
+ * Sends a query to the GitHub API and returns the response.
+ *
  * @function apiQuery
  *
  * @param {string} url - The URL of the API endpoint.
  * @param {object} [options] - The options object for the fetch request.
  * @returns {Promise<APIResponse>} The response from the API.
- * @description This function sends a fetch request to the specified URL with the provided options.
  */
 async function apiQuery(url, options) {
    if (currentUser.token) {
@@ -546,6 +577,14 @@ async function apiQuery(url, options) {
 
 async function paginatedAPIQuery(url, options) { }
 
+/**
+ * Converts a value in REM units to pixels.
+ *
+ * @function remToPx
+ *
+ * @param {number} rem - The value in REM units.
+ * @returns {number} The value in pixels.
+ */
 function remToPx(rem) {
    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
@@ -563,6 +602,7 @@ let repo = {
    pullRequests: []
 };
 let stats = {};
+/** @type {CurrentUser} */
 let currentUser = {
    username: '',
    name: '',
@@ -588,20 +628,17 @@ const usernameElement = /**@type {HTMLInputElement} */ (document.getElementById(
 
 // Load theme
 const savedTheme = localStorage.getItem('theme');
-if (savedTheme) {
+if (savedTheme === 'dark' || savedTheme === 'light') {
    setTheme(savedTheme);
 } else {
-   const preferredScheme = window.matchMedia('(prefers-color-scheme: dark)')
-      .matches
-      ? 'dark'
-      : 'light';
-   setTheme(preferredScheme);
+   if (window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
+   else setTheme('light');
 }
 
 // Event listeners
 themeToggle.addEventListener('change', () => {
-   const theme = themeToggle.checked ? 'dark' : 'light';
-   setTheme(theme);
+   if (themeToggle.checked) setTheme('dark');
+   else setTheme('light');
 });
 
 repoInput.addEventListener('keydown', (event) => {
