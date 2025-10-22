@@ -8,36 +8,89 @@ const lucide = window['lucide'];
 
 // Types
 /**
- * Represents a response from the GitHub API.
- * @typedef {Object} APIResponse
- * @property {Headers} headers - The headers of the response.
- * @property {boolean} ok - Indicates if the response was successful.
- * @property {boolean} redirected - Indicates if the response was redirected.
- * @property {number} status - The status code of the response.
- * @property {string} statusText - The status message of the response.
- * @property {string} type - The type of the response.
- * @property {string} url - The URL of the response.
- * @property {Object} data - The data of the response.
+ * Represents the current user
+ * @typedef {Object} CurrentUser
+ * @property {string} username - The username of the current user
+ * @property {string} name - The name of the current user
+ * @property {string} avatar - The avatar URL of the current user
+ * @property {string} token - The GitHub token of the current user
  */
 
 /**
- * @typedef {Object} Repo
- * @property {string} name - The name of the repository.
- * @property {string} period - The period for which the statistics are displayed.
- * @property {string} defaultBranch - The default branch of the repository.
- * @property {string[]} branches - An array of branch names.
- * @property {string[]} contributors - An array of contributors.
- * @property {string[]} issues - An array of issues.
- * @property {string[]} commits - An array of commits.
- * @property {string[]} pullRequests - An array of pull requests.
-*/
+ * Represents a response from the GitHub API
+ * @typedef {Object} APIResponse
+ * @property {Headers} headers - The headers of the response
+ * @property {boolean} ok - Indicates if the response was successful
+ * @property {boolean} redirected - Indicates if the response was redirected
+ * @property {number} status - The status code of the response
+ * @property {string} statusText - The status message of the response
+ * @property {string} type - The type of the response
+ * @property {string} url - The URL of the response
+ * @property {Object} data - The data of the response
+ */
 
 /**
- * @typedef {Object} CurrentUser
- * @property {string} username - The username of the current user.
- * @property {string} name - The name of the current user.
- * @property {string} avatar - The avatar URL of the current user.
- * @property {string} token - The authentication token of the current user.
+ * Represents a GitHub repository
+ * @typedef {Object} Repo
+ * @property {string} name - The name of the repository
+ * @property {string} period - The period for which the statistics are displayed
+ * @property {string} defaultBranch - The default branch of the repository
+ * @property {string[]} branches - An array of branch names
+ * @property {Map<number, Contributor>} contributors - A map of contributors by ID
+ * @property {Map<number, Issue>} issues - A map of issues by ID
+ * @property {string[]} commits - An array of commits
+ * @property {string[]} pullRequests - An array of pull requests
+ * @property {Map<number, Label>} labels - A map of labels by ID
+ */
+
+/**
+ * Represents a GitHub contributor
+ * @typedef {Object} Contributor
+ * @property {number} id - The contributor's ID
+ * @property {string} username - The contributor's username
+ */
+
+/**
+ * Represents a label
+ * @typedef {Object} Label
+ * @property {number} id - The label's ID
+ * @property {string} name - The label's name
+ * @property {string} description - The label's description
+ * @property {string} color - The label's color
+ */
+
+/**
+ * Represents a milestone
+ * @typedef {Object} Milestone
+ * @property {number} id - The milestone's ID
+ * @property {string} title - The milestone's title
+ * @property {string} description - The milestone's description
+ * @property {string} state - The milestone's state
+ * @property {string} creator - The milestone's creator
+ * @property {string} openIssues - The milestone's open issues
+ * @property {string} closedIssues - The milestone's closed issues
+ * @property {string} createdOn - The milestone's creation date
+ * @property {string} updatedOn - The milestone's last update date
+ * @property {string} closedOn - The milestone's closure date
+ * @property {string} dueOn - The milestone's due date
+ */
+
+/**
+ * Represents a issue
+ * @typedef {Object} Issue
+ * @property {number} id - The issue's ID
+ * @property {string} title - The issue's title
+ * @property {string} body - The issue's body
+ * @property {string} state - The issue's state
+ * @property {string} author - The issue's author
+ * @property {string[]} assignees - The issue's assignees
+ * @property {Label[]} labels - The issue's labels
+ * milestone
+ * @property {boolean} locked - Whether the issue is locked or not
+ * @property {string} createdOn - The issue's creation date
+ * @property {string} updatedOn - The issue's last update date
+ * @property {string} closedOn - The issue's closure date
+ * @property {string} dueOn - The issue's due date
  */
 
 // Constants
@@ -68,6 +121,8 @@ function updateTree() {
    for (let [name, branch] of Object.entries(stats)) {
       statsTree.appendChild(makeBranch(branch, name));
    }
+
+   lucide.createIcons();
 }
 
 /**
@@ -162,9 +217,10 @@ function clearRepo() {
       defaultBranch: '',
       branches: [],
       contributors: [],
-      issues: [],
+      issues: new Map(),
       commits: [],
-      pullRequests: []
+      pullRequests: [],
+      labels: new Map()
    };
 
    stats = {};
@@ -293,7 +349,14 @@ async function checkRepoExistence() {
          branchSelect.enable();
          periodSelect.enable();
 
-         getBranches();
+         await getBranches();
+         setBranches();
+
+         await getLabels();
+         await getIssues();
+
+         getStats();
+
          toggleSettings(false);
       } else {
          repoError.innerText = `Unexpected status code: ${response.status}`;
@@ -324,9 +387,8 @@ async function checkRepoExistence() {
 /**
  * Fetches all branches of the specified GitHub repository and updates the branch list.
  *
- * This asynchronous function retrieves branches from the GitHub API in a paginated manner,
- * concatenating the results until no more branches are available. It then updates the repository's
- * branch list and calls `setBranches` to update the UI with the fetched branches.
+ * This asynchronous function retrieves branches from the GitHub API using the paginatedApiQuery helper,
+ * then updates the repository's branch list and calls `setBranches` to update the UI with the fetched branches.
  *
  * @function getBranches
  *
@@ -334,28 +396,75 @@ async function checkRepoExistence() {
  */
 async function getBranches() {
    try {
-      let branches = [];
-      let page = 1;
-      const perPage = 100;
+      const apiResponse = await paginatedApiQuery(`https://api.github.com/repos/${repo.name}/branches`, null);
 
-      do {
-         let response = await apiQuery(
-            `https://api.github.com/repos/${repo.name}/branches?per_page=${perPage}&page=${page}`
-         );
-
-         if (response.status === 200 && response.data.length > 0) {
-            branches = branches.concat(response.data);
-            page++;
-         } else {
-            break;
-         }
-      } while (true);
-
-      repo.branches = branches.map((branch) => branch.name);
-
-      setBranches();
+      repo.branches = apiResponse.data.map(branch => branch.name);
    } catch (error) {
       console.error('Error fetching branches:', error);
+   }
+}
+
+/**
+ * Fetches all labels of the specified GitHub repository and updates the label list.
+ *
+ * This asynchronous function retrieves labels from the GitHub API in a paginated manner,
+ * concatenating the results until no more labels are available. It then updates the repository's
+ * label list and calls `setLabels` to update the UI with the fetched labels.
+ *
+ * @function getLabels
+ *
+ * @returns {Promise<void>}
+ */
+async function getLabels() {
+   const apiResponse = await paginatedApiQuery(`https://api.github.com/repos/${repo.name}/labels`, null);
+
+   repo.labels = new Map();
+
+   for (let label of apiResponse.data) {
+      repo.labels.set(label.id, {
+         id: label.id,
+         name: label.name,
+         description: label.description,
+         color: label.color
+      });
+   }
+}
+
+/**
+ * Fetches all issues of the specified GitHub repository and updates the issue list.
+ *
+ * This asynchronous function retrieves issues from the GitHub API in a paginated manner,
+ * concatenating the results until no more issues are available. It then updates the repository's
+ * issue list and calls `setIssues` to update the UI with the fetched issues.
+ *
+ * @function getIssues
+ *
+ * @returns {Promise<void>}
+ */
+async function getIssues() {
+   const apiResponse = await paginatedApiQuery(`https://api.github.com/repos/${repo.name}/issues`, {
+      state: 'all'
+   });
+
+   repo.issues = new Map();
+
+   for (let issue of apiResponse.data) {
+      if (issue.pull_request) continue;
+
+      repo.issues.set(issue.number, {
+         id: issue.number,
+         title: issue.title,
+         body: issue.body,
+         state: issue.state,
+         author: issue.user.login,
+         assignees: issue.assignees,
+         labels: issue.labels,
+         locked: issue.locked,
+         createdOn: issue.created_at,
+         updatedOn: issue.updated_at,
+         closedOn: issue.closed_at,
+         dueOn: issue.due_on
+      });
    }
 }
 
@@ -475,7 +584,7 @@ async function getUser(token) {
    try {
       if (!token) return 'missing token';
 
-      let response = await apiQuery('https://api.github.com/user', {
+      let response = await apiQuery('https://api.github.com/user', null, {
          headers: {
             Authorization: `Bearer ${token}`
          }
@@ -547,21 +656,27 @@ function logout() {
  * @function apiQuery
  *
  * @param {string} url - The URL of the API endpoint.
+ * @param {object} [params] - The URLSearchParams object for the fetch request.
  * @param {object} [options] - The options object for the fetch request.
  * @returns {Promise<APIResponse>} The response from the API.
  */
-async function apiQuery(url, options) {
+async function apiQuery(url, params, options = {}) {
    if (currentUser.token) {
-      if (!options) options = {};
       if (!options.headers) options.headers = {};
 
       options.headers.Authorization = `Bearer ${currentUser.token}`;
    }
 
-   let response = await fetch(url, options);
-   let responseData = await response.json();
+   const urlObject = new URL(url);
+   if (params) urlObject.search = new URLSearchParams(params).toString();
 
-   responseData = {
+   url = urlObject.toString();
+
+   let response = await fetch(url, options);
+   let data = await response.json();
+
+   /** @type {APIResponse} */
+   let responseData = {
       headers: response.headers,
       ok: response.ok,
       redirected: response.redirected,
@@ -569,13 +684,105 @@ async function apiQuery(url, options) {
       statusText: response.statusText,
       type: response.type,
       url: response.url,
-      data: responseData
+      data: data
    };
 
    return responseData;
 }
 
-async function paginatedAPIQuery(url, options) { }
+/**
+ * Sends a paginated query to the GitHub API and returns the combined results.
+ *
+ * @function paginatedApiQuery
+ *
+ * @param {string} url - The URL of the API endpoint.
+ * @param {object} [params] - The parameters for the request.
+ * @param {object} [options] - The options for the fetch request.
+ * @returns {Promise<APIResponse>} The combined response from all pages.
+ */
+async function paginatedApiQuery(url, params, options = {}) {
+   let page = 1;
+   const perPage = 100;
+   let allData = [];
+   let lastResponse = null;
+
+   // Set up authorization if available
+   if (currentUser.token) {
+      options.headers = options.headers || {};
+      options.headers.Authorization = `Bearer ${currentUser.token}`;
+   }
+
+   // Prepare URL with parameters
+   const urlObject = new URL(url);
+   const searchParams = new URLSearchParams(params);
+   searchParams.set('per_page', String(perPage));
+
+   // Fetch all pages
+   do {
+      searchParams.set('page', String(page));
+      urlObject.search = searchParams.toString();
+
+      lastResponse = await fetch(urlObject.toString(), options);
+      const pageData = await lastResponse.json();
+      allData = allData.concat(pageData);
+
+      // Check if we've reached the last page
+      const linkHeader = lastResponse.headers.get('Link');
+      if (!linkHeader || !linkHeader.includes('rel="next"')) {
+         break;
+      }
+
+      page++;
+   } while (true);
+
+   // Return combined response data with metadata from the last response
+   return {
+      headers: lastResponse.headers,
+      ok: lastResponse.ok,
+      redirected: lastResponse.redirected,
+      status: lastResponse.status,
+      statusText: lastResponse.statusText,
+      type: lastResponse.type,
+      url: lastResponse.url,
+      data: allData
+   };
+}
+
+
+function getIssueStats() {
+   // Initialize the main stats structure
+   const issues = stats.Issues = {
+      total: repo.issues.size,
+      values: {
+         'Open issues by user': { total: 0, values: {} },
+         'Closed issues by user': { total: 0, values: {} },
+         'Issues closed by contributor': { total: 0, values: {} },
+         Labels: { values: {} },
+         All: { total: 0, values: {} }
+      }
+   };
+
+   // Initialize labels
+   for (const label of repo.labels.values()) {
+      issues.values.Labels.values[label.name] = {
+         total: 0,
+         values: {}
+      };
+   }
+
+   for (const issue of repo.issues.values()) {
+   }
+}
+
+function getStats() {
+   stats = {
+      Issues: {}
+   };
+
+   getIssueStats();
+
+   updateTree();
+}
 
 /**
  * Converts a value in REM units to pixels.
@@ -596,10 +803,11 @@ let repo = {
    period: '',
    defaultBranch: '',
    branches: [],
-   contributors: [],
-   issues: [],
+   contributors: new Map(),
+   issues: new Map(),
    commits: [],
-   pullRequests: []
+   pullRequests: [],
+   labels: new Map()
 };
 let stats = {};
 /** @type {CurrentUser} */
@@ -793,8 +1001,5 @@ stats = {
    }
 };
 updateTree();
-
-// Load icons
-lucide.createIcons();
 
 checkAuth();
